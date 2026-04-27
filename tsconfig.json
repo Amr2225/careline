@@ -1,0 +1,4 @@
+{
+  "extends": "@careline/typescript-config/base.json"
+}
+
