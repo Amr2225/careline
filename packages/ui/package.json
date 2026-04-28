@@ -11,10 +11,12 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "lucide-react": "^1.8.0",
-    "radix-ui": "^1.4.3",
     "next-themes": "^0.4.6",
+    "radix-ui": "^1.4.3",
     "react": "^19.2.4",
+    "react-day-picker": "^9.14.0",
     "react-dom": "^19.2.4",
     "shadcn": "^4.3.0",
     "tailwind-merge": "^3.5.0",
@@ -22,13 +24,13 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@careline/eslint-config": "workspace:^",
+    "@careline/typescript-config": "workspace:^",
     "@tailwindcss/postcss": "^4.1.18",
     "@turbo/gen": "^2.8.1",
     "@types/node": "^25.1.0",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
-    "@careline/eslint-config": "workspace:^",
-    "@careline/typescript-config": "workspace:^",
     "eslint": "^9.39.2",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"

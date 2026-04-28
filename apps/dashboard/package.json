@@ -13,18 +13,19 @@
   },
   "dependencies": {
     "@careline/ui": "workspace:^",
+    "lucide-react": "^1.8.0",
     "next": "16.1.6",
     "next-themes": "^0.4.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@careline/eslint-config": "workspace:^",
+    "@careline/typescript-config": "workspace:^",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.1.0",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
-    "@careline/eslint-config": "workspace:^",
-    "@careline/typescript-config": "workspace:^",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }
