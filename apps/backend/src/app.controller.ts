@@ -5,7 +5,7 @@ export class AppController {
   constructor() { }
 
   @Get('/health')
-  health(): string {
-    return JSON.stringify({ status: 'ok' })
+  health() {
+    return { status: 'ok' }
   }
 }

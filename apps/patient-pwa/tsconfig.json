@@ -1,0 +1,8 @@
+// TODO: In future we should split this into a base.json and a react-library.json
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
