@@ -3,12 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc"
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch"
   },
   "exports": {
-    "./prisma/*": "./prisma/*"
+    "./prisma/*": {
+      "types": "./dist/prisma/*.d.ts",
+      "default": "./dist/prisma/*.js"
+    }
   },
   "dependencies": {
     "@prisma/client": "^7.8.0"
   }
 }
+

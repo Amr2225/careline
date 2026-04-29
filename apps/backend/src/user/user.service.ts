@@ -1,5 +1,5 @@
 import { DbService } from '@/db/db.service';
-import { Prisma, User } from '@/generated/prisma/client';
+import { Prisma, User } from '@careline/shared/prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/user.dto';
 
