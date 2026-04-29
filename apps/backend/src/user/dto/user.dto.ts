@@ -1,8 +1,8 @@
-import { UserCreateInput } from "@/generated/prisma/models";
+import { UserCreateInput } from "@careline/shared/prisma/models";
 import { IsEmail, IsString } from "class-validator";
 
 export class CreateUserDto implements UserCreateInput {
-    @IsEmail()
+    @IsEmail({}, { message: "Invalid email address" })
     email: string;
 
     @IsString()
