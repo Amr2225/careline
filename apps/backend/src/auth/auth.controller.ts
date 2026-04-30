@@ -6,10 +6,13 @@ import { JWTRefreshGuard } from '@/auth/guards/jwt-auth-refresh.guard';
 import type { UserWithoutPassword } from '@careline/shared/types/user.type';
 import { User } from '@/auth/decorators/user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard copy';
+import { csrfConfig } from './config/csrf.config';
+import { doubleCsrf } from 'csrf-csrf';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor(private readonly authService: AuthService, private readonly configService: ConfigService) { }
 
     @Post('login')
     async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response, @Req() request: Request) {
@@ -22,18 +25,30 @@ export class AuthController {
         await this.authService.setCookies<Response>(response, 'accessToken', tokens.accessToken.value, tokens.accessToken.expiresIn);
         await this.authService.setCookies<Response>(response, 'refreshToken', tokens.refreshToken.value, tokens.refreshToken.expiresIn);
 
+        request.cookies.refreshToken = tokens.refreshToken.value;
+
+        console.log("Refresh Token", request.cookies.refreshToken);
+        const { generateCsrfToken } = doubleCsrf(csrfConfig(this.configService))
+        generateCsrfToken(request, response)
+
         return response.status(200).send({ message: 'Login successful' });
     }
 
     @Post("refresh")
     @UseGuards(JWTRefreshGuard)
-    async refresh(@User() user: UserWithoutPassword, @Res({ passthrough: true }) response: Response) {
+    async refresh(@User() user: UserWithoutPassword, @Res({ passthrough: true }) response: Response, @Req() request: Request) {
         // If the request reaches hear that means that the refresh token is valid, it past the guard
         // And the user object is valid in the request header
         const userTokens = await this.authService.login(user)
 
         await this.authService.setCookies<Response>(response, 'accessToken', userTokens.accessToken.value, userTokens.accessToken.expiresIn);
         await this.authService.setCookies<Response>(response, 'refreshToken', userTokens.refreshToken.value, userTokens.refreshToken.expiresIn);
+
+        request.cookies.refreshToken = userTokens.refreshToken.value;
+
+        console.log("Refresh Token", request.cookies.refreshToken);
+        const { generateCsrfToken } = doubleCsrf(csrfConfig(this.configService))
+        generateCsrfToken(request, response)
 
         return response.status(200).send({ message: 'Refresh successful' });
     }

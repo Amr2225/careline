@@ -3,14 +3,19 @@ import { z } from 'zod';
 const envSchema = z.object({
     DATABASE_URL: z.string(),
     WEB_ORIGIN: z.string(),
+    PWA_ORIGIN: z.string(),
     PORT: z.string().optional().refine((port) => {
         if (!port) return false;
         return parseInt(port) > 0 && parseInt(port) < 65536
     }, { message: 'PORT must be a number between 1 and 65535' }),
     NODE_ENV: z.enum(['development', 'production', 'test']).optional().default('development'),
+
     CSRF_SECRET: z.string(),
     ACCESS_TOKEN_SECRET: z.string(),
     REFRESH_TOKEN_SECRET: z.string(),
+
+    ACCESS_TOKEN_EXPIRES_IN: z.string(),
+    REFRESH_TOKEN_EXPIRES_IN: z.string(),
 });
 
 export type envSchemaType = z.infer<typeof envSchema>;

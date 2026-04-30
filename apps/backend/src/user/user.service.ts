@@ -20,6 +20,7 @@ export class UserService {
     }
 
     async findById(id: string): Promise<UserWithoutPassword> {
+        console.log("Finding user by id", id);
         const user = await this.db.user.findUnique({ where: { id }, omit: { passwordHash: true, isBootstrapAdmin: true } });
         if (!user) throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 

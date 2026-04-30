@@ -4,6 +4,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export const User = createParamDecorator(
     (_data: unknown, ctx: ExecutionContext): UserWithoutPassword => {
         const request = ctx.switchToHttp().getRequest();
+        console.log("Current User", request.user);
         return request.user as UserWithoutPassword;
     },
 );

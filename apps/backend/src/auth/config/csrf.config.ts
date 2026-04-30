@@ -8,10 +8,10 @@ export const csrfConfig = (configService: ConfigService): DoubleCsrfConfigOption
     size: 32, // The size of the random value used to construct the message used for hmac generation
     cookieOptions: {
         httpOnly: false, // Frontend JS must read it to add it to the request header as X-CSRF-Token
-        // secure: config.getOrThrow<string>('NODE_ENV') === 'production',
+        // secure: configService.getOrThrow<string>('NODE_ENV') === 'production',
         secure: true,
         sameSite: 'strict',
-        path: '/api/v1/',
+        path: '/',
     },
     getSecret: () => configService.getOrThrow<string>('CSRF_SECRET'),
     getSessionIdentifier: (req: Request) => req.cookies.refreshToken, // Should be a table value that identifies the user, not the token itself refreshToken/SessionId/UserId

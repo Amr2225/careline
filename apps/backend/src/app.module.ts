@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DbModule } from '@/db/db.module';
@@ -28,7 +28,7 @@ export class AppModule implements NestModule {
     const { doubleCsrfProtection } = doubleCsrf(csrfConfig(this.configService));
     consumer
       .apply(doubleCsrfProtection)
-      .exclude("/api/v1/auth/login")
+      .exclude({ path: 'auth/login', method: RequestMethod.POST })
       .forRoutes('*wildcard');
   }
 }

@@ -8,7 +8,7 @@ import { Response } from 'express';
 import moment, { Duration, unitOfTime } from 'moment';
 import { ConfigService } from '@nestjs/config';
 import { DbService } from '@/db/db.service';
-import bcrypt from 'bcrypt';
+import { createHash } from 'crypto';
 
 export interface Tokens {
     accessToken: {
@@ -46,12 +46,12 @@ export class AuthService {
         const accessToken = await this.jwtService.signAsync({ userId: user.id }, { subject: user.id, expiresIn: ACCESS_TOKEN_EXPIRES_IN, secret: this.configService.getOrThrow<string>("ACCESS_TOKEN_SECRET") });
         const refreshToken = await this.jwtService.signAsync({ userId: user.id }, { subject: user.id, expiresIn: REFRESH_TOKEN_EXPIRES_IN, secret: this.configService.getOrThrow<string>("REFRESH_TOKEN_SECRET") });
 
-        this.db.user.update({
+        await this.db.user.update({
             where: { id: user.id },
             data: {
                 refreshTokens: {
                     create: {
-                        tokenHash: bcrypt.hashSync(refreshToken, 10),
+                        tokenHash: createHash('sha256').update(refreshToken).digest('hex'),
                         expiresAt: moment.utc().add(REFRESH_TOKEN_EXPIRES_IN, 'ms').toDate()
                     }
                 }
@@ -81,13 +81,12 @@ export class AuthService {
                 revokedAt: new Date()
             }
         })
-
     }
 
     async validateRefreshToken(refreshToken: string): Promise<UserWithoutPassword> {
         const refreshTokenEntity = await this.db.refreshToken.findFirst({
             where: {
-                tokenHash: bcrypt.hashSync(refreshToken, 10),
+                tokenHash: createHash('sha256').update(refreshToken).digest('hex'),
                 expiresAt: {
                     gt: new Date()
                 }
@@ -102,6 +101,7 @@ export class AuthService {
             }
         })
 
+        console.log("Refresh Token Entity", refreshTokenEntity);
         if (!refreshTokenEntity) throw new HttpException("Invalid refresh token", HttpStatus.UNAUTHORIZED);
 
         // Theft protection some one is using a revoked refresh token

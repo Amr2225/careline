@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { NextFunction, Request } from 'express';
 
 
 async function bootstrap() {
@@ -40,7 +41,10 @@ async function bootstrap() {
   );
 
   app.use(cookieParser());
-  // app.use(doubleCsrfProtection);
+  app.use((req: Request, _res: Response, next: NextFunction) => {
+    console.log("CSRF Token", req.cookies.csrfToken);
+    next();
+  });
 
   app.setGlobalPrefix('api/v1/')
   await app.listen(config.getOrThrow<number>('PORT'));

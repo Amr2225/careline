@@ -14,5 +14,9 @@ export class CreateUserDto implements UserCreateInput {
 
     @IsOptional()
     @IsBoolean()
-    isActive: boolean;
+    isActive: boolean = true;
+
+    @IsOptional()
+    @IsBoolean()
+    isBootstrapAdmin: boolean;
 }

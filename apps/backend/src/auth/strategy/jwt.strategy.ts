@@ -7,7 +7,7 @@ import { UserService } from "@/user/user.service";
 
 // This is used to validate the JWT token from the request cookies
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, "jwt-access") {
     constructor(configService: ConfigService,
         private readonly userService: UserService
     ) {

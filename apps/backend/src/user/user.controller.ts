@@ -15,7 +15,7 @@ export class UserController {
         return await this.userService.getUsers();
     }
 
-    @Get()
+    @Get("me")
     @UseGuards(JwtAuthGuard)
     async me(@CurrentUser() user: UserWithoutPassword): Promise<UserWithoutPassword> {
         return await this.userService.findById(user.id);
