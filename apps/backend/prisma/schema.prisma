@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider     = "prisma-client"
   // output       = "../src/generated/prisma"
@@ -15,7 +10,33 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id               String   @id @default(cuid())
+  email            String   @unique
+  passwordHash     String
+  name             String
+  isActive         Boolean  @default(true)
+  isBootstrapAdmin Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  refreshTokens RefreshToken[]
+
+  @@map("users") // Name of the table
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime? @db.Timestamptz
+  createdAt DateTime  @default(now())
+  userAgent String?
+  ipAddress String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt]) // Creates a normal database index on expiresAt. It is not unique, so many users/tokens can have the same expiresAt value. 
+  @@map("refresh_tokens") // Name of the table
 }

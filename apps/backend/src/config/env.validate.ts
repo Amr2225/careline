@@ -8,6 +8,9 @@ const envSchema = z.object({
         return parseInt(port) > 0 && parseInt(port) < 65536
     }, { message: 'PORT must be a number between 1 and 65535' }),
     NODE_ENV: z.enum(['development', 'production', 'test']).optional().default('development'),
+    CSRF_SECRET: z.string(),
+    ACCESS_TOKEN_SECRET: z.string(),
+    REFRESH_TOKEN_SECRET: z.string(),
 });
 
 export type envSchemaType = z.infer<typeof envSchema>;

@@ -7,8 +7,12 @@
     "declarationMap": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "target": "ES2023"
+    "target": "ES2023",
+    "paths": {
+      "@types/*": ["./types/*"],
+      "@prisma/*": ["./primsa/*"]
+    }
   },
-  "include": ["prisma/**/*.ts"],
+  "include": ["prisma/**/*.ts", "types/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
