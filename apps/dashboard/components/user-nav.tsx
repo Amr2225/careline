@@ -32,13 +32,20 @@ import {
 } from "@careline/ui/components/sidebar"
 import { useAuthStore } from "@/store/user.store"
 import Spinner from "./spinner"
+import { useRouter } from "next/navigation"
 
 export function UserNav() {
+  const router = useRouter()
   const user = useAuthStore((state) => state.user)
 
   const { isMobile } = useSidebar()
   const logout = useAuthStore((state) => state.logout)
   const isLoading = useAuthStore((state) => state.isLoading)
+
+  const handleLogout = async () => {
+    await logout()
+    router.push("/")
+  }
 
   return (
     <SidebarMenu>
@@ -101,7 +108,7 @@ export function UserNav() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               {isLoading ? <Spinner /> : "Log out"}
             </DropdownMenuItem>

@@ -17,7 +17,7 @@ const refreshClient = axios.create({
     withCredentials: true,
 });
 
-const getCsrfToken = (): string => {
+export const getCsrfToken = (): string => {
     const regex = /csrfToken=([^;]+)/;
     const csrfToken = regex.exec(document.cookie);
     return csrfToken?.[1] ?? "";

@@ -19,5 +19,13 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      "react-refresh/only-export-components": [
+        "warn",
+        {
+          extraHOCs: ["AuthGuard", "App"],
+        },
+      ],
+    },
   },
 ])

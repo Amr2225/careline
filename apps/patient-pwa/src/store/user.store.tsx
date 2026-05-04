@@ -26,7 +26,7 @@ const setLocalStorageUser = (user: UserWithoutPassword) => {
   }
 }
 
-const checkLocalStorageUser = () => {
+const getLocalStorageUser = () => {
   if (typeof window !== "undefined") {
     const user = window.localStorage.getItem("Careline-user")
     if (!user) {
@@ -48,7 +48,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     const currentUser = get().user
     if (currentUser) return
 
-    const cachedUser = checkLocalStorageUser()
+    const cachedUser = getLocalStorageUser()
     if (cachedUser) {
       set({ user: cachedUser, isAuthenticated: "authenticated" })
       return
@@ -61,6 +61,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       setLocalStorageUser(data)
       set({ user: data, isAuthenticated: "authenticated" })
     } catch (error) {
+      console.log("Error loading user", error)
       set({ user: null, isAuthenticated: "unauthenticated" })
     } finally {
       set({ isLoading: false })

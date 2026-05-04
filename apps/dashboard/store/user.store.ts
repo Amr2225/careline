@@ -16,7 +16,7 @@ interface AuthStore {
 
     loadUser: () => Promise<void>;
     login: (email: string, password: string) => Promise<boolean>;
-    logout: () => void;
+    logout: () => Promise<void>;
 }
 
 const setLocalStorageUser = (user: UserWithoutPassword) => {

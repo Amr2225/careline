@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
-import { BottomNavBar, type BottomNavTab } from "./components/bottom-nav-bar"
-import AuthGuard from "./providers/AuthGuard"
+import {
+  BottomNavBar,
+  type BottomNavTab,
+} from "../../components/bottom-nav-bar.js"
+import AuthGuard from "../../providers/AuthGuard.js"
 import { ChartLine, History, Home, ListOrdered, User } from "lucide-react"
 
 function App() {
@@ -91,44 +94,4 @@ const pageCopy: Record<BottomNavTab, PageCopy> = {
       "Manage personal details, preferences, and account settings from the profile area.",
     Icon: <User />,
   },
-}
-
-function HomeMark(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M11.2 3.4a1.25 1.25 0 0 1 1.6 0l7 5.82c.29.24.46.6.46.97v8.56A2.25 2.25 0 0 1 18 21h-3.25a1 1 0 0 1-1-1v-4.25a1.75 1.75 0 0 0-3.5 0V20a1 1 0 0 1-1 1H6a2.25 2.25 0 0 1-2.25-2.25v-8.56c0-.38.17-.73.46-.97z" />
-    </svg>
-  )
-}
-
-function HistoryMark(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M12 3.25a8.75 8.75 0 1 0 8.75 8.75h-2.5A6.25 6.25 0 1 1 12 5.75z" />
-    </svg>
-  )
-}
-
-function QueueMark(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M6.25 4h11.5A2.25 2.25 0 0 1 20 6.25v1A2.25 2.25 0 0 1 17.75 9H6.25A2.25 2.25 0 0 1 4 6.75v-.5A2.25 2.25 0 0 1 6.25 4M6.25 10.5h11.5A2.25 2.25 0 0 1 20 12.75v.5a2.25 2.25 0 0 1-2.25 2.25H6.25A2.25 2.25 0 0 1 4 13.25v-.5a2.25 2.25 0 0 1 2.25-2.25M6.25 17h11.5A2.25 2.25 0 0 1 20 19.25v.5A.25.25 0 0 1 19.75 20H4.25A.25.25 0 0 1 4 19.75v-.5A2.25 2.25 0 0 1 6.25 17" />
-    </svg>
-  )
-}
-
-function DataMark(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M5.75 3.75h12.5A2.75 2.75 0 0 1 21 6.5v11a2.75 2.75 0 0 1-2.75 2.75H5.75A2.75 2.75 0 0 1 3 17.5v-11a2.75 2.75 0 0 1 2.75-2.75m1.5 11.5a1 1 0 1 0 2 0v-3.5a1 1 0 1 0-2 0zm3.75 0a1 1 0 1 0 2 0v-6.5a1 1 0 1 0-2 0zm3.75 0a1 1 0 1 0 2 0v-4.5a1 1 0 1 0-2 0z" />
-    </svg>
-  )
-}
-
-function ProfileMark(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M12 12.25a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9m-7.2 8.5h14.4c.82 0 1.45-.72 1.27-1.52C19.65 15.6 16.24 14 12 14s-7.65 1.6-8.47 5.23c-.18.8.45 1.52 1.27 1.52" />
-    </svg>
-  )
 }

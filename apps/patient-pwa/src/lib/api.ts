@@ -1,4 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios"
+const loginRoute = "/"
 
 const ALLOWED_METHODS = ["post", "patch", "put", "delete"];
 
@@ -16,7 +17,7 @@ const refreshClient = axios.create({
     withCredentials: true,
 });
 
-const getCsrfToken = (): string => {
+export const getCsrfToken = (): string => {
     const regex = /csrfToken=([^;]+)/;
     const csrfToken = regex.exec(document.cookie);
     return csrfToken?.[1] ?? "";
@@ -58,7 +59,8 @@ api.interceptors.response.use((response) => response, async (error: AxiosError) 
             await refreshClient.post("/auth/refresh");
             return api(originalRequest);
         } catch (refreshError) {
-            if (typeof window !== "undefined") window.location.href = "/";
+            const currentPath = window.location.pathname;
+            if (currentPath !== loginRoute) window.location.href = "/";
 
             return Promise.reject(refreshError);
         }
