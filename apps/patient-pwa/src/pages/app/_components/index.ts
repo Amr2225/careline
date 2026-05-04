@@ -1,0 +1,5 @@
+export { default as HomePage } from "./Home.js"
+export { default as HistoryPage } from "./History.js"
+export { default as QueuePage } from "./Queue.js"
+export { default as DataPage } from "./Data.js"
+export { default as ProfilePage } from "./Profile.js"

@@ -17,7 +17,7 @@ interface AuthStore {
 
   loadUser: () => Promise<void>
   login: (email: string, password: string) => Promise<boolean>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const setLocalStorageUser = (user: UserWithoutPassword) => {
@@ -57,11 +57,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ isLoading: true })
     try {
       const { data } = await api.get<UserWithoutPassword>("/user/me")
-      console.log("DATA: ", data)
       setLocalStorageUser(data)
       set({ user: data, isAuthenticated: "authenticated" })
     } catch (error) {
-      console.log("Error loading user", error)
+      console.error("Error loading user", error)
       set({ user: null, isAuthenticated: "unauthenticated" })
     } finally {
       set({ isLoading: false })
@@ -75,7 +74,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         password,
       })
       setLocalStorageUser(data)
-      set({ user: data, isAuthenticated: "authenticated" })
+      set({ user: data, isAuthenticated: "authenticated", error: null })
       return true
     } catch (error) {
       if (
