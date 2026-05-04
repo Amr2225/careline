@@ -33,12 +33,18 @@ export class AuthService {
 
     async validateUser(userData: LoginDto): Promise<UserWithoutPassword> {
         const user = await this.userService.findByEmail(userData.email);
-        if (!user) throw new HttpException("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        if (!user) throw new HttpException("Invalid credentials", HttpStatus.BAD_REQUEST);
 
         const isPasswordValid = await verifyPassword(userData.password, user.passwordHash);
-        if (!isPasswordValid) throw new HttpException("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        if (!isPasswordValid) throw new HttpException("Invalid credentials", HttpStatus.BAD_REQUEST);
 
-        return user;
+        const userWithoutPassword = {
+            ...user,
+            passwordHash: undefined,
+            isBootstrapAdmin: undefined
+        };
+
+        return userWithoutPassword;
     }
 
     async login(user: UserWithoutPassword): Promise<Tokens> {

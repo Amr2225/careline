@@ -1,4 +1,4 @@
-import { LoginForm } from "@careline/ui/components/login-card"
+import { LoginForm } from "@/components/login-card"
 
 export default function Page() {
   return (

@@ -17,6 +17,7 @@ export class AuthController {
     @Post('login')
     async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response, @Req() request: Request) {
         const user = await this.authService.validateUser(loginDto);
+
         // We should add the user to the header manually if not using the LocalStrategy
         // Local Strategy is used to validate the user credentials and return the user object in the request header
         request.user = user;
@@ -31,7 +32,7 @@ export class AuthController {
         const { generateCsrfToken } = doubleCsrf(csrfConfig(this.configService))
         generateCsrfToken(request, response)
 
-        return response.status(200).send({ message: 'Login successful' });
+        return user;
     }
 
     @Post("refresh")

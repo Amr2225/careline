@@ -8,15 +8,13 @@ import { UserWithoutPassword } from '@careline/shared/types/user.type';
 export class UserService {
     constructor(private readonly db: DbService) { }
 
+    // TODO: Remove this 
     async getUsers(): Promise<User[]> {
         return await this.db.user.findMany();
     }
 
-    async findByEmail(email: string): Promise<User> {
-        const user = await this.db.user.findUnique({ where: { email } });
-        if (!user) throw new HttpException("User not found", HttpStatus.NOT_FOUND);
-
-        return user;
+    async findByEmail(email: string): Promise<User | null> {
+        return await this.db.user.findUnique({ where: { email } });
     }
 
     async findById(id: string): Promise<UserWithoutPassword> {
