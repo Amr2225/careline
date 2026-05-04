@@ -17,6 +17,7 @@ import {
   Settings,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
+import { UserNav } from "./user-nav"
 
 const links = [
   {
@@ -75,7 +76,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
         <SidebarGroup />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <UserNav />
+      </SidebarFooter>
     </Sidebar>
   )
 }

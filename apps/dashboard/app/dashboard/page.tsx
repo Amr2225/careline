@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Suspense } from "react"
 import {
   Select,
   SelectContent,
@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@careline/ui/components/select"
 import { DatePicker } from "@careline/ui/components/date-picker"
+import UserPage from "@/components/user"
 
 export default function DashboardPage() {
   return (
@@ -32,6 +33,9 @@ export default function DashboardPage() {
           </Select>
         </div>
       </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserPage />
+      </Suspense>
     </div>
   )
 }

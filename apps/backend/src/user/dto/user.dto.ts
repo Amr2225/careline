@@ -1,10 +1,22 @@
 import { UserCreateInput } from "@careline/shared/prisma/models";
-import { IsEmail, IsString } from "class-validator";
+import { IsBoolean, IsEmail, IsOptional, IsString } from "class-validator";
 
 export class CreateUserDto implements UserCreateInput {
     @IsEmail({}, { message: "Invalid email address" })
     email: string;
 
     @IsString()
-    name?: string | null | undefined;
+    name: string
+
+    @IsOptional()
+    @IsString()
+    passwordHash: string;
+
+    @IsOptional()
+    @IsBoolean()
+    isActive: boolean = true;
+
+    @IsOptional()
+    @IsBoolean()
+    isBootstrapAdmin: boolean;
 }
