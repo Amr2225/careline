@@ -10,6 +10,7 @@ import {
   DataPage,
   ProfilePage,
 } from "./_components/index.js"
+import { useAuthStore } from "@/store/user.store.js"
 
 const pageCopy: Record<BottomNavTab, React.ReactElement> = {
   home: <HomePage />,
@@ -20,6 +21,8 @@ const pageCopy: Record<BottomNavTab, React.ReactElement> = {
 }
 
 function App() {
+  const user = useAuthStore((state) => state.user)
+
   const [activeTab, setActiveTab] = useState<BottomNavTab>("home")
   const activePage = pageCopy[activeTab]
 
@@ -30,7 +33,9 @@ function App() {
           <p className="text-sm font-semibold tracking-[0.24em] text-emerald-800/70 uppercase">
             CareLine
           </p>
-          <h1 className="mt-2 text-3xl font-bold">Patient App</h1>
+          <h1 className="mt-2 text-3xl font-bold capitalize">
+            Welcome back, {user?.name}
+          </h1>
         </div>
 
         <AnimatePresence mode="wait">

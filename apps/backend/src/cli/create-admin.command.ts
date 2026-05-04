@@ -23,9 +23,7 @@ export class CreateAdminCommand extends CommandRunner {
         if (!options || !Object.keys(options).length)
             options = await this.inquirerService.ask('create-admin-questions', {});
 
-        if (options.password !== options.confirmPassword)
-            throw new Error("Passwords do not match");
-
+        if (options.password !== options.confirmPassword) throw new Error("Passwords do not match");
 
         const newUser: CreateUserDto = {
             email: options.email,
@@ -35,7 +33,7 @@ export class CreateAdminCommand extends CommandRunner {
             isBootstrapAdmin: true,
         }
 
-        this.userService.createUser(newUser)
+        await this.userService.createUser(newUser)
         console.log("Admin user created successfully", options);
     }
 
@@ -67,12 +65,15 @@ export class CreateAdminCommand extends CommandRunner {
     }
 
     @Option({
-        flags: "-c, --confirm-passowrd [confirmPassword]",
+        flags: "-c, --confirm-password [confirmPassword]",
         description: "Confirm the password",
     })
     parseConfirmPassword(val: string) {
-        if (val !== this.password)
+        if (val !== this.password) {
+
+            console.log(val);
             throw new Error("Passwords do not match");
+        }
 
         return val;
     }
