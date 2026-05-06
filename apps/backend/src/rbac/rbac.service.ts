@@ -6,9 +6,10 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class RbacService {
     constructor(private readonly dbService: DbService) { }
-    private rolesSet = new Set<string>();
 
     async getPremissionsForUser(userId: string): Promise<Set<string>> {
+        const permissionSet = new Set<string>();
+
         const userRoles = await this.dbService.userRole.findMany({
             where: {
                 userId: userId
@@ -30,11 +31,11 @@ export class RbacService {
             const permissions = userRole.role.permissions;
 
             permissions.forEach((permission) => {
-                this.rolesSet.add(`${permission.module.name}:${permission.action.toLocaleLowerCase()}`)
+                permissionSet.add(`${permission.module.name}:${permission.action.toLocaleLowerCase()}`)
             })
         })
 
-        return this.rolesSet;
+        return permissionSet;
     }
 
     async getRoles(userId: string): Promise<Role[]> {

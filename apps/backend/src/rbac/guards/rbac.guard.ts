@@ -16,7 +16,7 @@ export class RbacGuard implements CanActivate {
         if (!request?.user?.id) return false;
         const userId = request.user.id;
 
-        console.log(requiredPermissions, userId);
+        // console.log(requiredPermissions, userId);
 
         // const permissions = await this.rbacService.getPremissionsForUser(userId);
         // const isFound = await this.rbacService.has(permissions, requiredPermissions.module, requiredPermissions.action);

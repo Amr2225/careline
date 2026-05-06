@@ -31,7 +31,7 @@ export class AssignManagerRoleCommand extends CommandRunner {
 
         if (!managerRole) throw new Error("Manager role not found");
 
-        adminUser.forEach(async (user) => {
+        for (const user of adminUser) {
             await this.dbService.userRole.upsert({
                 where: {
                     userId_roleId: {
@@ -48,8 +48,9 @@ export class AssignManagerRoleCommand extends CommandRunner {
                     userId: user.id,
                     roleId: managerRole.id,
                 }
-            })
-        })
+            });
+        }
+
 
         console.log("Manager role assigned to admins successfully");
     }
