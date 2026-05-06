@@ -2,11 +2,12 @@ import { DbService } from '@/db/db.service';
 import { Prisma, User } from '@careline/shared/prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/user.dto';
-import { UserWithoutPassword } from '@careline/shared/types/user.type';
+import { UserEntity } from '@careline/shared/types/user.type';
+import { RbacService } from '@/rbac/rbac.service';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly db: DbService) { }
+    constructor(private readonly db: DbService, private readonly rbacService: RbacService) { }
 
     // TODO: Remove this 
     async getUsers(): Promise<User[]> {
@@ -17,12 +18,20 @@ export class UserService {
         return await this.db.user.findUnique({ where: { email } });
     }
 
-    async findById(id: string): Promise<UserWithoutPassword> {
+    // TODO: Migrate this to the Auth controller
+    async findById(id: string): Promise<UserEntity> {
         console.log("Finding user by id", id);
         const user = await this.db.user.findUnique({ where: { id }, omit: { passwordHash: true, isBootstrapAdmin: true } });
         if (!user) throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 
-        return user;
+        const roles = await this.rbacService.getRoles(user.id);
+        const permissions = await this.rbacService.getPremissionsForUser(user.id);
+
+        return { ...user, roles, permissions: Array.from(permissions) };
+    }
+
+    async testRBAC(): Promise<string> {
+        return "Hello World";
     }
 
     async createUser(user: CreateUserDto): Promise<User> {

@@ -4,6 +4,8 @@ import { CreateAdminQuestions } from './create-admin.questions';
 import { UserModule } from '@/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { validate } from '@/config/env.validate';
+import { AssignManagerRoleCommand } from './assign-manager-role.command';
+import { DbModule } from '@/db/db.module';
 
 @Module({
     imports: [
@@ -12,9 +14,10 @@ import { validate } from '@/config/env.validate';
             envFilePath: ".env",
             validate
         }),
-        UserModule
+        UserModule,
+        DbModule
     ],
-    providers: [CreateAdminCommand, CreateAdminQuestions],
+    providers: [CreateAdminCommand, CreateAdminQuestions, AssignManagerRoleCommand],
 })
 
 export class CliModule { }

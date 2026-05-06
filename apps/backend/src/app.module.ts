@@ -7,6 +7,10 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { csrfConfig } from './auth/config/csrf.config';
 import { doubleCsrf } from 'csrf-csrf';
+import { RbacModule } from './rbac/rbac.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RbacGuard } from './rbac/guards/rbac.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -18,9 +22,13 @@ import { doubleCsrf } from 'csrf-csrf';
     DbModule,
     UserModule,
     AuthModule,
+    RbacModule,
   ],
   controllers: [AppController],
-  // providers: [UserService],
+  providers: [
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RbacGuard }
+  ],
 })
 export class AppModule implements NestModule {
   constructor(private readonly configService: ConfigService) { }
