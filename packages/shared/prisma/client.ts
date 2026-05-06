@@ -49,3 +49,23 @@ export type User = Prisma.UserModel
  * 
  */
 export type RefreshToken = Prisma.RefreshTokenModel
+/**
+ * Model Module
+ * 
+ */
+export type Module = Prisma.ModuleModel
+/**
+ * Model Role
+ * 
+ */
+export type Role = Prisma.RoleModel
+/**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
+ * Model UserRole
+ * 
+ */
+export type UserRole = Prisma.UserRoleModel

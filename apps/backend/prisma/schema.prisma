@@ -20,6 +20,8 @@ model User {
   updatedAt        DateTime @updatedAt
 
   refreshTokens RefreshToken[]
+  userRoles     UserRole[]     @relation("UserRoles")
+  assignedRoles UserRole[]     @relation("AssignedRoles")
 
   @@map("users") // Name of the table
 }
@@ -39,4 +41,66 @@ model RefreshToken {
   @@index([userId])
   @@index([expiresAt]) // Creates a normal database index on expiresAt. It is not unique, so many users/tokens can have the same expiresAt value. 
   @@map("refresh_tokens") // Name of the table
+}
+
+enum Action {
+  READ
+  WRITE
+  UPDATE
+  DELETE
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  createdAt   DateTime @default(now())
+
+  permissions RolePermission[]
+
+  @@map("modules")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  permissions RolePermission[]
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+model RolePermission {
+  id       String @id @default(cuid())
+  roleId   String
+  moduleId String
+  action   Action
+
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+
+  @@unique([roleId, moduleId, action])
+  @@index([roleId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  id           String   @id @default(cuid())
+  userId       String
+  roleId       String
+  assignedAt   DateTime @default(now())
+  assignedById String?
+
+  user       User  @relation("UserRoles", fields: [userId], references: [id], onDelete: Cascade)
+  role       Role  @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  assignedBy User? @relation("AssignedRoles", fields: [assignedById], references: [id], onDelete: SetNull)
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@map("user_roles")
 }

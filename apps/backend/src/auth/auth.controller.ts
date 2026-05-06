@@ -3,19 +3,21 @@ import { AuthService } from '@/auth/auth.service';
 import { LoginDto } from '@/auth/dto/login.dto';
 import type { Request, Response } from 'express';
 import { JWTRefreshGuard } from '@/auth/guards/jwt-auth-refresh.guard';
-import type { UserWithoutPassword } from '@careline/shared/types/user.type';
+import { UserEntity, type UserWithoutPassword } from '@careline/shared/types/user.type';
 import { User } from '@/auth/decorators/user.decorator';
-import { JwtAuthGuard } from './guards/jwt-auth.guard copy';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { csrfConfig } from './config/csrf.config';
 import { doubleCsrf } from 'csrf-csrf';
 import { ConfigService } from '@nestjs/config';
+import { Public } from '@/rbac/decorator/public.decorator';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService, private readonly configService: ConfigService) { }
 
+    @Public()
     @Post('login')
-    async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response, @Req() request: Request) {
+    async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response, @Req() request: Request): Promise<UserEntity> {
         const user = await this.authService.validateUser(loginDto);
 
         // We should add the user to the header manually if not using the LocalStrategy
@@ -35,6 +37,7 @@ export class AuthController {
         return user;
     }
 
+    @Public()
     @Post("refresh")
     @UseGuards(JWTRefreshGuard)
     async refresh(@User() user: UserWithoutPassword, @Res({ passthrough: true }) response: Response, @Req() request: Request) {

@@ -1,6 +1,6 @@
 import { verifyPassword } from '@/common/password.utils';
 import { UserService } from '@/user/user.service';
-import { UserWithoutPassword } from '@careline/shared/types/user.type';
+import { UserEntity, UserWithoutPassword } from '@careline/shared/types/user.type';
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +9,7 @@ import moment, { Duration, unitOfTime } from 'moment';
 import { ConfigService } from '@nestjs/config';
 import { DbService } from '@/db/db.service';
 import { createHash } from 'crypto';
+import { RbacService } from '@/rbac/rbac.service';
 
 export interface Tokens {
     accessToken: {
@@ -28,23 +29,29 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
+        private readonly rbacService: RbacService,
         private readonly db: DbService
     ) { }
 
-    async validateUser(userData: LoginDto): Promise<UserWithoutPassword> {
+    async validateUser(userData: LoginDto): Promise<UserEntity> {
         const user = await this.userService.findByEmail(userData.email);
         if (!user) throw new HttpException("Invalid credentials", HttpStatus.BAD_REQUEST);
 
         const isPasswordValid = await verifyPassword(userData.password, user.passwordHash);
         if (!isPasswordValid) throw new HttpException("Invalid credentials", HttpStatus.BAD_REQUEST);
 
-        const userWithoutPassword = {
+        const roles = await this.rbacService.getRoles(user.id);
+        const permissions = await this.rbacService.getPremissionsForUser(user.id);
+
+        const userEntity = {
             ...user,
             passwordHash: undefined,
-            isBootstrapAdmin: undefined
+            isBootstrapAdmin: undefined,
+            roles,
+            permissions: Array.from(permissions)
         };
 
-        return userWithoutPassword;
+        return userEntity;
     }
 
     async login(user: UserWithoutPassword): Promise<Tokens> {
