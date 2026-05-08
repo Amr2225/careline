@@ -85,6 +85,10 @@ export class AuthService {
         return tokens;
     }
 
+    async me(userId: string): Promise<UserEntity> {
+        return await this.userService.findById(userId);
+    }
+
     async logout(userId: string) {
         await this.db.refreshToken.updateMany({
             where: {

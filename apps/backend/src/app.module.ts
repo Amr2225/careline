@@ -11,6 +11,8 @@ import { RbacModule } from './rbac/rbac.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RbacGuard } from './rbac/guards/rbac.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesController } from './roles/roles.controller';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -23,8 +25,9 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     UserModule,
     AuthModule,
     RbacModule,
+    RolesModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, RolesController],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RbacGuard }
