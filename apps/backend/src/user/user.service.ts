@@ -88,7 +88,30 @@ export class UserService {
         return { ...user, roles, permissions: Array.from(permissions) };
     }
 
-    async createUser(requestUserId: string, user: CreateUserServiceInput): Promise<User> {
+    async createAdminUser(user: CreateUserDto): Promise<User> {
+        try {
+            return await this.db.user.create({
+                data: {
+                    email: user.email,
+                    name: user.name,
+                    passwordHash: await hashPassword(user.password),
+                    isBootstrapAdmin: true,
+                    isActive: true,
+                }
+            });
+        } catch (error) {
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === 'P2002'
+            )
+                throw new HttpException("User with the same email already exists", HttpStatus.BAD_REQUEST);
+
+            throw error
+        }
+    }
+
+
+    async createUser(requestUserId: string | null, user: CreateUserServiceInput): Promise<User> {
         try {
             const createdUser = await this.db.user.create({
                 data: {

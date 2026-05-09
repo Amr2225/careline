@@ -16,6 +16,9 @@ export class CreateUserDto {
     @IsBoolean()
     isActive: boolean = true;
 
+    @IsOptional()
+    @IsBoolean()
+    isBootstrapAdmin: boolean = false;
 
     @IsArray()
     @IsOptional()

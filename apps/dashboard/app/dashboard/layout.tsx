@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import AuthBootstrap from "@/providers/AuthBootstrap"
+import { PageBreadcrumbs } from "@/components/page-breadcrumbs"
 import { Separator } from "@careline/ui/components/separator"
 import {
   SidebarInset,
@@ -15,16 +16,18 @@ export default function Dashboardlayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background/85 px-4 backdrop-blur-md">
             <SidebarTrigger className="-ml-1" />
             <Separator
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-full"
             />
-            <h1>Dashboard</h1>
+            <PageBreadcrumbs />
           </header>
 
-          <main className="p-6">{children}</main>
+          <main className="mx-auto w-full max-w-6xl p-6 lg:p-8">
+            {children}
+          </main>
         </SidebarInset>
       </SidebarProvider>
     </AuthBootstrap>

@@ -1,4 +1,5 @@
 import { IsArray, IsBoolean, IsEmail, IsOptional, IsString } from "class-validator";
+import { Transform } from "class-transformer";
 
 export class QueryUserDto {
     @IsOptional()
@@ -16,5 +17,6 @@ export class QueryUserDto {
 
     @IsOptional()
     @IsBoolean()
+    @Transform(({ value }) => value === "true")
     isActive: boolean;
 }

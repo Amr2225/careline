@@ -33,7 +33,7 @@ export class CreateAdminCommand extends CommandRunner {
         }
 
         // Make a new service for this, createCLIUser
-        await this.userService.createUser(newUser)
+        await this.userService.createAdminUser(newUser)
         console.log("Admin user created successfully", options);
     }
 
