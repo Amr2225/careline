@@ -1,5 +1,5 @@
 import { DbService } from '@/db/db.service';
-import { Action } from '@careline/shared/prisma/enums';
+import { Action } from '@careline/shared/types/rbac.type';
 import { Role } from '@careline/shared/types/rbac.type';
 import { Injectable } from '@nestjs/common';
 

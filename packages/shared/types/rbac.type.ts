@@ -3,6 +3,7 @@ export enum Action {
     WRITE = "WRITE",
     UPDATE = "UPDATE",
     DELETE = "DELETE",
+    UPDATE_MEDICAL = "UPDATE_MEDICAL",
 }
 
 export type Role = {

@@ -128,7 +128,25 @@ exports.Prisma.UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   name: 'name',
   isActive: 'isActive',
+  phoneNumber: 'phoneNumber',
   isBootstrapAdmin: 'isBootstrapAdmin',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PatientScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  dateOfBirth: 'dateOfBirth',
+  gender: 'gender',
+  address: 'address',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  bloodType: 'bloodType',
+  allergies: 'allergies',
+  chronicConditions: 'chronicConditions',
+  currentMedications: 'currentMedications',
+  medicalNotes: 'medicalNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -189,15 +207,34 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Gender = exports.$Enums.Gender = {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE'
+};
+
+exports.BloodType = exports.$Enums.BloodType = {
+  A_POS: 'A_POS',
+  A_NEG: 'A_NEG',
+  B_POS: 'B_POS',
+  B_NEG: 'B_NEG',
+  AB_POS: 'AB_POS',
+  AB_NEG: 'AB_NEG',
+  O_POS: 'O_POS',
+  O_NEG: 'O_NEG',
+  UNKNOWN: 'UNKNOWN'
+};
+
 exports.Action = exports.$Enums.Action = {
   READ: 'READ',
   WRITE: 'WRITE',
   UPDATE: 'UPDATE',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
+  UPDATE_MEDICAL: 'UPDATE_MEDICAL'
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Patient: 'Patient',
   RefreshToken: 'RefreshToken',
   Module: 'Module',
   Role: 'Role',

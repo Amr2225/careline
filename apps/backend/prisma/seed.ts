@@ -89,7 +89,7 @@ const roles = [
             },
             {
                 module: "Patients",
-                action: ["READ", "UPDATE"],
+                action: ["READ", "UPDATE", "UPDATE_MEDICAL"],
             }
         ]
     },
