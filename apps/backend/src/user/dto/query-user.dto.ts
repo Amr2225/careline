@@ -13,6 +13,7 @@ export class QueryUserDto {
     @IsOptional()
     @IsArray()
     @IsString({ each: true, message: "Roles must be an array of strings" })
+    @Transform(({ value }) => value.split(","))
     roles: string[];
 
     @IsOptional()

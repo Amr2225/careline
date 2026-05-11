@@ -2,14 +2,20 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Lock, Plus, ShieldCheck, Trash2, Users as UsersIcon } from "lucide-react"
+import {
+  Lock,
+  Plus,
+  ShieldCheck,
+  Trash2,
+  Users as UsersIcon,
+} from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@careline/ui/components/button"
 import { Badge } from "@careline/ui/components/badge"
 import Spinner from "@/components/spinner"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { useDeleteRole, useRoles } from "@/lib/queries/roles"
-import type { RoleListItem } from "@/lib/api/roles"
+import type { RoleItem } from "@/lib/api/roles"
 import { extractErrorMessage } from "@/lib/errors"
 import { cn } from "@careline/ui/lib/utils"
 
@@ -20,7 +26,7 @@ export default function RolesListPage() {
   const rolesQuery = useRoles()
   const deleteRole = useDeleteRole()
 
-  const handleDelete = async (role: RoleListItem) => {
+  const handleDelete = async (role: RoleItem) => {
     try {
       await deleteRole.mutateAsync(role.id)
       toast.success("Role deleted", { description: `${role.name} is gone.` })
@@ -37,9 +43,9 @@ export default function RolesListPage() {
     <div className="space-y-8">
       <header className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-1.5">
-          <p className="text-label-md text-muted-foreground">
+          {/* <p className="text-label-md text-muted-foreground">
             Phase 3 · Roles & permissions
-          </p>
+          </p> */}
           <h1 className="text-3xl font-bold tracking-tight">Role library</h1>
           <p className="max-w-xl text-sm text-muted-foreground">
             Roles bundle permissions across the eight clinic modules. Manager
@@ -85,6 +91,7 @@ export default function RolesListPage() {
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {roles?.map((role) => {
             const isProtected = role.isSystem && PROTECTED.has(role.name)
+
             return (
               <article
                 key={role.id}
@@ -92,7 +99,7 @@ export default function RolesListPage() {
                   "shadow-ambient group relative flex flex-col overflow-hidden rounded-2xl border bg-card p-5 transition-all",
                   "hover:-translate-y-px hover:border-primary/30 hover:shadow-lg",
                   isProtected
-                    ? "border-primary/25 bg-gradient-to-br from-primary/[0.04] to-transparent"
+                    ? "bg-linear-gradient(to bottom, #f0f0f0, #e0e0e0) border-primary/25"
                     : "border-border/70"
                 )}
               >
@@ -123,15 +130,15 @@ export default function RolesListPage() {
                     className="gap-1.5 rounded-full border-border/70 bg-muted/40 text-muted-foreground"
                   >
                     <UsersIcon className="size-3" />
-                    {role.userCount}{" "}
-                    {role.userCount === 1 ? "user" : "users"}
+                    {role._count.users}{" "}
+                    {role._count.users === 1 ? "user" : "users"}
                   </Badge>
                   {role.isSystem ? (
-                    <span className="text-[10px] font-semibold tracking-[0.1em] text-muted-foreground uppercase">
+                    <span className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
                       System
                     </span>
                   ) : (
-                    <span className="text-[10px] font-semibold tracking-[0.1em] text-primary uppercase">
+                    <span className="text-[10px] font-semibold tracking-widest text-primary uppercase">
                       Custom
                     </span>
                   )}
@@ -139,7 +146,7 @@ export default function RolesListPage() {
 
                 <div className="mt-5 flex items-center gap-2 border-t border-border/60 pt-4">
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     className="flex-1"
                     onClick={() => router.push(`/dashboard/roles/${role.id}`)}
@@ -153,17 +160,24 @@ export default function RolesListPage() {
                           variant="ghost"
                           size="icon"
                           aria-label={`Delete ${role.name}`}
+                          // disabled={role._count.users > 0}
+                          // className={cn(
+                          //   role._count.users > 0 &&
+                          //     "cursor-not-allowed opacity-50"
+                          // )}
                         >
                           <Trash2 className="size-4 text-destructive" />
                         </Button>
                       }
                       title={`Delete the ${role.name} role?`}
                       description={
-                        role.userCount > 0 ? (
+                        role._count.users > 0 ? (
                           <span>
                             <span className="font-medium text-foreground">
-                              {role.userCount}{" "}
-                              {role.userCount === 1 ? "user holds" : "users hold"}
+                              {role._count.users}{" "}
+                              {role._count.users === 1
+                                ? "user holds"
+                                : "users hold"}
                             </span>{" "}
                             this role. Reassign them first, then come back to
                             delete it.
@@ -181,10 +195,10 @@ export default function RolesListPage() {
                       }
                       actionLabel="Delete role"
                       onConfirm={() => handleDelete(role)}
-                      disabled={role.userCount > 0}
+                      disabled={role._count.users > 0}
                       disabledReason={
-                        role.userCount > 0
-                          ? `Reassign the ${role.userCount} ${role.userCount === 1 ? "user" : "users"} who currently hold this role before deleting it.`
+                        role._count.users > 0
+                          ? `Reassign the ${role._count.users} ${role._count.users === 1 ? "user" : "users"} who currently hold this role before deleting it.`
                           : undefined
                       }
                     />

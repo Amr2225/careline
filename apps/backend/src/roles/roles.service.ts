@@ -5,6 +5,7 @@ import { Prisma } from '@careline/shared/prisma/client';
 import { CreateRoleDto } from './dto/create-roles.dto';
 import { Action } from '@careline/shared/types/rbac.type';
 import { UpdateRoleDto } from './dto/update-roles.dto';
+import { MODULE_NAMES } from '@careline/shared/types/modules.type';
 
 @Injectable()
 export class RolesService {
@@ -32,61 +33,81 @@ export class RolesService {
         }) : await this.db.role.findMany({ select, orderBy: { createdAt: "asc" } });
     }
 
-    async create(createRoleDto: CreateRoleDto) {
-        return await this.db.role.create({
-            select: {
-                name: true,
-                description: true,
-                _count: {
-                    select: {
-                        permissions: true
-                    }
-                }
-            },
-            data: {
-                name: createRoleDto.name,
-                description: createRoleDto.description,
-                permissions: {
-                    create: createRoleDto.permissions.map((permission) => {
-                        const [module, action] = permission.split(":");
-                        return {
-                            module: { connect: { name: module } },
-                            action: action as Action,
+    async create(role: CreateRoleDto) {
+        try {
+            return await this.db.role.create({
+                select: {
+                    name: true,
+                    description: true,
+                    _count: {
+                        select: {
+                            permissions: true
                         }
-                    }),
+                    }
                 },
+                data: {
+                    name: role.name,
+                    description: role.description,
+                    permissions: {
+                        create: role.permissions.map((permission) => {
+                            const [module, action] = permission.split(":");
+
+                            if (!MODULE_NAMES.includes(module as (typeof MODULE_NAMES)[number])) {
+                                throw new BadRequestException(`Invalid module: ${module}`);
+                            }
+
+                            if (!this.isValidAction(action)) throw new BadRequestException("Invalid action");
+
+                            return {
+                                module: { connect: { name: module } },
+                                action: action as Action,
+                            }
+                        }),
+                    },
+                }
+            });
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+                throw new BadRequestException("Role with the same name already exists");
             }
-        });
+
+            throw error;
+        }
+    }
+
+    private isValidAction(value: string): boolean {
+        return value !== undefined && Object.values(Action).includes(value as Action);
     }
 
     async update(roleId: string, updateRoleDto: UpdateRoleDto) {
-        if (!await this.rbacService.canEditRolePermission(roleId)) throw new ForbiddenException("You are not allowed to edit this role");
+        if (!await this.rbacService.canEditRolePermission(roleId)) throw new ForbiddenException("This role is not editable");
 
         const permissions = updateRoleDto.permissions ? [...new Set(updateRoleDto.permissions)] : undefined;
 
         await this.db.role.update({
             where: { id: roleId },
             data: {
-                name: updateRoleDto.name,
-                description: updateRoleDto.description,
+                name: updateRoleDto.name ?? Prisma.skip,
+                description: updateRoleDto.description ?? Prisma.skip,
                 permissions: permissions ? {
                     deleteMany: {},
-                    create: permissions?.map((permission) => {
+                    create: permissions.map((permission) => {
                         const [module, action] = permission.split(":");
+                        if (!this.isValidAction(action)) throw new BadRequestException("Invalid action");
 
                         return {
                             module: { connect: { name: module } },
                             action: action as Action,
                         }
                     }),
-                } : undefined,
+                } : Prisma.skip,
             }
         })
 
     }
 
     async delete(roleId: string) {
-        if (!await this.rbacService.canDeleteRole(roleId)) throw new ForbiddenException("You are not allowed to delete this role");
+        if (!await this.rbacService.canDeleteRole(roleId)) throw new ForbiddenException("This role is not deletable or has users assigned to it");
 
         try {
             await this.db.role.delete({ where: { id: roleId } });

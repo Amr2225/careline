@@ -55,6 +55,11 @@ export const Sql = runtime.Sql
 export type Sql = runtime.Sql
 
 
+/**
+ * Prisma.skip
+ */
+export const skip = runtime.skip
+
 
 /**
  * Decimal.js

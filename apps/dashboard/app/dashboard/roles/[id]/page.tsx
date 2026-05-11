@@ -57,7 +57,7 @@ export default function EditRolePage({
 
   const role = roleQuery.data
   const isProtected = role.isSystem && PROTECTED.has(role.name)
-  const canDelete = !isProtected && role.userCount === 0
+  const canDelete = !isProtected && role._count.users === 0
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
@@ -87,7 +87,7 @@ export default function EditRolePage({
                 className="gap-1.5 rounded-full border-border/70 bg-muted/40 text-muted-foreground"
               >
                 <UsersIcon className="size-3" />
-                {role.userCount} {role.userCount === 1 ? "user" : "users"}{" "}
+                {role._count.users} {role._count.users === 1 ? "user" : "users"}{" "}
                 assigned
               </Badge>
               <span className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
@@ -105,11 +105,11 @@ export default function EditRolePage({
               }
               title={`Delete the ${role.name} role?`}
               description={
-                role.userCount > 0 ? (
+                role._count.users > 0 ? (
                   <span>
                     <span className="font-medium text-foreground">
-                      {role.userCount}{" "}
-                      {role.userCount === 1 ? "user holds" : "users hold"}
+                      {role._count.users}{" "}
+                      {role._count.users === 1 ? "user holds" : "users hold"}
                     </span>{" "}
                     this role. Reassign them first.
                   </span>
@@ -127,8 +127,8 @@ export default function EditRolePage({
               onConfirm={handleDelete}
               disabled={!canDelete}
               disabledReason={
-                role.userCount > 0
-                  ? `Reassign the ${role.userCount} ${role.userCount === 1 ? "user" : "users"} who currently hold this role first.`
+                role._count.users > 0
+                  ? `Reassign the ${role._count.users} ${role._count.users === 1 ? "user" : "users"} who currently hold this role first.`
                   : undefined
               }
             />

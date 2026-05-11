@@ -84,6 +84,7 @@ export function PermissionMatrix({
   const rowState = (m: ModuleName): CellState => {
     const checks = ACTIONS.map((a) => value[m][a])
     const trueCount = checks.filter(Boolean).length
+
     if (trueCount === 0) return "unchecked"
     if (trueCount === ACTIONS.length) return "checked"
     return "indeterminate"
@@ -92,6 +93,7 @@ export function PermissionMatrix({
   const colState = (a: Action): CellState => {
     const checks = MODULE_NAMES.map((m) => value[m][a])
     const trueCount = checks.filter(Boolean).length
+
     if (trueCount === 0) return "unchecked"
     if (trueCount === MODULE_NAMES.length) return "checked"
     return "indeterminate"
@@ -110,6 +112,7 @@ export function PermissionMatrix({
 
   const toggleRow = (m: ModuleName) => {
     if (readOnly) return
+
     const next = rowState(m) !== "checked"
     const updated: MatrixValue = { ...value, [m]: { ...value[m] } }
     for (const a of ACTIONS) updated[m][a] = next

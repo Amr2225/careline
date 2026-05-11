@@ -54,8 +54,8 @@ export function ConfirmDialog({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent className="rounded-2xl border-border/60 bg-card p-0 shadow-ambient">
-        <AlertDialogHeader className="space-y-3 px-6 pt-6">
+      <AlertDialogContent className="shadow-ambient rounded-2xl border-border/60 bg-card">
+        <AlertDialogHeader className="space-y-3">
           <div className="flex items-center gap-3">
             <span
               className={

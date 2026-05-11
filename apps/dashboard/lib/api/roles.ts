@@ -1,11 +1,20 @@
 import { api } from "@/lib/api"
 import { Action } from "@careline/shared/types/rbac.type"
 
+export type UserRoles = {
+  id: string;
+  assignedAt: Date;
+  assignedById: string | null;
+  role: Role;
+}
+
 export type Role = {
   id: string
   name: string
   description: string
   isSystem: boolean
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type Permission = {
@@ -13,48 +22,44 @@ export type Permission = {
   action: Action
 }
 
-export type RoleListItem = Role & {
-  userCount: number
-}
-
-export type RoleDetail = Role & {
+export type RoleItem = Role & {
+  _count: { users: number }
   permissions: Permission[]
-  userCount: number
 }
 
 export type CreateRolePayload = {
   name: string
   description: string
-  permissions: { moduleName: string; action: Action }[]
+  permissions: string[]
 }
 
 export type UpdateRolePayload = {
   name?: string
   description?: string
-  permissions?: { moduleName: string; action: Action }[]
+  permissions?: string[]
 }
 
 export const rolesApi = {
-  list: async (): Promise<RoleListItem[]> => {
-    const { data } = await api.get<RoleListItem[]>("/roles")
+  list: async (): Promise<RoleItem[]> => {
+    const { data } = await api.get<RoleItem[]>("/roles")
     return data
   },
 
-  get: async (id: string): Promise<RoleDetail> => {
-    const { data } = await api.get<RoleDetail>(`/roles/${id}`)
+  get: async (id: string): Promise<RoleItem> => {
+    const { data } = await api.get<RoleItem>(`/roles/${id}`)
     return data
   },
 
-  create: async (payload: CreateRolePayload): Promise<RoleDetail> => {
-    const { data } = await api.post<RoleDetail>("/roles", payload)
+  create: async (payload: CreateRolePayload): Promise<RoleItem> => {
+    const { data } = await api.post<RoleItem>("/roles", payload)
     return data
   },
 
   update: async (
     id: string,
     payload: UpdateRolePayload
-  ): Promise<RoleDetail> => {
-    const { data } = await api.patch<RoleDetail>(`/roles/${id}`, payload)
+  ): Promise<RoleItem> => {
+    const { data } = await api.patch<RoleItem>(`/roles/${id}`, payload)
     return data
   },
 

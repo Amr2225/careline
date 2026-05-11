@@ -40,6 +40,8 @@ export class AuthService {
         const isPasswordValid = await verifyPassword(userData.password, user.passwordHash);
         if (!isPasswordValid) throw new HttpException("Invalid credentials", HttpStatus.BAD_REQUEST);
 
+        if (!user.isActive) throw new HttpException("User is deactivated", HttpStatus.UNAUTHORIZED);
+
         const roles = await this.rbacService.getRoles(user.id);
         const permissions = await this.rbacService.getPremissionsForUser(user.id);
 
@@ -104,6 +106,7 @@ export class AuthService {
         const refreshTokenEntity = await this.db.refreshToken.findFirst({
             where: {
                 tokenHash: createHash('sha256').update(refreshToken).digest('hex'),
+                revokedAt: null,
                 expiresAt: {
                     gt: new Date()
                 }

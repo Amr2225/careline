@@ -1,5 +1,5 @@
 import { api } from "@/lib/api"
-import type { Role } from "./roles"
+import type { Role, UserRoles } from "./roles"
 
 export type UserListItem = {
   id: string
@@ -7,16 +7,18 @@ export type UserListItem = {
   name: string
   isActive: boolean
   createdAt: string
-  roles: Role[]
+  userRoles: UserRoles[]
 }
 
-export type UserDetail = UserListItem & {
+export type UserDetail = Omit<UserListItem, 'userRoles'> & {
+  roles: Role[]
+  permissions: string[]
   updatedAt: string
 }
 
 export type ListUsersQuery = {
   name?: string
-  roleId?: string
+  roles?: string, // Comma separated list of role names
   isActive?: boolean
 }
 
@@ -24,7 +26,7 @@ export type CreateUserPayload = {
   name: string
   email: string
   password: string
-  roleIds: string[]
+  roles: string[]
 }
 
 export type UpdateUserPayload = {
@@ -32,6 +34,7 @@ export type UpdateUserPayload = {
   email?: string
   password?: string
   isActive?: boolean
+  roles?: string[]
 }
 
 export const usersApi = {
@@ -59,7 +62,7 @@ export const usersApi = {
   },
 
   updateRoles: async (id: string, roleIds: string[]): Promise<UserDetail> => {
-    const { data } = await api.patch<UserDetail>(`/users/${id}/roles`, {
+    const { data } = await api.patch<UserDetail>(`/users/${id}/role`, {
       roleIds,
     })
     return data

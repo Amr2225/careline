@@ -2,12 +2,20 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { AtSign, KeyRound, ShieldCheck, User2, Eye, EyeOff } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { AtSign, Eye, EyeOff, KeyRound, ShieldCheck, User2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@careline/ui/components/button"
 import { Input } from "@careline/ui/components/input"
-import { Label } from "@careline/ui/components/label"
 import { Switch } from "@careline/ui/components/switch"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@careline/ui/components/field"
 import { RoleMultiSelect } from "@/components/role-multi-select"
 import Spinner from "@/components/spinner"
 import type { Role } from "@/lib/api/roles"
@@ -18,6 +26,11 @@ import {
   useUpdateUserRoles,
 } from "@/lib/queries/users"
 import { extractErrorMessage } from "@/lib/errors"
+import {
+  createUserSchema,
+  editUserSchema,
+  type UserFormValues,
+} from "@/lib/schemas"
 
 type Mode = "create" | "edit"
 
@@ -27,99 +40,82 @@ type UserFormProps = {
   initial?: UserDetail
 }
 
-type FieldErrors = Partial<{
-  name: string
-  email: string
-  password: string
-  roleIds: string
-}>
-
-function validate(payload: {
-  name: string
-  email: string
-  password: string
-  roleIds: string[]
-  mode: Mode
-}): FieldErrors {
-  const errors: FieldErrors = {}
-  if (!payload.name.trim()) errors.name = "Name is required."
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email))
-    errors.email = "Enter a valid email."
-  if (payload.mode === "create" || payload.password.length > 0) {
-    if (payload.password.length < 8)
-      errors.password = "Password must be at least 8 characters."
-    else if (!/\d/.test(payload.password))
-      errors.password = "Include at least one digit."
-  }
-  if (payload.mode === "create" && payload.roleIds.length === 0)
-    errors.roleIds = "Assign at least one role."
-  return errors
-}
-
 export function UserForm({ mode, roles, initial }: UserFormProps) {
   const router = useRouter()
-  const [name, setName] = useState(initial?.name ?? "")
-  const [email, setEmail] = useState(initial?.email ?? "")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isActive, setIsActive] = useState(initial?.isActive ?? true)
-  const [roleIds, setRoleIds] = useState<string[]>(
-    initial?.roles.map((r) => r.id) ?? []
-  )
-  const [errors, setErrors] = useState<FieldErrors>({})
-
   const createUser = useCreateUser()
   const updateUser = useUpdateUser(initial?.id ?? "")
   const updateRoles = useUpdateUserRoles(initial?.id ?? "")
 
+  const [showPassword, setShowPassword] = useState(false)
+
+  console.log(initial)
+
+  const form = useForm<UserFormValues>({
+    resolver: zodResolver(
+      mode === "create" ? createUserSchema : editUserSchema
+    ),
+    defaultValues: {
+      name: initial?.name ?? "",
+      email: initial?.email ?? "",
+      password: "",
+      roles: initial?.roles.map((role) => role.name) ?? [],
+      isActive: initial?.isActive ?? true,
+    },
+    mode: "onTouched",
+  })
+
   const isSubmitting =
     createUser.isPending || updateUser.isPending || updateRoles.isPending
 
+  const watchedEmail = form.watch("email")
   const emailChanged =
     mode === "edit" &&
-    initial?.email !== undefined &&
-    email.toLowerCase() !== initial.email.toLowerCase()
+    initial !== undefined &&
+    watchedEmail.toLowerCase() !== initial.email.toLowerCase()
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const v = validate({ name, email, password, roleIds, mode })
-    setErrors(v)
-    if (Object.keys(v).length > 0) return
-
+  const onSubmit = form.handleSubmit(async (values) => {
     try {
       if (mode === "create") {
-        await createUser.mutateAsync({ name, email, password, roleIds })
+        await createUser.mutateAsync({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          roles: values.roles,
+        })
         toast.success("User created", {
-          description: `${name} can now sign in.`,
+          description: `${values.name} can now sign in.`,
         })
         router.push("/dashboard/users")
-      } else if (initial) {
-        const patch: UpdateUserPayload = {}
-        if (name !== initial.name) patch.name = name
-        if (email !== initial.email) patch.email = email
-        if (password.length > 0) patch.password = password
-        if (isActive !== initial.isActive) patch.isActive = isActive
-
-        const initialRoleIds = initial.roles.map((r) => r.id).sort()
-        const nextRoleIds = [...roleIds].sort()
-        const rolesChanged = initialRoleIds.join(",") !== nextRoleIds.join(",")
-
-        if (Object.keys(patch).length > 0) {
-          await updateUser.mutateAsync(patch)
-        }
-        if (rolesChanged) {
-          await updateRoles.mutateAsync(roleIds)
-        }
-        toast.success("User updated", {
-          description: emailChanged
-            ? "Sessions revoked due to email change."
-            : "Changes saved.",
-        })
+        return
       }
+
+      if (!initial) return
+      const patch: UpdateUserPayload = {}
+      if (values.name !== initial.name) patch.name = values.name
+      if (values.email !== initial.email) patch.email = values.email
+      if (values.password.length > 0) patch.password = values.password
+      if (values.isActive !== initial.isActive) patch.isActive = values.isActive
+      if (values.roles && roles.length > 0) patch.roles = values.roles
+
+      // const initialRoles = initial.roles.map((role) => role.name).sort()
+      // const nextRoles = [...values.roles].sort()
+      // const rolesChanged = initialRoles.join(",") !== nextRoles.join(",")
+
+      if (Object.keys(patch).length > 0) await updateUser.mutateAsync(patch)
+      // if (rolesChanged) await updateRoles.mutateAsync(values.roles)
+
+      toast.success("User updated", {
+        description: emailChanged
+          ? "Sessions revoked due to email change."
+          : "Changes saved.",
+      })
+      form.reset({ ...values, password: "" })
     } catch (err) {
       toast.error("Save failed", { description: extractErrorMessage(err) })
     }
-  }
+  })
+
+  const errors = form.formState.errors
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
@@ -131,80 +127,98 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
               How this person signs in.
             </p>
           </div>
-          <span className="text-label-md text-primary">01</span>
         </header>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field
-            id="name"
-            label="Full name"
-            icon={<User2 className="size-4" />}
-            error={errors.name}
-          >
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Sarah Smith"
-              autoComplete="name"
-            />
-          </Field>
-          <Field
-            id="email"
-            label="Email"
-            icon={<AtSign className="size-4" />}
-            error={errors.email}
-            hint={
-              emailChanged
-                ? "Changing email will log this user out everywhere."
-                : undefined
-            }
-          >
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="sarah@clinic.com"
-              autoComplete="email"
-            />
-          </Field>
-          <Field
-            id="password"
-            label={mode === "create" ? "Password" : "New password"}
-            icon={<KeyRound className="size-4" />}
-            error={errors.password}
-            hint={
-              mode === "edit"
-                ? "Leave blank to keep current password."
-                : "Min 8 characters with at least one digit."
-            }
-            className="sm:col-span-2"
-          >
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={mode === "create" ? "••••••••" : "Unchanged"}
-                autoComplete="new-password"
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((s) => !s)}
-                className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+        <FieldGroup>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field data-invalid={Boolean(errors.name)}>
+              <FieldLabel
+                htmlFor="user-name"
+                className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
               >
-                {showPassword ? (
-                  <EyeOff className="size-4" />
-                ) : (
-                  <Eye className="size-4" />
-                )}
-              </button>
-            </div>
-          </Field>
-        </div>
+                <User2 className="size-4" />
+                Full name
+              </FieldLabel>
+              <Input
+                id="user-name"
+                placeholder="Sarah Smith"
+                autoComplete="name"
+                aria-invalid={Boolean(errors.name)}
+                {...form.register("name")}
+              />
+              <FieldError errors={[errors.name]} />
+            </Field>
+
+            <Field data-invalid={Boolean(errors.email)}>
+              <FieldLabel
+                htmlFor="user-email"
+                className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
+              >
+                <AtSign className="size-4" />
+                Email
+              </FieldLabel>
+              <Input
+                id="user-email"
+                type="email"
+                placeholder="sarah@clinic.com"
+                autoComplete="email"
+                aria-invalid={Boolean(errors.email)}
+                {...form.register("email")}
+              />
+              {errors.email ? (
+                <FieldError errors={[errors.email]} />
+              ) : emailChanged ? (
+                <FieldDescription>
+                  Changing email will log this user out everywhere.
+                </FieldDescription>
+              ) : null}
+            </Field>
+
+            <Field
+              className="sm:col-span-2"
+              data-invalid={Boolean(errors.password)}
+            >
+              <FieldLabel
+                htmlFor="user-password"
+                className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
+              >
+                <KeyRound className="size-4" />
+                {mode === "create" ? "Password" : "New password"}
+              </FieldLabel>
+              <div className="relative">
+                <Input
+                  id="user-password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder={mode === "create" ? "••••••••" : "Unchanged"}
+                  autoComplete="new-password"
+                  className="pr-10"
+                  aria-invalid={Boolean(errors.password)}
+                  {...form.register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((s) => !s)}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
+              {errors.password ? (
+                <FieldError errors={[errors.password]} />
+              ) : (
+                <FieldDescription>
+                  {mode === "edit"
+                    ? "Leave blank to keep current password."
+                    : "Min 8 characters with at least one digit."}
+                </FieldDescription>
+              )}
+            </Field>
+          </div>
+        </FieldGroup>
       </section>
 
       <section className="shadow-ambient rounded-2xl border border-border/70 bg-card p-6">
@@ -215,36 +229,57 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
               Roles determine what this person can do across the clinic.
             </p>
           </div>
-          <span className="text-label-md text-primary">02</span>
         </header>
-        <Field
-          id="roles"
-          label="Assigned roles"
-          icon={<ShieldCheck className="size-4" />}
-          error={errors.roleIds}
-        >
-          <RoleMultiSelect
-            roles={roles}
-            value={roleIds}
-            onChange={setRoleIds}
-            placeholder="Pick one or more staff roles"
-          />
-        </Field>
-        {mode === "edit" ? (
-          <div className="mt-6 flex items-center justify-between rounded-xl border border-border/60 bg-muted/30 px-4 py-3">
-            <div>
-              <p className="text-sm font-medium">Account active</p>
-              <p className="text-xs text-muted-foreground">
-                Inactive accounts are signed out everywhere and cannot log in.
-              </p>
-            </div>
-            <Switch
-              checked={isActive}
-              onCheckedChange={setIsActive}
-              aria-label="Account active"
+        <FieldGroup>
+          <Field data-invalid={Boolean(errors.roles)}>
+            <FieldLabel
+              htmlFor="user-roles"
+              className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
+            >
+              <ShieldCheck className="size-4" />
+              Assigned roles
+            </FieldLabel>
+            <Controller
+              control={form.control}
+              name="roles"
+              render={({ field }) => (
+                <RoleMultiSelect
+                  roles={roles}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Pick one or more staff roles"
+                />
+              )}
             />
-          </div>
-        ) : null}
+            <FieldError errors={[errors.roles]} />
+          </Field>
+
+          {mode === "edit" ? (
+            <Controller
+              control={form.control}
+              name="isActive"
+              render={({ field }) => (
+                <Field
+                  orientation="horizontal"
+                  className="rounded-xl border border-border/60 bg-muted/30 px-4 py-3"
+                >
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Account active</p>
+                    <FieldDescription>
+                      Inactive accounts are signed out everywhere and cannot log
+                      in.
+                    </FieldDescription>
+                  </div>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    aria-label="Account active"
+                  />
+                </Field>
+              )}
+            />
+          ) : null}
+        </FieldGroup>
       </section>
 
       <div className="shadow-ambient sticky bottom-4 flex justify-end gap-3 rounded-2xl border border-border/70 bg-card/95 p-4 backdrop-blur-sm">
@@ -268,41 +303,5 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
         </Button>
       </div>
     </form>
-  )
-}
-
-function Field({
-  id,
-  label,
-  icon,
-  error,
-  hint,
-  children,
-  className,
-}: {
-  id: string
-  label: string
-  icon?: React.ReactNode
-  error?: string
-  hint?: string
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <div className={"flex flex-col gap-1.5 " + (className ?? "")}>
-      <Label
-        htmlFor={id}
-        className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
-      >
-        {icon}
-        {label}
-      </Label>
-      {children}
-      {error ? (
-        <p className="text-xs text-destructive">{error}</p>
-      ) : hint ? (
-        <p className="text-xs text-muted-foreground">{hint}</p>
-      ) : null}
-    </div>
   )
 }

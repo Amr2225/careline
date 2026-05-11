@@ -132,12 +132,32 @@ export class RbacService {
     }
 
     async canDeactivateUser(userId: string): Promise<boolean> {
-        // TODO: Assess if it needs to loop over the manager permission that may be better 
-        // false if it is a user with the Manager role
-        const roles = await this.getRoles(userId);
-        const hasManagerRole = roles.some(role => role.name === 'Manager');
+        // false "if [deactivation] would leave zero active users with full Users + Roles permissions.
 
-        return !hasManagerRole
+        const usersWithMangerRole = await this.dbService.user.count({
+            where: {
+                id: { not: userId },
+                isActive: true,
+                AND: this.MANAGER_EQUIVALENT_PERMISSIONS.map(({ module, action }) => ({
+                    userRoles: {
+                        some: {
+                            role: {
+                                permissions: {
+                                    some: {
+                                        module: { name: module },
+                                        action: action
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }))
+
+            }
+        })
+
+        return usersWithMangerRole > 0;
     }
 
     // TODO: Assess the need of this method

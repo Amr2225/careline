@@ -16,6 +16,10 @@ export type CreateUserServiceInput = Omit<CreateUserDto, 'roles'> & {
     roles?: Role[];
 };
 
+export type UpdateUserServiceInput = Omit<UpdateUserDto, 'roles'> & {
+    roles?: Role[];
+}
+
 type UsersFilter = {
     name?: string;
     email?: string;
@@ -34,11 +38,19 @@ export class UserService {
             }
         }
 
-        if (queryUserDto.name || queryUserDto.email) {
+        if (queryUserDto.name) {
             where.OR = [
                 { name: { contains: queryUserDto.name, mode: "insensitive" } },
-                { email: { contains: queryUserDto.email, mode: "insensitive" } }
             ]
+        }
+        // ETIMEDOUT
+
+        if (queryUserDto.email) {
+            where.OR !== undefined
+                ? (where.OR as Prisma.UserWhereInput[]).push({ email: { contains: queryUserDto.email, mode: "insensitive" } })
+                : where.OR = [
+                    { email: { contains: queryUserDto.email, mode: "insensitive" } }
+                ];
         }
 
         if (queryUserDto?.roles?.length) {
@@ -62,19 +74,20 @@ export class UserService {
             omit: { passwordHash: true, isBootstrapAdmin: true },
             include: {
                 userRoles: {
+                    omit: {
+                        roleId: true,
+                        userId: true,
+                    },
                     include: {
-                        role: true,
-                    }
+                        role: true
+                    },
                 }
             }
         });
     }
 
     async findByEmail(email: string): Promise<User | null> {
-        const user = await this.db.user.findUnique({ where: { email } });
-        if (user?.isActive) return user;
-
-        throw new HttpException("User is deactivated", HttpStatus.UNAUTHORIZED);
+        return await this.db.user.findUnique({ where: { email } });
     }
 
     async findById(id: string): Promise<UserEntity> {
@@ -144,14 +157,36 @@ export class UserService {
         }
     }
 
-    async updateUser(id: string, user: UpdateUserDto): Promise<User> {
+    async updateUser(id: string, user: UpdateUserServiceInput, requestUserId: string): Promise<User> {
+        if (user.roles && user.roles.length > 0) {
+            const currentUserRoles = await this.rbacService.getRoles(id);
+
+            const newRolesIdSet = new Set(user.roles.map((role) => role.id));
+            const currentRolesIdSet = new Set(currentUserRoles.map((role) => role.id));
+            const rolesToRemove = currentRolesIdSet.difference(newRolesIdSet);
+
+            // TODO: Assess this logic (Because this will falsely deny a valid change of a legitimate manger role to another manager role) because the updated set is not considered yet
+            if (rolesToRemove.size > 0) {
+                for (let roleId of rolesToRemove) {
+                    if (!await this.rbacService.canRemoveRoleFromUser(id, roleId)) throw new BadRequestException("You cannot remove this role from this user");
+                }
+            }
+        }
+
         if (!user.email) {
             try {
                 const updatedUser = await this.db.user.update({
                     where: { id },
                     data: {
-                        ...user,
-                        passwordHash: await hashPassword(user.password!),
+                        name: user.name ?? Prisma.skip,
+                        passwordHash: user.password ? await hashPassword(user.password) : Prisma.skip,
+                        userRoles: user.roles && user.roles.length > 0 ? {
+                            deleteMany: {},
+                            create: user.roles.map((role) => ({
+                                roleId: role.id,
+                                assignedById: requestUserId,
+                            })),
+                        } : Prisma.skip,
                     }
                 })
 
@@ -168,7 +203,22 @@ export class UserService {
 
         try {
             const [updatedUser] = await this.db.$transaction([
-                this.db.user.update({ where: { id }, data: { ...user, passwordHash: await hashPassword(user.password!) } }),
+                this.db.user.update({
+                    where: { id },
+                    data: {
+                        name: user.name,
+                        email: user.email,
+                        passwordHash: user.password ? await hashPassword(user.password) : Prisma.skip,
+                        userRoles: user.roles && user.roles.length > 0 ? {
+                            deleteMany: {},
+                            create: user.roles.map((role) => ({
+                                roleId: role.id,
+                                assignedById: requestUserId,
+                            })),
+                        } : Prisma.skip,
+                    }
+                }),
+
                 this.db.refreshToken.updateMany({ where: { userId: id, revokedAt: null }, data: { revokedAt: new Date() } })
             ])
 
@@ -183,7 +233,7 @@ export class UserService {
     }
 
     async updateUserRole(id: string, currentRoleId: string, newRoleId: string) {
-        if (!await this.rbacService.canRemoveRoleFromUser(id, currentRoleId)) throw new BadRequestException("You cannot remove this role from the user");
+        if (!await this.rbacService.canRemoveRoleFromUser(id, currentRoleId)) throw new BadRequestException("You cannot update this role from the user because he/she is the last user with full Users + Roles permissions");
 
         try {
             await this.db.$transaction([
@@ -210,7 +260,7 @@ export class UserService {
     }
 
     async softDelete(id: string) {
-        if (!this.rbacService.canDeactivateUser(id)) throw new BadRequestException("You cannot deactivate this user");
+        if (!await this.rbacService.canDeactivateUser(id)) throw new BadRequestException("You cannot deactivate this user because he/she is the last user with full Users + Roles permissions");
 
         try {
             await this.db.$transaction([
@@ -229,5 +279,17 @@ export class UserService {
             throw error;
         }
 
+    }
+
+    async reactivate(id: string) {
+        try {
+            await this.db.user.update({ where: { id }, data: { isActive: true } });
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+                throw new BadRequestException("User not found");
+            }
+
+            throw error;
+        }
     }
 }

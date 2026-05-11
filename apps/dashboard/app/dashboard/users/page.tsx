@@ -42,14 +42,16 @@ const ALL_ROLES = "__all__"
 export default function UsersListPage() {
   const router = useRouter()
   const [search, setSearch] = useState("")
-  const [roleId, setRoleId] = useState<string>(ALL_ROLES)
-  const [includeInactive, setIncludeInactive] = useState(false)
+  const [role, setRole] = useState<string>(ALL_ROLES)
+  const [includeInactive, setIncludeInactive] = useState<boolean | undefined>(
+    undefined
+  )
   const debouncedSearch = useDebouncedValue(search, 250)
 
   const usersQuery = useUsers({
     name: debouncedSearch || undefined,
-    roleId: roleId === ALL_ROLES ? undefined : roleId, // TODO: implement role name filter
-    isActive: includeInactive,
+    roles: role === ALL_ROLES ? undefined : role, // TODO: implement multiple role name filter
+    isActive: includeInactive ? false : undefined,
   })
   const rolesQuery = useRoles()
 
@@ -59,6 +61,7 @@ export default function UsersListPage() {
   const stats = useMemo(() => {
     if (!users) return { total: 0, active: 0, inactive: 0 }
     const active = users.filter((u) => u.isActive).length
+
     return { total: users.length, active, inactive: users.length - active }
   }, [users])
 
@@ -66,9 +69,6 @@ export default function UsersListPage() {
     <div className="space-y-8">
       <header className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-1.5">
-          <p className="text-label-md text-muted-foreground">
-            Phase 3 · People & access
-          </p>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Staff directory
           </h1>
@@ -117,7 +117,7 @@ export default function UsersListPage() {
               className="pl-9"
             />
           </div>
-          <Select value={roleId} onValueChange={setRoleId}>
+          <Select value={role} onValueChange={setRole}>
             <SelectTrigger className="w-full sm:w-[200px]">
               <SelectValue placeholder="Filter by role" />
             </SelectTrigger>
@@ -125,10 +125,10 @@ export default function UsersListPage() {
               <SelectGroup>
                 <SelectItem value={ALL_ROLES}>All roles</SelectItem>
                 {roles
-                  .filter((r) => r.name !== "Patient")
-                  .map((r) => (
-                    <SelectItem key={r.id} value={r.id}>
-                      {r.name}
+                  .filter((role) => role.name !== "Patient")
+                  .map((role) => (
+                    <SelectItem key={role.name} value={role.name}>
+                      {role.name}
                     </SelectItem>
                   ))}
               </SelectGroup>
@@ -179,14 +179,14 @@ export default function UsersListPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users?.map((u) => (
+              {users?.map((user) => (
                 <TableRow
-                  key={u.id}
+                  key={user.id}
                   className={cn(
                     "cursor-pointer border-border/40 transition-colors",
-                    !u.isActive && "opacity-60"
+                    !user.isActive && "opacity-60"
                   )}
-                  onClick={() => router.push(`/dashboard/users/${u.id}`)}
+                  onClick={() => router.push(`/dashboard/users/${user.id}`)}
                 >
                   <TableCell className="px-5 py-4">
                     <div className="flex items-center gap-3">
@@ -194,35 +194,37 @@ export default function UsersListPage() {
                         className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary"
                         aria-hidden
                       >
-                        {initials(u.name)}
+                        {initials(user.name)}
                       </span>
                       <div>
-                        <p className="font-medium text-foreground">{u.name}</p>
+                        <p className="font-medium text-foreground">
+                          {user.name}
+                        </p>
                         <p className="text-xs text-muted-foreground">
-                          {u.email}
+                          {user.email}
                         </p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="py-4">
                     <div className="flex flex-wrap gap-1.5">
-                      {u.roles.length === 0 ? (
+                      {user.userRoles.length === 0 ? (
                         <span className="text-xs text-muted-foreground">—</span>
                       ) : (
-                        u.roles.map((r) => (
+                        user.userRoles.map((userRole) => (
                           <Badge
-                            key={r.id}
+                            key={userRole.role.id}
                             variant="outline"
                             className="rounded-full border-primary/25 bg-primary/5 text-primary"
                           >
-                            {r.name}
+                            {userRole.role.name}
                           </Badge>
                         ))
                       )}
                     </div>
                   </TableCell>
                   <TableCell className="py-4">
-                    {u.isActive ? (
+                    {user.isActive ? (
                       <Badge
                         variant="outline"
                         className="gap-1.5 rounded-full border-primary/30 bg-primary/5 text-primary"
@@ -249,7 +251,7 @@ export default function UsersListPage() {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation()
-                        router.push(`/dashboard/users/${u.id}`)
+                        router.push(`/dashboard/users/${user.id}`)
                       }}
                     >
                       Open
@@ -281,7 +283,7 @@ function StatCard({
       className={cn(
         "shadow-ambient flex items-start justify-between rounded-2xl border p-5",
         accent === "primary"
-          ? "border-primary/20 bg-primary/[0.04]"
+          ? "border-primary/20 bg-primary/4"
           : "border-border/60 bg-card"
       )}
     >

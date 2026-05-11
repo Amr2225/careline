@@ -15,318 +15,318 @@ import type * as Prisma from "./internal/prismaNamespace.js"
 
 
 export type StringFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  mode?: Prisma.QueryMode
-  not?: Prisma.NestedStringFilter<$PrismaModel> | string
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  mode?: Prisma.QueryMode | runtime.Types.Skip
+  not?: Prisma.NestedStringFilter<$PrismaModel> | string | runtime.Types.Skip
 }
 
 export type BoolFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean | runtime.Types.Skip
 }
 
 export type DateTimeFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeFilter<$PrismaModel> | Date | string
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeFilter<$PrismaModel> | Date | string | runtime.Types.Skip
 }
 
 export type StringWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  mode?: Prisma.QueryMode
-  not?: Prisma.NestedStringWithAggregatesFilter<$PrismaModel> | string
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedStringFilter<$PrismaModel>
-  _max?: Prisma.NestedStringFilter<$PrismaModel>
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  mode?: Prisma.QueryMode | runtime.Types.Skip
+  not?: Prisma.NestedStringWithAggregatesFilter<$PrismaModel> | string | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedStringFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedStringFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolFilter<$PrismaModel>
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedBoolFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedBoolFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
-  _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedDateTimeFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedDateTimeFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type DateTimeNullableFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null | runtime.Types.Skip
 }
 
 export type StringNullableFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  mode?: Prisma.QueryMode
-  not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  mode?: Prisma.QueryMode | runtime.Types.Skip
+  not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null | runtime.Types.Skip
 }
 
 export type SortOrderInput = {
   sort: Prisma.SortOrder
-  nulls?: Prisma.NullsOrder
+  nulls?: Prisma.NullsOrder | runtime.Types.Skip
 }
 
 export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null | runtime.Types.Skip
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  mode?: Prisma.QueryMode
-  not?: Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  mode?: Prisma.QueryMode | runtime.Types.Skip
+  not?: Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null | runtime.Types.Skip
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedStringNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedStringNullableFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type EnumActionFilter<$PrismaModel = never> = {
-  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel>
-  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumActionFilter<$PrismaModel> | $Enums.Action
+  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedEnumActionFilter<$PrismaModel> | $Enums.Action | runtime.Types.Skip
 }
 
 export type EnumActionWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel>
-  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumActionWithAggregatesFilter<$PrismaModel> | $Enums.Action
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumActionFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumActionFilter<$PrismaModel>
+  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedEnumActionWithAggregatesFilter<$PrismaModel> | $Enums.Action | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedEnumActionFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedEnumActionFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedStringFilter<$PrismaModel> | string
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedStringFilter<$PrismaModel> | string | runtime.Types.Skip
 }
 
 export type NestedBoolFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean | runtime.Types.Skip
 }
 
 export type NestedDateTimeFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeFilter<$PrismaModel> | Date | string
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeFilter<$PrismaModel> | Date | string | runtime.Types.Skip
 }
 
 export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedStringWithAggregatesFilter<$PrismaModel> | string
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedStringFilter<$PrismaModel>
-  _max?: Prisma.NestedStringFilter<$PrismaModel>
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedStringWithAggregatesFilter<$PrismaModel> | string | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedStringFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedStringFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type NestedIntFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntFilter<$PrismaModel> | number
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedIntFilter<$PrismaModel> | number | runtime.Types.Skip
 }
 
 export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolFilter<$PrismaModel>
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedBoolFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedBoolFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
-  _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedDateTimeFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedDateTimeFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null | runtime.Types.Skip
 }
 
 export type NestedStringNullableFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null | runtime.Types.Skip
 }
 
 export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
-  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+  equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null | runtime.Types.Skip
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type NestedIntNullableFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null | runtime.Types.Skip
 }
 
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null | runtime.Types.Skip
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null | runtime.Types.Skip
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedStringNullableFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedStringNullableFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 export type NestedEnumActionFilter<$PrismaModel = never> = {
-  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel>
-  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumActionFilter<$PrismaModel> | $Enums.Action
+  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedEnumActionFilter<$PrismaModel> | $Enums.Action | runtime.Types.Skip
 }
 
 export type NestedEnumActionWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel>
-  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumActionWithAggregatesFilter<$PrismaModel> | $Enums.Action
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumActionFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumActionFilter<$PrismaModel>
+  equals?: $Enums.Action | Prisma.EnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  in?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  notIn?: $Enums.Action[] | Prisma.ListEnumActionFieldRefInput<$PrismaModel> | runtime.Types.Skip
+  not?: Prisma.NestedEnumActionWithAggregatesFilter<$PrismaModel> | $Enums.Action | runtime.Types.Skip
+  _count?: Prisma.NestedIntFilter<$PrismaModel> | runtime.Types.Skip
+  _min?: Prisma.NestedEnumActionFilter<$PrismaModel> | runtime.Types.Skip
+  _max?: Prisma.NestedEnumActionFilter<$PrismaModel> | runtime.Types.Skip
 }
 
 

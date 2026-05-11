@@ -34,19 +34,19 @@ export function RoleMultiSelect({
 
   const visibleRoles = useMemo(() => {
     return roles
-      .filter((r) => (excludePatient ? r.name !== "Patient" : true))
-      .filter((r) =>
-        filter ? r.name.toLowerCase().includes(filter.toLowerCase()) : true
+      .filter((role) => (excludePatient ? role.name !== "Patient" : true))
+      .filter((role) =>
+        filter ? role.name.toLowerCase().includes(filter.toLowerCase()) : true
       )
   }, [roles, filter, excludePatient])
 
-  const selectedRoles = roles.filter((r) => value.includes(r.id))
+  const selectedRoles = roles.filter((role) => value.includes(role.name))
 
-  const toggle = (id: string) => {
-    if (value.includes(id)) {
-      onChange(value.filter((v) => v !== id))
+  const toggle = (name: string) => {
+    if (value.includes(name)) {
+      onChange(value.filter((v) => v !== name))
     } else {
-      onChange([...value, id])
+      onChange([...value, name])
     }
   }
 
@@ -68,27 +68,27 @@ export function RoleMultiSelect({
               {selectedRoles.length === 0 ? (
                 <span className="text-muted-foreground">{placeholder}</span>
               ) : (
-                selectedRoles.map((r) => (
+                selectedRoles.map((role) => (
                   <Badge
-                    key={r.id}
+                    key={role.id}
                     variant="outline"
                     className="gap-1 rounded-full border-primary/30 bg-primary/5 px-2 py-0.5 text-primary"
                   >
-                    {r.name}
+                    {role.name}
                     {!disabled && (
                       <span
                         role="button"
                         tabIndex={0}
-                        aria-label={`Remove ${r.name}`}
+                        aria-label={`Remove ${role.name}`}
                         onClick={(e) => {
                           e.stopPropagation()
-                          toggle(r.id)
+                          toggle(role.name)
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault()
                             e.stopPropagation()
-                            toggle(r.id)
+                            toggle(role.name)
                           }
                         }}
                         className="ml-0.5 rounded-full p-0.5 hover:bg-primary/15"
@@ -120,12 +120,12 @@ export function RoleMultiSelect({
               </p>
             ) : (
               visibleRoles.map((role) => {
-                const checked = value.includes(role.id)
+                const checked = value.includes(role.name)
                 return (
                   <button
-                    key={role.id}
+                    key={role.name}
                     type="button"
-                    onClick={() => toggle(role.id)}
+                    onClick={() => toggle(role.name)}
                     className={cn(
                       "flex w-full items-center justify-between rounded-lg px-2 py-2 text-left text-sm transition-colors",
                       "hover:bg-muted",

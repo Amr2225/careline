@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
-import { CreateUserServiceInput, UserService } from "@/user/user.service"
+import { CreateUserServiceInput, UpdateUserServiceInput, UserService } from "@/user/user.service"
 import { User } from '@careline/shared/prisma/client';
 import { CreateUserDto } from '@/user/dto/create-user.dto';
 import type { UserWithoutPassword } from '@careline/shared/types/user.type';
@@ -37,8 +37,8 @@ export class UserController {
     @Patch(':id')
     @Requires("Users", Action.UPDATE)
     @HttpCode(HttpStatus.NO_CONTENT)
-    async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        await this.userService.updateUser(id, updateUserDto);
+    async updateUser(@CurrentUser() currentUser: UserWithoutPassword, @Param('id') id: string, @Body(ValidateRoles) updateUserDto: UpdateUserDto) {
+        await this.userService.updateUser(id, updateUserDto as UpdateUserServiceInput, currentUser.id);
         return { message: 'User updated successfully' };
     }
 
@@ -57,5 +57,13 @@ export class UserController {
         await this.userService.softDelete(id);
 
         return { message: 'User deleted successfully' };
+    }
+
+    @Patch(':id/reactivate')
+    @Requires("Users", Action.DELETE) // The user that can delete a user, are only the ones that can reactivate a user
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async reactivateUser(@Param('id') id: string) {
+        await this.userService.reactivate(id);
+        return { message: 'User reactivated successfully' };
     }
 }
