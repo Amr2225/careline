@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google"
 
 import { ThemeProvider } from "@/components/theme-provider"
+import { QueryProvider } from "@/providers/QueryProvider"
+import { Toaster } from "@careline/ui/components/sonner"
 import "@careline/ui/globals.css"
 
 const fontSans = Geist({
@@ -25,7 +27,12 @@ export default function RootLayout({
       className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <QueryProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

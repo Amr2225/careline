@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '@/auth/auth.service';
 import { LoginDto } from '@/auth/dto/login.dto';
 import type { Request, Response } from 'express';
@@ -67,5 +67,10 @@ export class AuthController {
         response.clearCookie('csrfToken');
 
         return response.status(200).send({ message: 'Logout successful' });
+    }
+
+    @Get('me')
+    async me(@User() user: UserWithoutPassword): Promise<UserEntity> {
+        return await this.authService.me(user.id);
     }
 }

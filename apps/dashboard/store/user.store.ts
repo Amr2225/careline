@@ -55,7 +55,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
         set({ isLoading: true })
         try {
-            const { data } = await api.get<UserWithoutPassword>("/user/me")
+            const { data } = await api.get<UserWithoutPassword>("/auth/me")
             console.log("DATA: ", data);
             setLocalStorageUser(data)
             set({ user: data, isAuthenticated: "authenticated" })

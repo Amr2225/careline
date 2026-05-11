@@ -48,56 +48,56 @@ export type ModuleCountAggregateOutputType = {
 
 
 export type ModuleMinAggregateInputType = {
-  id?: true
-  name?: true
-  description?: true
-  createdAt?: true
+  id?: true | runtime.Types.Skip
+  name?: true | runtime.Types.Skip
+  description?: true | runtime.Types.Skip
+  createdAt?: true | runtime.Types.Skip
 }
 
 export type ModuleMaxAggregateInputType = {
-  id?: true
-  name?: true
-  description?: true
-  createdAt?: true
+  id?: true | runtime.Types.Skip
+  name?: true | runtime.Types.Skip
+  description?: true | runtime.Types.Skip
+  createdAt?: true | runtime.Types.Skip
 }
 
 export type ModuleCountAggregateInputType = {
-  id?: true
-  name?: true
-  description?: true
-  createdAt?: true
-  _all?: true
+  id?: true | runtime.Types.Skip
+  name?: true | runtime.Types.Skip
+  description?: true | runtime.Types.Skip
+  createdAt?: true | runtime.Types.Skip
+  _all?: true | runtime.Types.Skip
 }
 
 export type ModuleAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Filter which Module to aggregate.
    */
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
    * Determine the order of Modules to fetch.
    */
-  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[]
+  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[] | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.ModuleWhereUniqueInput
+  cursor?: Prisma.ModuleWhereUniqueInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Take `±n` Modules from the position of the cursor.
    */
-  take?: number
+  take?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Skip the first `n` Modules.
    */
-  skip?: number
+  skip?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
@@ -130,12 +130,12 @@ export type GetModuleAggregateType<T extends ModuleAggregateArgs> = {
 
 
 export type ModuleGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ModuleWhereInput
-  orderBy?: Prisma.ModuleOrderByWithAggregationInput | Prisma.ModuleOrderByWithAggregationInput[]
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
+  orderBy?: Prisma.ModuleOrderByWithAggregationInput | Prisma.ModuleOrderByWithAggregationInput[] | runtime.Types.Skip
   by: Prisma.ModuleScalarFieldEnum[] | Prisma.ModuleScalarFieldEnum
-  having?: Prisma.ModuleScalarWhereWithAggregatesInput
-  take?: number
-  skip?: number
+  having?: Prisma.ModuleScalarWhereWithAggregatesInput | runtime.Types.Skip
+  take?: number | runtime.Types.Skip
+  skip?: number | runtime.Types.Skip
   _count?: ModuleCountAggregateInputType | true
   _min?: ModuleMinAggregateInputType
   _max?: ModuleMaxAggregateInputType
@@ -167,160 +167,160 @@ export type GetModuleGroupByPayload<T extends ModuleGroupByArgs> = Prisma.Prisma
 
 
 export type ModuleWhereInput = {
-  AND?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[]
-  OR?: Prisma.ModuleWhereInput[]
-  NOT?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[]
-  id?: Prisma.StringFilter<"Module"> | string
-  name?: Prisma.StringFilter<"Module"> | string
-  description?: Prisma.StringFilter<"Module"> | string
-  createdAt?: Prisma.DateTimeFilter<"Module"> | Date | string
-  permissions?: Prisma.RolePermissionListRelationFilter
+  AND?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[] | runtime.Types.Skip
+  OR?: Prisma.ModuleWhereInput[] | runtime.Types.Skip
+  NOT?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[] | runtime.Types.Skip
+  id?: Prisma.StringFilter<"Module"> | string | runtime.Types.Skip
+  name?: Prisma.StringFilter<"Module"> | string | runtime.Types.Skip
+  description?: Prisma.StringFilter<"Module"> | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFilter<"Module"> | Date | string | runtime.Types.Skip
+  permissions?: Prisma.RolePermissionListRelationFilter | runtime.Types.Skip
 }
 
 export type ModuleOrderByWithRelationInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  permissions?: Prisma.RolePermissionOrderByRelationAggregateInput
+  id?: Prisma.SortOrder | runtime.Types.Skip
+  name?: Prisma.SortOrder | runtime.Types.Skip
+  description?: Prisma.SortOrder | runtime.Types.Skip
+  createdAt?: Prisma.SortOrder | runtime.Types.Skip
+  permissions?: Prisma.RolePermissionOrderByRelationAggregateInput | runtime.Types.Skip
 }
 
 export type ModuleWhereUniqueInput = Prisma.AtLeast<{
-  id?: string
-  name?: string
-  AND?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[]
-  OR?: Prisma.ModuleWhereInput[]
-  NOT?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[]
-  description?: Prisma.StringFilter<"Module"> | string
-  createdAt?: Prisma.DateTimeFilter<"Module"> | Date | string
-  permissions?: Prisma.RolePermissionListRelationFilter
+  id?: string | runtime.Types.Skip
+  name?: string | runtime.Types.Skip
+  AND?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[] | runtime.Types.Skip
+  OR?: Prisma.ModuleWhereInput[] | runtime.Types.Skip
+  NOT?: Prisma.ModuleWhereInput | Prisma.ModuleWhereInput[] | runtime.Types.Skip
+  description?: Prisma.StringFilter<"Module"> | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFilter<"Module"> | Date | string | runtime.Types.Skip
+  permissions?: Prisma.RolePermissionListRelationFilter | runtime.Types.Skip
 }, "id" | "name">
 
 export type ModuleOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  _count?: Prisma.ModuleCountOrderByAggregateInput
-  _max?: Prisma.ModuleMaxOrderByAggregateInput
-  _min?: Prisma.ModuleMinOrderByAggregateInput
+  id?: Prisma.SortOrder | runtime.Types.Skip
+  name?: Prisma.SortOrder | runtime.Types.Skip
+  description?: Prisma.SortOrder | runtime.Types.Skip
+  createdAt?: Prisma.SortOrder | runtime.Types.Skip
+  _count?: Prisma.ModuleCountOrderByAggregateInput | runtime.Types.Skip
+  _max?: Prisma.ModuleMaxOrderByAggregateInput | runtime.Types.Skip
+  _min?: Prisma.ModuleMinOrderByAggregateInput | runtime.Types.Skip
 }
 
 export type ModuleScalarWhereWithAggregatesInput = {
-  AND?: Prisma.ModuleScalarWhereWithAggregatesInput | Prisma.ModuleScalarWhereWithAggregatesInput[]
-  OR?: Prisma.ModuleScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.ModuleScalarWhereWithAggregatesInput | Prisma.ModuleScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"Module"> | string
-  name?: Prisma.StringWithAggregatesFilter<"Module"> | string
-  description?: Prisma.StringWithAggregatesFilter<"Module"> | string
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Module"> | Date | string
+  AND?: Prisma.ModuleScalarWhereWithAggregatesInput | Prisma.ModuleScalarWhereWithAggregatesInput[] | runtime.Types.Skip
+  OR?: Prisma.ModuleScalarWhereWithAggregatesInput[] | runtime.Types.Skip
+  NOT?: Prisma.ModuleScalarWhereWithAggregatesInput | Prisma.ModuleScalarWhereWithAggregatesInput[] | runtime.Types.Skip
+  id?: Prisma.StringWithAggregatesFilter<"Module"> | string | runtime.Types.Skip
+  name?: Prisma.StringWithAggregatesFilter<"Module"> | string | runtime.Types.Skip
+  description?: Prisma.StringWithAggregatesFilter<"Module"> | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Module"> | Date | string | runtime.Types.Skip
 }
 
 export type ModuleCreateInput = {
-  id?: string
+  id?: string | runtime.Types.Skip
   name: string
   description: string
-  createdAt?: Date | string
-  permissions?: Prisma.RolePermissionCreateNestedManyWithoutModuleInput
+  createdAt?: Date | string | runtime.Types.Skip
+  permissions?: Prisma.RolePermissionCreateNestedManyWithoutModuleInput | runtime.Types.Skip
 }
 
 export type ModuleUncheckedCreateInput = {
-  id?: string
+  id?: string | runtime.Types.Skip
   name: string
   description: string
-  createdAt?: Date | string
-  permissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutModuleInput
+  createdAt?: Date | string | runtime.Types.Skip
+  permissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutModuleInput | runtime.Types.Skip
 }
 
 export type ModuleUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  permissions?: Prisma.RolePermissionUpdateManyWithoutModuleNestedInput
+  id?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  name?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  description?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string | runtime.Types.Skip
+  permissions?: Prisma.RolePermissionUpdateManyWithoutModuleNestedInput | runtime.Types.Skip
 }
 
 export type ModuleUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  permissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutModuleNestedInput
+  id?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  name?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  description?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string | runtime.Types.Skip
+  permissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutModuleNestedInput | runtime.Types.Skip
 }
 
 export type ModuleCreateManyInput = {
-  id?: string
+  id?: string | runtime.Types.Skip
   name: string
   description: string
-  createdAt?: Date | string
+  createdAt?: Date | string | runtime.Types.Skip
 }
 
 export type ModuleUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  name?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  description?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string | runtime.Types.Skip
 }
 
 export type ModuleUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  name?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  description?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string | runtime.Types.Skip
 }
 
 export type ModuleCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
+  id?: Prisma.SortOrder | runtime.Types.Skip
+  name?: Prisma.SortOrder | runtime.Types.Skip
+  description?: Prisma.SortOrder | runtime.Types.Skip
+  createdAt?: Prisma.SortOrder | runtime.Types.Skip
 }
 
 export type ModuleMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
+  id?: Prisma.SortOrder | runtime.Types.Skip
+  name?: Prisma.SortOrder | runtime.Types.Skip
+  description?: Prisma.SortOrder | runtime.Types.Skip
+  createdAt?: Prisma.SortOrder | runtime.Types.Skip
 }
 
 export type ModuleMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
+  id?: Prisma.SortOrder | runtime.Types.Skip
+  name?: Prisma.SortOrder | runtime.Types.Skip
+  description?: Prisma.SortOrder | runtime.Types.Skip
+  createdAt?: Prisma.SortOrder | runtime.Types.Skip
 }
 
 export type ModuleScalarRelationFilter = {
-  is?: Prisma.ModuleWhereInput
-  isNot?: Prisma.ModuleWhereInput
+  is?: Prisma.ModuleWhereInput | runtime.Types.Skip
+  isNot?: Prisma.ModuleWhereInput | runtime.Types.Skip
 }
 
 export type ModuleCreateNestedOneWithoutPermissionsInput = {
-  create?: Prisma.XOR<Prisma.ModuleCreateWithoutPermissionsInput, Prisma.ModuleUncheckedCreateWithoutPermissionsInput>
-  connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutPermissionsInput
-  connect?: Prisma.ModuleWhereUniqueInput
+  create?: Prisma.XOR<Prisma.ModuleCreateWithoutPermissionsInput, Prisma.ModuleUncheckedCreateWithoutPermissionsInput> | runtime.Types.Skip
+  connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutPermissionsInput | runtime.Types.Skip
+  connect?: Prisma.ModuleWhereUniqueInput | runtime.Types.Skip
 }
 
 export type ModuleUpdateOneRequiredWithoutPermissionsNestedInput = {
-  create?: Prisma.XOR<Prisma.ModuleCreateWithoutPermissionsInput, Prisma.ModuleUncheckedCreateWithoutPermissionsInput>
-  connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutPermissionsInput
-  upsert?: Prisma.ModuleUpsertWithoutPermissionsInput
-  connect?: Prisma.ModuleWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ModuleUpdateToOneWithWhereWithoutPermissionsInput, Prisma.ModuleUpdateWithoutPermissionsInput>, Prisma.ModuleUncheckedUpdateWithoutPermissionsInput>
+  create?: Prisma.XOR<Prisma.ModuleCreateWithoutPermissionsInput, Prisma.ModuleUncheckedCreateWithoutPermissionsInput> | runtime.Types.Skip
+  connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutPermissionsInput | runtime.Types.Skip
+  upsert?: Prisma.ModuleUpsertWithoutPermissionsInput | runtime.Types.Skip
+  connect?: Prisma.ModuleWhereUniqueInput | runtime.Types.Skip
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ModuleUpdateToOneWithWhereWithoutPermissionsInput, Prisma.ModuleUpdateWithoutPermissionsInput>, Prisma.ModuleUncheckedUpdateWithoutPermissionsInput> | runtime.Types.Skip
 }
 
 export type ModuleCreateWithoutPermissionsInput = {
-  id?: string
+  id?: string | runtime.Types.Skip
   name: string
   description: string
-  createdAt?: Date | string
+  createdAt?: Date | string | runtime.Types.Skip
 }
 
 export type ModuleUncheckedCreateWithoutPermissionsInput = {
-  id?: string
+  id?: string | runtime.Types.Skip
   name: string
   description: string
-  createdAt?: Date | string
+  createdAt?: Date | string | runtime.Types.Skip
 }
 
 export type ModuleCreateOrConnectWithoutPermissionsInput = {
@@ -331,26 +331,26 @@ export type ModuleCreateOrConnectWithoutPermissionsInput = {
 export type ModuleUpsertWithoutPermissionsInput = {
   update: Prisma.XOR<Prisma.ModuleUpdateWithoutPermissionsInput, Prisma.ModuleUncheckedUpdateWithoutPermissionsInput>
   create: Prisma.XOR<Prisma.ModuleCreateWithoutPermissionsInput, Prisma.ModuleUncheckedCreateWithoutPermissionsInput>
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
 }
 
 export type ModuleUpdateToOneWithWhereWithoutPermissionsInput = {
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   data: Prisma.XOR<Prisma.ModuleUpdateWithoutPermissionsInput, Prisma.ModuleUncheckedUpdateWithoutPermissionsInput>
 }
 
 export type ModuleUpdateWithoutPermissionsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  name?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  description?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string | runtime.Types.Skip
 }
 
 export type ModuleUncheckedUpdateWithoutPermissionsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  name?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  description?: Prisma.StringFieldUpdateOperationsInput | string | runtime.Types.Skip
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string | runtime.Types.Skip
 }
 
 
@@ -380,44 +380,44 @@ export type ModuleCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
  * ModuleCountOutputType without action
  */
 export type ModuleCountOutputTypeCountPermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RolePermissionWhereInput
+  where?: Prisma.RolePermissionWhereInput | runtime.Types.Skip
 }
 
 
 export type ModuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  description?: boolean
-  createdAt?: boolean
-  permissions?: boolean | Prisma.Module$permissionsArgs<ExtArgs>
-  _count?: boolean | Prisma.ModuleCountOutputTypeDefaultArgs<ExtArgs>
+  id?: boolean | runtime.Types.Skip
+  name?: boolean | runtime.Types.Skip
+  description?: boolean | runtime.Types.Skip
+  createdAt?: boolean | runtime.Types.Skip
+  permissions?: boolean | Prisma.Module$permissionsArgs<ExtArgs> | runtime.Types.Skip
+  _count?: boolean | Prisma.ModuleCountOutputTypeDefaultArgs<ExtArgs> | runtime.Types.Skip
 }, ExtArgs["result"]["module"]>
 
 export type ModuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  description?: boolean
-  createdAt?: boolean
+  id?: boolean | runtime.Types.Skip
+  name?: boolean | runtime.Types.Skip
+  description?: boolean | runtime.Types.Skip
+  createdAt?: boolean | runtime.Types.Skip
 }, ExtArgs["result"]["module"]>
 
 export type ModuleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  description?: boolean
-  createdAt?: boolean
+  id?: boolean | runtime.Types.Skip
+  name?: boolean | runtime.Types.Skip
+  description?: boolean | runtime.Types.Skip
+  createdAt?: boolean | runtime.Types.Skip
 }, ExtArgs["result"]["module"]>
 
 export type ModuleSelectScalar = {
-  id?: boolean
-  name?: boolean
-  description?: boolean
-  createdAt?: boolean
+  id?: boolean | runtime.Types.Skip
+  name?: boolean | runtime.Types.Skip
+  description?: boolean | runtime.Types.Skip
+  createdAt?: boolean | runtime.Types.Skip
 }
 
-export type ModuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt", ExtArgs["result"]["module"]>
+export type ModuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt", ExtArgs["result"]["module"], runtime.Types.Skip>
 export type ModuleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  permissions?: boolean | Prisma.Module$permissionsArgs<ExtArgs>
-  _count?: boolean | Prisma.ModuleCountOutputTypeDefaultArgs<ExtArgs>
+  permissions?: boolean | Prisma.Module$permissionsArgs<ExtArgs> | runtime.Types.Skip
+  _count?: boolean | Prisma.ModuleCountOutputTypeDefaultArgs<ExtArgs> | runtime.Types.Skip
 }
 export type ModuleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 export type ModuleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -927,37 +927,37 @@ export type ModuleFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * Filter, which Module to fetch.
    */
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
    * Determine the order of Modules to fetch.
    */
-  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[]
+  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[] | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the position for searching for Modules.
    */
-  cursor?: Prisma.ModuleWhereUniqueInput
+  cursor?: Prisma.ModuleWhereUniqueInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Take `±n` Modules from the position of the cursor.
    */
-  take?: number
+  take?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Skip the first `n` Modules.
    */
-  skip?: number
+  skip?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
    * Filter by unique combinations of Modules.
    */
-  distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[]
+  distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[] | runtime.Types.Skip
 }
 
 /**
@@ -979,37 +979,37 @@ export type ModuleFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * Filter, which Module to fetch.
    */
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
    * Determine the order of Modules to fetch.
    */
-  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[]
+  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[] | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the position for searching for Modules.
    */
-  cursor?: Prisma.ModuleWhereUniqueInput
+  cursor?: Prisma.ModuleWhereUniqueInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Take `±n` Modules from the position of the cursor.
    */
-  take?: number
+  take?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Skip the first `n` Modules.
    */
-  skip?: number
+  skip?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
    * Filter by unique combinations of Modules.
    */
-  distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[]
+  distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[] | runtime.Types.Skip
 }
 
 /**
@@ -1031,37 +1031,37 @@ export type ModuleFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * Filter, which Modules to fetch.
    */
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
    * Determine the order of Modules to fetch.
    */
-  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[]
+  orderBy?: Prisma.ModuleOrderByWithRelationInput | Prisma.ModuleOrderByWithRelationInput[] | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the position for listing Modules.
    */
-  cursor?: Prisma.ModuleWhereUniqueInput
+  cursor?: Prisma.ModuleWhereUniqueInput | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Take `±n` Modules from the position of the cursor.
    */
-  take?: number
+  take?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
    * Skip the first `n` Modules.
    */
-  skip?: number
+  skip?: number | runtime.Types.Skip
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
    * Filter by unique combinations of Modules.
    */
-  distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[]
+  distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[] | runtime.Types.Skip
 }
 
 /**
@@ -1094,7 +1094,7 @@ export type ModuleCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data used to create many Modules.
    */
   data: Prisma.ModuleCreateManyInput | Prisma.ModuleCreateManyInput[]
-  skipDuplicates?: boolean
+  skipDuplicates?: boolean | runtime.Types.Skip
 }
 
 /**
@@ -1113,7 +1113,7 @@ export type ModuleCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * The data used to create many Modules.
    */
   data: Prisma.ModuleCreateManyInput | Prisma.ModuleCreateManyInput[]
-  skipDuplicates?: boolean
+  skipDuplicates?: boolean | runtime.Types.Skip
 }
 
 /**
@@ -1153,11 +1153,11 @@ export type ModuleUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * Filter which Modules to update
    */
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   /**
    * Limit how many Modules to update.
    */
-  limit?: number
+  limit?: number | runtime.Types.Skip
 }
 
 /**
@@ -1179,11 +1179,11 @@ export type ModuleUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
   /**
    * Filter which Modules to update
    */
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   /**
    * Limit how many Modules to update.
    */
-  limit?: number
+  limit?: number | runtime.Types.Skip
 }
 
 /**
@@ -1245,11 +1245,11 @@ export type ModuleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * Filter which Modules to delete
    */
-  where?: Prisma.ModuleWhereInput
+  where?: Prisma.ModuleWhereInput | runtime.Types.Skip
   /**
    * Limit how many Modules to delete.
    */
-  limit?: number
+  limit?: number | runtime.Types.Skip
 }
 
 /**
@@ -1268,12 +1268,12 @@ export type Module$permissionsArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.RolePermissionInclude<ExtArgs> | null
-  where?: Prisma.RolePermissionWhereInput
-  orderBy?: Prisma.RolePermissionOrderByWithRelationInput | Prisma.RolePermissionOrderByWithRelationInput[]
-  cursor?: Prisma.RolePermissionWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RolePermissionScalarFieldEnum | Prisma.RolePermissionScalarFieldEnum[]
+  where?: Prisma.RolePermissionWhereInput | runtime.Types.Skip
+  orderBy?: Prisma.RolePermissionOrderByWithRelationInput | Prisma.RolePermissionOrderByWithRelationInput[] | runtime.Types.Skip
+  cursor?: Prisma.RolePermissionWhereUniqueInput | runtime.Types.Skip
+  take?: number | runtime.Types.Skip
+  skip?: number | runtime.Types.Skip
+  distinct?: Prisma.RolePermissionScalarFieldEnum | Prisma.RolePermissionScalarFieldEnum[] | runtime.Types.Skip
 }
 
 /**

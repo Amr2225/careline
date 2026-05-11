@@ -1,8 +1,7 @@
 import { Command, CommandRunner, InquirerService, Option } from 'nest-commander';
 import { validateEmail, validateName, validatePassword } from './utils';
 import { UserService } from '@/user/user.service';
-import { CreateUserDto } from '@/user/dto/user.dto';
-import bcrypt from "bcrypt"
+import { CreateUserDto } from '@/user/dto/create-user.dto';
 
 @Command({
     name: 'create-admin',
@@ -28,12 +27,13 @@ export class CreateAdminCommand extends CommandRunner {
         const newUser: CreateUserDto = {
             email: options.email,
             name: options.name,
-            passwordHash: bcrypt.hashSync(options.password, 10),
+            password: options.password,
             isActive: true,
             isBootstrapAdmin: true,
         }
 
-        await this.userService.createUser(newUser)
+        // Make a new service for this, createCLIUser
+        await this.userService.createAdminUser(newUser)
         console.log("Admin user created successfully", options);
     }
 
