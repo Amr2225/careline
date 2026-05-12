@@ -5,6 +5,11 @@ export enum Gender {
     FEMALE = "FEMALE",
 }
 
+export const GenderConst = {
+    MALE: "MALE",
+    FEMALE: "FEMALE",
+} as const
+
 export const GenderLabel: Record<Gender, string> = {
     MALE: "Male",
     FEMALE: "Female",
@@ -41,7 +46,7 @@ export interface CreatePatientWithUserPayload {
     phoneNumber: string;
 
     // Patient Fields
-    dateOfBirth: Date;
+    dateOfBirth: string;// Assess this might need to be date
     gender: Gender;
     address?: string | null;
     emergencyContactName?: string;
@@ -54,7 +59,7 @@ export interface CreatePatientWithUserPayload {
 
 export interface CreatePatientPayload {
     userId: string;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     gender: Gender;
     address?: string;
     emergencyContactName?: string;
@@ -73,6 +78,7 @@ export interface UpdatePatientMedicalPayload {
 
 export interface ListPatientQuery {
     name?: string;
+    phoneNumber?: string;
     email?: string;
     isActive?: boolean;
     medicalNotes?: string;
@@ -88,17 +94,17 @@ export interface Patient {
     phoneNumber: string;
     email: string;
 
-    dateOfBirth: Date;
+    dateOfBirth: string; // YYYY-MM-DDTHH:MM:SS.SSSZ
     gender: Gender;
     address?: string | null;
     emergencyContactName?: string | null;
     emergencyContactPhone?: string | null;
-    bloodType?: PrismaBloodType | null;
+    bloodType?: BloodType | null;
     allergies?: string | null;
     chronicConditions?: string | null;
     currentMedications?: string | null;
     medicalNotes?: string | null;
     isActive?: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Date | string;
+    updatedAt: Date | string;
 }

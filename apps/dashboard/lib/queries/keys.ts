@@ -16,5 +16,6 @@ export const queryKeys = {
     all: ['patients'] as const,
     list: (qeurry: ListPatientQuery) => ['patients', 'list', qeurry] as const,
     detail: (patientId: string) => ['patients', 'detail', patientId] as const,
+    usersWithPatientRole: (search?: string) => ['patients', 'users', 'with-patient-role', search] as const,
   }
 }

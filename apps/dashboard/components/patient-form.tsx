@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, FieldErrors, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   AtSign,
@@ -44,13 +44,22 @@ import {
 import Spinner from "@/components/spinner"
 import { PhoneInput } from "@/components/phone-input"
 import {
-  BLOOD_TYPE_LABELS,
-  SEX_LABELS,
-  type BloodType,
-  type LinkableUser,
-  type Patient,
-  type Sex,
-} from "@/lib/patients-mock"
+  BloodTypeLabel,
+  GenderLabel,
+  Patient,
+} from "@careline/shared/types/patient.type"
+import {
+  BloodType,
+  Gender,
+  // GenderConst,
+} from "@careline/shared/types/patient.type"
+import {
+  useCreatePatient,
+  useCreatePatientWithUser,
+  useUpdatePatient,
+} from "@/lib/queries/patient"
+import { extractErrorMessage } from "@/lib/errors"
+import { UserWithoutPassword } from "@careline/shared/types/user.type"
 
 type Mode = "create" | "edit" | "link"
 
@@ -61,41 +70,32 @@ export type PatientScope = {
 
 type PatientFormProps = {
   mode: Mode
-  scope: PatientScope
+  scope: PatientScope // TODO: will be deleted
   initial?: Patient
-  linkedUser?: LinkableUser
+  linkedUser?: UserWithoutPassword
+  patientId?: string
 }
-
-const sexValues: [Sex, ...Sex[]] = ["MALE", "FEMALE", "OTHER", "UNSPECIFIED"]
-const bloodValues: [BloodType, ...BloodType[]] = [
-  "A_POS",
-  "A_NEG",
-  "B_POS",
-  "B_NEG",
-  "AB_POS",
-  "AB_NEG",
-  "O_POS",
-  "O_NEG",
-  "UNKNOWN",
-]
 
 const phoneRegex = /^\+\d{1,3}\s?\d[\d\s-]{6,}$/
 
 const baseSchema = z.object({
   name: z.string().trim().min(1, "Name is required."),
   email: z.email("Enter a valid email").trim(),
-  phone: z.string().trim().regex(phoneRegex, "Enter a valid phone number."),
-  dob: z.string().min(1, "Date of birth is required."),
-  sex: z.enum(sexValues),
+  phoneNumber: z
+    .string()
+    .trim()
+    .regex(phoneRegex, "Enter a valid phone number."),
+  dateOfBirth: z.string().min(1, "Date of birth is required."),
+  gender: z.enum(Gender),
   address: z.string().trim().optional().or(z.literal("")),
   emergencyContactName: z.string().trim().optional().or(z.literal("")),
   emergencyContactPhone: z.string().trim().optional().or(z.literal("")),
-  bloodType: z.enum(bloodValues).optional(),
+  bloodType: z.enum(BloodType).optional(),
   allergies: z.string().trim().optional().or(z.literal("")),
   chronicConditions: z.string().trim().optional().or(z.literal("")),
   currentMedications: z.string().trim().optional().or(z.literal("")),
   medicalNotes: z.string().trim().optional().or(z.literal("")),
-  isActive: z.boolean(),
+  isActive: z.boolean().optional(),
 })
 
 const passwordSchema = z
@@ -103,44 +103,63 @@ const passwordSchema = z
   .min(8, "Password must be at least 8 characters.")
   .regex(/\d/, "Include at least one digit.")
 
-const createSchema = baseSchema.extend({ password: passwordSchema })
+const createSchema = baseSchema.extend({
+  password: passwordSchema,
+  // userId: z.string().min(1, "User ID is required"),
+})
 const editSchema = baseSchema.extend({
   password: z.union([z.literal(""), passwordSchema]),
 })
+
 // Link mode: identity comes from the existing User, so name/email/phone/password
 // are not user-editable here.
 const linkSchema = baseSchema
-  .omit({ name: true, email: true, phone: true })
-  .extend({ password: z.literal("").optional() })
+  .omit({ name: true, email: true, phoneNumber: true })
+  .extend({
+    password: z.literal("").optional(),
+    userId: z.string().min(1, "User ID is required"),
+  })
 
 type PatientFormValues = z.infer<typeof createSchema>
+type LinkSchemaType = z.infer<typeof linkSchema>
+type EditSchemaType = z.infer<typeof editSchema>
+
+const unionSchema = z.union([createSchema, linkSchema, editSchema])
+type ResolverSchemaType = z.infer<typeof unionSchema>
 
 export function PatientForm({
   mode,
   scope,
   initial,
   linkedUser,
+  patientId,
 }: PatientFormProps) {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  console.log("linkedUser", linkedUser?.id)
+
+  const createPatientWithUser = useCreatePatientWithUser()
+  const createPatient = useCreatePatient()
+  const updatePatient = useUpdatePatient(patientId ?? "")
 
   const resolverSchema =
     mode === "create" ? createSchema : mode === "link" ? linkSchema : editSchema
 
-  const form = useForm<PatientFormValues>({
-    resolver: zodResolver(resolverSchema as typeof createSchema),
+  const form = useForm<ResolverSchemaType>({
+    resolver: zodResolver(resolverSchema),
+    shouldUnregister: true,
     defaultValues: {
+      userId: linkedUser?.id ?? "",
       name: linkedUser?.name ?? initial?.name ?? "",
       email: linkedUser?.email ?? initial?.email ?? "",
-      phone: linkedUser?.phone ?? initial?.phone ?? "+20 ",
+      phoneNumber: linkedUser?.phoneNumber ?? initial?.phoneNumber ?? "+20 ",
       password: "",
-      dob: initial?.dob ?? "",
-      sex: initial?.sex ?? "UNSPECIFIED",
+      dateOfBirth: initial?.dateOfBirth ?? "",
+      gender: initial?.gender ?? Gender.MALE,
       address: initial?.address ?? "",
       emergencyContactName: initial?.emergencyContactName ?? "",
       emergencyContactPhone: initial?.emergencyContactPhone ?? "",
-      bloodType: initial?.bloodType ?? undefined,
+      bloodType: initial?.bloodType ?? BloodType.UNKNOWN,
       allergies: initial?.allergies ?? "",
       chronicConditions: initial?.chronicConditions ?? "",
       currentMedications: initial?.currentMedications ?? "",
@@ -150,35 +169,71 @@ export function PatientForm({
     mode: "onTouched",
   })
 
-  const errors = form.formState.errors
+  const isSubmitting =
+    createPatientWithUser.isPending ||
+    createPatient.isPending ||
+    updatePatient.isPending
+
+  const errors = form.formState.errors as FieldErrors<PatientFormValues>
   const contactDisabled = !scope.canEditContact
   const medicalNotesDisabled = !scope.canEditMedicalNotes
   const readOnlyEverything = contactDisabled && medicalNotesDisabled
 
+  useEffect(() => {
+    console.log("FROM ERRORS", errors)
+  }, [errors])
+
+  useEffect(() => {
+    form.setValue("userId", linkedUser?.id ?? "")
+  }, [linkedUser])
+
   const onSubmit = form.handleSubmit(async (values) => {
-    setIsSubmitting(true)
-    try {
-      // Mock submit
-      await new Promise((r) => setTimeout(r, 600))
-      if (mode === "create") {
+    if (mode === "create") {
+      try {
+        const createPayload = values as PatientFormValues // TODO: change the name of this type
+        createPayload.phoneNumber = createPayload.phoneNumber.replace(/\s/g, "") //remove spaces from phone number
+        createPayload.emergencyContactPhone =
+          createPayload.emergencyContactPhone?.replace(/\s/g, "") //remove spaces from emergency contact phone number
+        await createPatientWithUser.mutateAsync(createPayload)
+
         toast.success("Patient created", {
-          description: `${values.name} can now sign into the patient app.`,
+          description: `${createPayload.name} can now sign into the patient app.`,
         })
         router.push("/dashboard/patients")
         return
+      } catch (error) {
+        toast.error("Patient creation failed", {
+          description: extractErrorMessage(error),
+        })
       }
-      if (mode === "link") {
+    }
+    if (mode === "link") {
+      try {
+        await createPatient.mutateAsync(values as LinkSchemaType)
         toast.success("Patient profile linked", {
           description: `${linkedUser?.name ?? "User"} now has a patient record.`,
         })
         router.push("/dashboard/patients")
         return
+      } catch (error) {
+        toast.error("Patient creation failed", {
+          description: extractErrorMessage(error),
+        })
       }
-      toast.success("Patient updated", { description: "Changes saved." })
-      form.reset({ ...values, password: "" })
-    } finally {
-      setIsSubmitting(false)
     }
+
+    if (mode === "edit") {
+      try {
+        await updatePatient.mutateAsync(values)
+        toast.success("Patient updated", { description: "Changes saved." })
+      } catch (error) {
+        toast.error("Patient update failed", {
+          description: extractErrorMessage(error),
+        })
+      }
+    }
+
+    form.reset({ ...values, password: "" })
   })
 
   return (
@@ -210,7 +265,7 @@ export function PatientForm({
       ) : null}
 
       {mode === "link" && linkedUser ? (
-        <section className="shadow-ambient rounded-2xl border border-primary/25 bg-primary/[0.04] p-6">
+        <section className="shadow-ambient rounded-2xl border border-primary/25 bg-primary/4 p-6">
           <header className="mb-4 flex items-center gap-3">
             <span className="flex size-9 items-center justify-center rounded-full bg-primary/15 text-primary">
               <User2 className="size-4" />
@@ -239,7 +294,7 @@ export function PatientForm({
             <ReadOnlyField
               icon={<Phone className="size-4" />}
               label="Phone"
-              value={linkedUser.phone ?? "—"}
+              value={linkedUser.phoneNumber ?? "—"}
               mono
             />
           </div>
@@ -248,114 +303,116 @@ export function PatientForm({
 
       {/* Identity — hidden in link mode (uses existing User) */}
       {mode !== "link" ? (
-      <FormSection
-        title="Identity"
-        description="The User account linked to this patient."
-        icon={<User2 className="size-4" />}
-      >
-        <FieldGroup>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field data-invalid={Boolean(errors.name)}>
-              <FieldLabel htmlFor="p-name" className={labelClass}>
-                <User2 className="size-4" />
-                Full name
-              </FieldLabel>
-              <Input
-                id="p-name"
-                placeholder="Ahmed Hassan"
-                disabled={contactDisabled}
-                aria-invalid={Boolean(errors.name)}
-                {...form.register("name")}
-              />
-              <FieldError errors={[errors.name]} />
-            </Field>
-
-            <Field data-invalid={Boolean(errors.email)}>
-              <FieldLabel htmlFor="p-email" className={labelClass}>
-                <AtSign className="size-4" />
-                Email
-              </FieldLabel>
-              <Input
-                id="p-email"
-                type="email"
-                placeholder="ahmed@example.com"
-                disabled={contactDisabled}
-                aria-invalid={Boolean(errors.email)}
-                {...form.register("email")}
-              />
-              <FieldError errors={[errors.email]} />
-            </Field>
-
-            <Field data-invalid={Boolean(errors.phone)}>
-              <FieldLabel htmlFor="p-phone" className={labelClass}>
-                <Phone className="size-4" />
-                Phone
-              </FieldLabel>
-              <Controller
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <PhoneInput
-                    id="p-phone"
-                    value={field.value}
-                    onChange={field.onChange}
-                    disabled={contactDisabled}
-                    invalid={Boolean(errors.phone)}
-                  />
-                )}
-              />
-              {errors.phone ? (
-                <FieldError errors={[errors.phone]} />
-              ) : (
-                <FieldDescription>
-                  Used for patient login and queue identification.
-                </FieldDescription>
-              )}
-            </Field>
-
-            <Field data-invalid={Boolean(errors.password)}>
-              <FieldLabel htmlFor="p-password" className={labelClass}>
-                <KeyRound className="size-4" />
-                {mode === "create" ? "Starter password" : "New password"}
-              </FieldLabel>
-              <div className="relative">
+        <FormSection
+          title="Identity"
+          description="The User account linked to this patient."
+          icon={<User2 className="size-4" />}
+        >
+          <FieldGroup>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field data-invalid={Boolean(errors.name)}>
+                <FieldLabel htmlFor="p-name" className={labelClass}>
+                  <User2 className="size-4" />
+                  Full name
+                </FieldLabel>
                 <Input
-                  id="p-password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder={mode === "create" ? "••••••••" : "Unchanged"}
-                  autoComplete="new-password"
+                  id="p-name"
+                  placeholder="Ahmed Hassan"
                   disabled={contactDisabled}
-                  className="pr-10"
-                  aria-invalid={Boolean(errors.password)}
-                  {...form.register("password")}
+                  aria-invalid={Boolean(errors.name)}
+                  {...form.register("name")}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((s) => !s)}
-                  className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  tabIndex={-1}
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
+                <FieldError errors={[errors.name]} />
+              </Field>
+
+              <Field data-invalid={Boolean(errors.email)}>
+                <FieldLabel htmlFor="p-email" className={labelClass}>
+                  <AtSign className="size-4" />
+                  Email
+                </FieldLabel>
+                <Input
+                  id="p-email"
+                  type="email"
+                  placeholder="ahmed@example.com"
+                  disabled={contactDisabled}
+                  aria-invalid={Boolean(errors.email)}
+                  {...form.register("email")}
+                />
+                <FieldError errors={[errors.email]} />
+              </Field>
+
+              <Field data-invalid={Boolean(errors.phoneNumber)}>
+                <FieldLabel htmlFor="p-phone" className={labelClass}>
+                  <Phone className="size-4" />
+                  Phone
+                </FieldLabel>
+                <Controller
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <PhoneInput
+                      id="p-phone"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      disabled={contactDisabled}
+                      invalid={Boolean(errors.phoneNumber)}
+                    />
                   )}
-                </button>
-              </div>
-              {errors.password ? (
-                <FieldError errors={[errors.password]} />
-              ) : (
-                <FieldDescription>
-                  {mode === "edit"
-                    ? "Leave blank to keep current password."
-                    : "Share with the patient so they can log into the app."}
-                </FieldDescription>
-              )}
-            </Field>
-          </div>
-        </FieldGroup>
-      </FormSection>
+                />
+                {errors.phoneNumber ? (
+                  <FieldError errors={[errors.phoneNumber]} />
+                ) : (
+                  <FieldDescription>
+                    Used for patient login and queue identification.
+                  </FieldDescription>
+                )}
+              </Field>
+
+              <Field data-invalid={Boolean(errors.password)}>
+                <FieldLabel htmlFor="p-password" className={labelClass}>
+                  <KeyRound className="size-4" />
+                  {mode === "create" ? "Starter password" : "New password"}
+                </FieldLabel>
+                <div className="relative">
+                  <Input
+                    id="p-password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder={mode === "create" ? "••••••••" : "Unchanged"}
+                    autoComplete="new-password"
+                    disabled={contactDisabled}
+                    className="pr-10"
+                    aria-invalid={Boolean(errors.password)}
+                    {...form.register("password")}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((s) => !s)}
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.password ? (
+                  <FieldError errors={[errors.password]} />
+                ) : (
+                  <FieldDescription>
+                    {mode === "edit"
+                      ? "Leave blank to keep current password."
+                      : "Share with the patient so they can log into the app."}
+                  </FieldDescription>
+                )}
+              </Field>
+            </div>
+          </FieldGroup>
+        </FormSection>
       ) : null}
 
       {/* Profile */}
@@ -366,7 +423,7 @@ export function PatientForm({
       >
         <FieldGroup>
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field data-invalid={Boolean(errors.dob)}>
+            <Field data-invalid={Boolean(errors.dateOfBirth)}>
               <FieldLabel htmlFor="p-dob" className={labelClass}>
                 <CalendarDays className="size-4" />
                 Date of birth
@@ -375,10 +432,10 @@ export function PatientForm({
                 id="p-dob"
                 type="date"
                 disabled={contactDisabled}
-                aria-invalid={Boolean(errors.dob)}
-                {...form.register("dob")}
+                aria-invalid={Boolean(errors.dateOfBirth)}
+                {...form.register("dateOfBirth")}
               />
-              <FieldError errors={[errors.dob]} />
+              <FieldError errors={[errors.dateOfBirth]} />
             </Field>
 
             <Field>
@@ -388,10 +445,10 @@ export function PatientForm({
               </FieldLabel>
               <Controller
                 control={form.control}
-                name="sex"
+                name="gender"
                 render={({ field }) => (
                   <Select
-                    value={field.value}
+                    value={field.value ?? Gender.MALE}
                     onValueChange={field.onChange}
                     disabled={contactDisabled}
                   >
@@ -399,9 +456,9 @@ export function PatientForm({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {sexValues.map((v) => (
-                        <SelectItem key={v} value={v}>
-                          {SEX_LABELS[v]}
+                      {Object.values(Gender).map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {GenderLabel[value]}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -424,10 +481,7 @@ export function PatientForm({
             </Field>
 
             <Field>
-              <FieldLabel
-                htmlFor="p-emergency-name"
-                className={labelClass}
-              >
+              <FieldLabel htmlFor="p-emergency-name" className={labelClass}>
                 <ShieldAlert className="size-4" />
                 Emergency contact
               </FieldLabel>
@@ -440,10 +494,7 @@ export function PatientForm({
             </Field>
 
             <Field>
-              <FieldLabel
-                htmlFor="p-emergency-phone"
-                className={labelClass}
-              >
+              <FieldLabel htmlFor="p-emergency-phone" className={labelClass}>
                 <Phone className="size-4" />
                 Emergency phone
               </FieldLabel>
@@ -490,9 +541,9 @@ export function PatientForm({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {bloodValues.map((v) => (
-                        <SelectItem key={v} value={v}>
-                          {BLOOD_TYPE_LABELS[v]}
+                      {Object.values(BloodType).map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {BloodTypeLabel[value]}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -694,7 +745,7 @@ function FormSection({
       className={
         "shadow-ambient rounded-2xl border bg-card p-6 " +
         (accent === "medical"
-          ? "border-primary/30 bg-primary/[0.03]"
+          ? "border-primary/30 bg-primary/3"
           : "border-border/70")
       }
     >

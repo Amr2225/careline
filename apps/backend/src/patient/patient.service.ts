@@ -4,12 +4,13 @@ import { UpdatePatientMedicalDto } from './dto/update-patient.dto';
 import { Patient } from '@careline/shared/types/patient.type';
 import { CreatePatientDto, CreatePatientWithUserDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
-import { ListPatientQueryDto } from './dto/list-patient-query.dto';
+import { ListPatientQueryDto, UserWithPatientRoleSearch } from './dto/list-patient-query.dto';
 import { Prisma } from '@careline/shared/prisma/client';
 import { PatientIncludeUser, transformPatient, transformUserToPatient, UserIncludePatient } from '@/common/transformUser.utils';
 import { hashPassword } from '@/common/password.utils';
 import { verifyPhoneNumber } from '@/common/phone.utils';
 import { skipUndefined } from '@/common/skipUndefined.utils';
+import { UserWithoutPassword } from '@careline/shared/types/user.type';
 
 @Injectable()
 export class PatientService {
@@ -35,6 +36,10 @@ export class PatientService {
         if (listPatientQueryDto.name) userWhere.OR.push({ name: { contains: listPatientQueryDto.name, mode: "insensitive" } })
         if (listPatientQueryDto.email) userWhere.OR.push({ email: { contains: listPatientQueryDto.email, mode: "insensitive" } })
         if (listPatientQueryDto.isActive !== undefined) userWhere.isActive = listPatientQueryDto.isActive;
+        if (listPatientQueryDto.phoneNumber) {
+            const validPhoneNumber = verifyPhoneNumber(listPatientQueryDto.phoneNumber);
+            userWhere.OR.push({ phoneNumber: validPhoneNumber });
+        }
 
         // Patients Fields
         if (listPatientQueryDto.bloodType) patientWhere.OR.push({ bloodType: listPatientQueryDto.bloodType });
@@ -66,6 +71,33 @@ export class PatientService {
         }
         return patients;
 
+    }
+
+    async getUsersWithPatientRole(filters: UserWithPatientRoleSearch = {}): Promise<UserWithoutPassword[]> {
+        let where: Prisma.UserWhereInput = {}
+        where.userRoles = {
+            some: {
+                role: { name: "Patient" }
+            }
+        }
+        where.patient = null;
+        where.OR = []
+
+        if (filters.search) {
+            where.OR.push({ name: { contains: filters.search, mode: "insensitive" } })
+            where.OR.push({ email: { contains: filters.search, mode: "insensitive" } })
+            where.OR.push({ phoneNumber: { contains: filters.search, mode: "insensitive" } })
+        }
+
+        where = { ...where, OR: where.OR.length > 0 ? where.OR : Prisma.skip }
+
+        return await this.dbService.user.findMany({
+            where,
+            omit: {
+                passwordHash: true,
+                isBootstrapAdmin: true
+            }
+        });
     }
 
     async getPatient(patientId: string): Promise<Patient> {
@@ -100,8 +132,6 @@ export class PatientService {
 
         if (patient.emergencyContactPhone) {
             const validEmergencyContactPhone = verifyPhoneNumber(patient.emergencyContactPhone);
-            if (!validEmergencyContactPhone) throw new BadRequestException("Invalid emergency contact phone number");
-
             patient.emergencyContactPhone = validEmergencyContactPhone;
         }
 

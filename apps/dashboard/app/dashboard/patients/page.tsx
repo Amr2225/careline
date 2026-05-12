@@ -49,14 +49,8 @@ import {
   ActiveFilterChips,
   PatientsFilterPopover,
 } from "@/components/patients-filter-popover"
-import {
-  calculateAge,
-  formatDate,
-  MOCK_PATIENTS,
-  // SEX_LABELS,
-  // type Patient,
-  // type Sex,
-} from "@/lib/patients-mock"
+
+import { calculateAge, formatDate } from "@/lib/patients-mock"
 
 import {
   type Gender,
@@ -65,6 +59,7 @@ import {
   ListPatientQuery,
 } from "@careline/shared/types/patient.type"
 import { usePatients } from "@/lib/queries/patient"
+import Spinner from "@/components/spinner"
 
 const ALL_GENDERS = "__all__"
 const PAGE_SIZE_OPTIONS = [10, 25, 50] as const
@@ -72,11 +67,11 @@ const DEFAULT_PAGE_SIZE = 10
 
 const columnHelper = createColumnHelper<Patient>()
 
+// TODO: implement pagination.
 export default function PatientsListPage() {
   const router = useRouter()
   const [filters, setFilters] = useState<ListPatientQuery>({})
   const [gender, setGender] = useState<string>(ALL_GENDERS)
-
   const [showInactive, setShowInactive] = useState(false)
   const [sorting, setSorting] = useState<SortingState>([
     { id: "name", desc: false },
@@ -84,45 +79,26 @@ export default function PatientsListPage() {
   const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE)
 
-  const { data } = usePatients(filters)
-
-  // Substring match on each active filter — all must match (AND across fields,
-  // hardcoded — no operator UI). Empty filter values are ignored.
-  // const data = useMemo(() => {
-  //   return MOCK_PATIENTS.filter((patient) => {
-  //     if (!showInactive && !patient.isActive) return false
-  //     if (gender !== ALL_GENDERS && patient.sex !== gender) return false
-
-  //     for (const f of filters) {
-  //       const query = f.value.trim().toLowerCase()
-  //       if (!query) continue
-
-  //       const haystack = (patient[f.field] ?? "").toString().toLowerCase()
-  //       if (!haystack.includes(query)) return false
-  //     }
-  //     return true
-  //   })
-  // }, [filters, gender, showInactive])
+  const { data, isPending, isError } = usePatients(filters)
+  const patients = data ?? []
 
   // Reset to first page when filter inputs change.
   useEffect(() => {
     setPageIndex(0)
   }, [filters, gender, showInactive, pageSize])
 
+  // TODO: this should come from the backend when implemeting pagination.
   const stats = useMemo(() => {
-    const total = MOCK_PATIENTS.length
-    const active = MOCK_PATIENTS.filter((p) => p.isActive).length
+    if (!patients) return { total: 0, active: 0, inactive: 0, seenThisMonth: 0 }
+    const active = patients.filter((patient) => patient.isActive).length
 
-    const seenThisMonth = MOCK_PATIENTS.filter((p) => {
-      if (!p.lastVisitAt) return false
-      const d = new Date(p.lastVisitAt)
-      const now = new Date()
-      return (
-        d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
-      )
-    }).length
-    return { total, active, inactive: total - active, seenThisMonth }
-  }, [])
+    return {
+      total: patients.length,
+      active,
+      inactive: patients.length - active,
+      seenThisMonth: 1,
+    }
+  }, [patients])
 
   const columns = useMemo(
     () => [
@@ -154,27 +130,24 @@ export default function PatientsListPage() {
           </span>
         ),
       }),
-      columnHelper.accessor(
-        (patient) => calculateAge(patient.dateOfBirth.toISOString()),
-        {
-          id: "age",
-          header: "Age",
-          cell: (info) => {
-            const patient = info.row.original
+      columnHelper.accessor((patient) => calculateAge(patient.dateOfBirth), {
+        id: "age",
+        header: "Age",
+        cell: (info) => {
+          const patient = info.row.original
 
-            return (
-              <span className="text-sm">
-                <span className="font-medium tabular-nums">
-                  {info.getValue()}
-                </span>
-                <span className="ml-1 text-xs text-muted-foreground">
-                  {GenderLabel[patient.gender]}
-                </span>
+          return (
+            <span className="text-sm">
+              <span className="font-medium tabular-nums">
+                {info.getValue()}
               </span>
-            )
-          },
-        }
-      ),
+              <span className="ml-1 text-xs text-muted-foreground">
+                {GenderLabel[patient.gender]}
+              </span>
+            </span>
+          )
+        },
+      }),
       columnHelper.accessor("isActive", {
         header: "Status",
         cell: (info) =>
@@ -202,13 +175,13 @@ export default function PatientsListPage() {
         header: "Last visit",
         cell: (info) => (
           <span className="text-sm text-muted-foreground">
-            {formatDate(info.row.original.createdAt.toISOString())}
+            {formatDate(info.row.original.createdAt as string)}
           </span>
         ),
         sortingFn: (a, b) => {
-          const av = a.original.createdAt.toDateString() ?? ""
-          const bv = b.original.createdAt.toDateString() ?? ""
-          return av.localeCompare(bv)
+          const av = a.original.createdAt ?? ""
+          const bv = b.original.createdAt ?? ""
+          return (av as string).localeCompare(bv as string)
         },
       }),
       columnHelper.display({
@@ -232,11 +205,8 @@ export default function PatientsListPage() {
     [router]
   )
 
-  // TODO: implement a better state for this
-  if (!data) return null
-
   const table = useReactTable({
-    data,
+    data: patients,
     columns,
     state: {
       sorting,
@@ -256,7 +226,7 @@ export default function PatientsListPage() {
     getPaginationRowModel: getPaginationRowModel(),
   })
 
-  const totalRows = data.length
+  const totalRows = patients.length
   const totalPages = table.getPageCount() || 1
   const currentPage = pageIndex + 1
   const rangeStart = totalRows === 0 ? 0 : pageIndex * pageSize + 1
@@ -316,21 +286,21 @@ export default function PatientsListPage() {
               <PatientsFilterPopover filters={filters} onChange={setFilters} />
               <ActiveFilterChips
                 filters={filters}
-                onRemove={(idx) =>
-                  setFilters(filters.filter((_, i) => i !== idx))
+                onRemove={(field) =>
+                  setFilters({ ...filters, [field]: undefined })
                 }
               />
             </div>
-            <Select value={sex} onValueChange={setSex}>
+            <Select value={gender} onValueChange={setGender}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Filter by sex" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value={ALL_SEX}>All sexes</SelectItem>
-                  {(Object.keys(SEX_LABELS) as Gender[]).map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {Gender[s]}
+                  <SelectItem value={ALL_GENDERS}>All genders</SelectItem>
+                  {Object.keys(GenderLabel).map((gender) => (
+                    <SelectItem key={gender} value={gender}>
+                      {GenderLabel[gender as keyof typeof Gender]}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -349,11 +319,19 @@ export default function PatientsListPage() {
           </div>
         </div>
 
-        {totalRows === 0 ? (
+        {isPending ? (
+          <div className="flex items-center justify-center p-16">
+            <Spinner />
+          </div>
+        ) : isError ? (
+          <div className="px-6 py-12 text-center text-sm text-destructive">
+            Couldn't load users. Check your connection and refresh.
+          </div>
+        ) : totalRows === 0 ? (
           <EmptyState
-            hasFilters={filters.length > 0}
+            hasFilters={Object.keys(filters).length > 0}
             onCreate={() => router.push("/dashboard/patients/new")}
-            onClear={() => setFilters([])}
+            onClear={() => setFilters({})}
           />
         ) : (
           <Table>
@@ -408,7 +386,7 @@ export default function PatientsListPage() {
                     !row.original.isActive && "opacity-60"
                   )}
                   onClick={() =>
-                    router.push(`/dashboard/patients/${row.original.id}`)
+                    router.push(`/dashboard/patients/${row.original.patientId}`)
                   }
                 >
                   {row.getVisibleCells().map((cell, idx) => (

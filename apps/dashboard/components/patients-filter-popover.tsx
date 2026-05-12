@@ -1,7 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { AtSign, ListFilter, Phone, Plus, User2, X } from "lucide-react"
+import { useEffect, useState } from "react"
+import {
+  AtSign,
+  Droplet,
+  FileText,
+  ListFilter,
+  Phone,
+  Plus,
+  User2,
+  X,
+} from "lucide-react"
 import { Button } from "@careline/ui/components/button"
 import { Input } from "@careline/ui/components/input"
 import {
@@ -10,13 +19,20 @@ import {
   PopoverTrigger,
 } from "@careline/ui/components/popover"
 import { cn } from "@careline/ui/lib/utils"
+import { ListPatientQuery } from "@careline/shared/types/patient.type"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import { shallowEqual } from "@/lib/shallowEqual"
 
-export type PatientFilterField = "name" | "email" | "phone"
+// export type PatientFilterField = "name" | "email" | "phone"
+export type PatientFilterField = keyof Omit<
+  ListPatientQuery,
+  "gender" | "isActive"
+>
 
-export type PatientFilter = {
-  field: PatientFilterField
-  value: string
-}
+// export type PatientFilter = {
+//   field: PatientFilterField
+//   value: string
+// }
 
 const FIELD_META: Record<
   PatientFilterField,
@@ -32,38 +48,71 @@ const FIELD_META: Record<
     icon: <AtSign className="size-3.5" />,
     placeholder: "name@example.com",
   },
-  phone: {
+  phoneNumber: {
     label: "Phone",
     icon: <Phone className="size-3.5" />,
     placeholder: "+20 100…",
   },
+  bloodType: {
+    label: "Blood Type",
+    icon: <Droplet className="size-3.5" />,
+    placeholder: "A+",
+  },
+  medicalNotes: {
+    label: "Medical Notes",
+    icon: <FileText className="size-3.5" />,
+    placeholder: "Needs wheelchair access",
+  },
 }
 
-const ALL_FIELDS: PatientFilterField[] = ["name", "email", "phone"]
+const ALL_FIELDS: PatientFilterField[] = Object.keys(
+  FIELD_META
+) as PatientFilterField[]
 
 type Props = {
-  filters: PatientFilter[]
-  onChange: (next: PatientFilter[]) => void
+  filters: Omit<ListPatientQuery, "gender" | "isActive">
+  onChange: (next: ListPatientQuery) => void
 }
 
 export function PatientsFilterPopover({ filters, onChange }: Props) {
   const [open, setOpen] = useState(false)
-  const activeFields = new Set(filters.map((f) => f.field))
-  const availableFields = ALL_FIELDS.filter((f) => !activeFields.has(f))
+
+  // Local mirror — typing only touches this.
+  const [draft, setDraft] = useState(filters)
+  const debounced = useDebouncedValue(draft, 250)
+
+  useEffect(() => {
+    if (!shallowEqual(debounced, filters)) onChange(debounced)
+  }, [debounced])
+
+  useEffect(() => {
+    setDraft(filters)
+  }, [filters])
+
+  const activeFields = new Set(
+    Object.entries(draft)
+      .filter(([_, value]) => value !== undefined && value !== null)
+      .map(([field]) => field)
+  )
+
+  const availableFields = ALL_FIELDS.filter(
+    (filter) => !activeFields.has(filter)
+  )
+  const activeFiltersCount = activeFields.size
 
   const addFilter = (field: PatientFilterField) => {
-    onChange([...filters, { field, value: "" }])
+    setDraft({ ...draft, [field]: "" })
   }
 
-  const updateFilter = (index: number, value: string) => {
-    onChange(filters.map((f, i) => (i === index ? { ...f, value } : f)))
+  const updateFilter = (field: PatientFilterField, value: string) => {
+    setDraft({ ...draft, [field]: value })
   }
 
-  const removeFilter = (index: number) => {
-    onChange(filters.filter((_, i) => i !== index))
+  const removeFilter = (field: PatientFilterField) => {
+    setDraft({ ...draft, [field]: undefined })
   }
 
-  const clearAll = () => onChange([])
+  const clearAll = () => setDraft({})
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -72,14 +121,15 @@ export function PatientsFilterPopover({ filters, onChange }: Props) {
           variant="outline"
           className={cn(
             "h-9 gap-2 border-dashed",
-            filters.length > 0 && "border-primary/40 bg-primary/5 text-primary"
+            activeFiltersCount > 0 &&
+              "border-primary/40 bg-primary/5 text-primary"
           )}
         >
           <ListFilter className="size-4" />
           Filters
-          {filters.length > 0 ? (
+          {activeFiltersCount > 0 ? (
             <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground tabular-nums">
-              {filters.length}
+              {activeFiltersCount}
             </span>
           ) : null}
         </Button>
@@ -98,7 +148,7 @@ export function PatientsFilterPopover({ filters, onChange }: Props) {
               Combine fields to narrow the list.
             </p>
           </div>
-          {filters.length > 0 ? (
+          {activeFiltersCount > 0 ? (
             <Button
               variant="ghost"
               size="sm"
@@ -110,13 +160,15 @@ export function PatientsFilterPopover({ filters, onChange }: Props) {
           ) : null}
         </div>
 
-        {filters.length > 0 ? (
+        {activeFiltersCount > 0 ? (
           <div className="space-y-2 px-3 pt-3">
-            {filters.map((f, i) => {
-              const meta = FIELD_META[f.field]
+            {Object.entries(draft).map(([field, value]) => {
+              if (value === undefined || value === null) return
+
+              const meta = FIELD_META[field as PatientFilterField]
               return (
                 <div
-                  key={`${f.field}-${i}`}
+                  key={field}
                   className="group rounded-xl border border-border/60 bg-muted/30 p-2.5 transition-colors focus-within:border-primary/40 focus-within:bg-primary/5"
                 >
                   <div className="mb-1.5 flex items-center justify-between">
@@ -126,7 +178,7 @@ export function PatientsFilterPopover({ filters, onChange }: Props) {
                     </span>
                     <button
                       type="button"
-                      onClick={() => removeFilter(i)}
+                      onClick={() => removeFilter(field as PatientFilterField)}
                       className="flex size-5 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                       aria-label={`Remove ${meta.label} filter`}
                     >
@@ -134,10 +186,15 @@ export function PatientsFilterPopover({ filters, onChange }: Props) {
                     </button>
                   </div>
                   <Input
-                    autoFocus={i === filters.length - 1 && f.value === ""}
-                    value={f.value}
+                    autoFocus={
+                      field === Object.keys(draft)[activeFiltersCount - 1] &&
+                      value === ""
+                    }
+                    value={value}
                     placeholder={meta.placeholder}
-                    onChange={(e) => updateFilter(i, e.target.value)}
+                    onChange={(e) =>
+                      updateFilter(field as PatientFilterField, e.target.value)
+                    }
                     className="h-8 border-0 bg-transparent px-1 text-sm shadow-none focus-visible:ring-0"
                   />
                 </div>
@@ -193,18 +250,20 @@ export function ActiveFilterChips({
   filters,
   onRemove,
 }: {
-  filters: PatientFilter[]
-  onRemove: (index: number) => void
+  filters: ListPatientQuery
+  onRemove: (field: PatientFilterField) => void
 }) {
-  if (filters.length === 0) return null
+  if (Object.keys(filters).length === 0) return null
+
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      {filters.map((f, i) => {
-        const meta = FIELD_META[f.field]
-        const shown = f.value.trim() || "any"
+      {Object.entries(filters).map(([field, value]) => {
+        if (value === undefined || value === null) return
+        const meta = FIELD_META[field as PatientFilterField]
+        const shown = value.trim() || "any"
         return (
           <span
-            key={`${f.field}-${i}`}
+            key={field}
             className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/5 py-1 pr-1 pl-2.5 text-xs text-primary"
           >
             <span className="flex items-center gap-1 text-[10px] font-semibold tracking-[0.08em] uppercase opacity-70">
@@ -216,7 +275,7 @@ export function ActiveFilterChips({
             </span>
             <button
               type="button"
-              onClick={() => onRemove(i)}
+              onClick={() => onRemove(field as PatientFilterField)}
               className="flex size-4 items-center justify-center rounded-full text-primary/70 transition-colors hover:bg-primary/15 hover:text-primary"
               aria-label={`Remove ${meta.label} filter`}
             >

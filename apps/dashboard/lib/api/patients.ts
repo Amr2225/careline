@@ -1,5 +1,6 @@
 import { CreatePatientPayload, CreatePatientWithUserPayload, ListPatientQuery, Patient, UpdatePatientMedicalPayload, UpdatePatientPayload } from "@careline/shared/types/patient.type";
 import { api } from "@/lib/api";
+import { UserWithoutPassword } from "@careline/shared/types/user.type";
 
 
 export const patientApi = {
@@ -10,6 +11,11 @@ export const patientApi = {
 
     get: async (patientId: string): Promise<Patient> => {
         const { data } = await api.get<Patient>(`/patients/${patientId}`)
+        return data;
+    },
+
+    getUsersWithPatientRole: async (search?: string): Promise<UserWithoutPassword[]> => {
+        const { data } = await api.get<UserWithoutPassword[]>("/patients/users", { params: { search } })
         return data;
     },
 

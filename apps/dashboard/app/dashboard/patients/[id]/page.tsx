@@ -28,13 +28,12 @@ import {
 } from "@careline/ui/components/select"
 import { PatientForm, type PatientScope } from "@/components/patient-form"
 import { ConfirmDialog } from "@/components/confirm-dialog"
+import { calculateAge, formatDate } from "@/lib/patients-mock"
+import { usePatient } from "@/lib/queries/patient"
 import {
-  BLOOD_TYPE_LABELS,
-  calculateAge,
-  formatDate,
-  getMockPatient,
-  SEX_LABELS,
-} from "@/lib/patients-mock"
+  BloodTypeLabel,
+  GenderLabel,
+} from "@careline/shared/types/patient.type"
 
 type ScopePreset = "manager" | "receptionist" | "doctor" | "scheduler"
 
@@ -67,7 +66,9 @@ export default function PatientDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = use(params)
-  const patient = getMockPatient(id)
+  const patientQuery = usePatient(id)
+
+  const patient = patientQuery.data ?? null
   const [scopePreset, setScopePreset] = useState<ScopePreset>("manager")
   const [isActive, setIsActive] = useState(patient?.isActive ?? true)
 
@@ -83,7 +84,7 @@ export default function PatientDetailPage({
   }
 
   const scope = SCOPES[scopePreset]
-  const age = calculateAge(patient.dob)
+  const age = calculateAge(patient.dateOfBirth)
 
   const handleDeactivate = async () => {
     await new Promise((r) => setTimeout(r, 400))
@@ -125,7 +126,7 @@ export default function PatientDetailPage({
               </h1>
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <span className="tabular-nums">
-                  {age} yrs · {SEX_LABELS[patient.sex]}
+                  {age} yrs · {GenderLabel[patient.gender]}
                 </span>
                 {patient.bloodType ? (
                   <>
@@ -134,7 +135,7 @@ export default function PatientDetailPage({
                       variant="outline"
                       className="rounded-full border-destructive/30 bg-destructive/5 text-destructive"
                     >
-                      {BLOOD_TYPE_LABELS[patient.bloodType]}
+                      {BloodTypeLabel[patient.bloodType]}
                     </Badge>
                   </>
                 ) : null}
@@ -229,7 +230,7 @@ export default function PatientDetailPage({
         <SummaryItem
           icon={<Phone className="size-4" />}
           label="Phone"
-          value={patient.phone}
+          value={patient.phoneNumber}
           mono
         />
         <SummaryItem
@@ -240,7 +241,7 @@ export default function PatientDetailPage({
         <SummaryItem
           icon={<CalendarDays className="size-4" />}
           label="Date of birth"
-          value={formatDate(patient.dob)}
+          value={formatDate(patient.dateOfBirth)}
         />
         <SummaryItem
           icon={<MapPin className="size-4" />}
@@ -251,7 +252,7 @@ export default function PatientDetailPage({
 
       {/* At-a-glance medical chips */}
       {patient.allergies || patient.chronicConditions ? (
-        <section className="shadow-ambient rounded-2xl border border-amber-500/30 bg-amber-500/[0.04] p-5">
+        <section className="shadow-ambient rounded-2xl border border-amber-500/30 bg-amber-500/4 p-5">
           <div className="flex items-start gap-3">
             <span className="flex size-9 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
               <ShieldAlert className="size-4" />
@@ -283,7 +284,12 @@ export default function PatientDetailPage({
         </section>
       ) : null}
 
-      <PatientForm mode="edit" scope={scope} initial={{ ...patient, isActive }} />
+      <PatientForm
+        mode="edit"
+        scope={scope}
+        initial={{ ...patient, isActive }}
+        patientId={id}
+      />
 
       <PlaceholderSection
         icon={<CalendarClock className="size-4" />}

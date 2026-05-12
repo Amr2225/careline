@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { Patient } from '@careline/shared/types/patient.type';
 import { CreatePatientDto, CreatePatientWithUserDto } from './dto/create-patient.dto';
@@ -7,15 +7,23 @@ import { User } from '@/auth/decorators/user.decorator';
 import type { UserWithoutPassword } from '@careline/shared/types/user.type';
 import { Requires } from '@/rbac/decorator/requires.decorator';
 import { Action } from '@careline/shared/types/rbac.type';
+import { ListPatientQueryDto, UserWithPatientRoleSearch } from './dto/list-patient-query.dto';
 
-@Controller('patient')
+@Controller('patients')
 export class PatientController {
     constructor(private readonly patientService: PatientService) { }
 
     @Get()
     @Requires("Patients", Action.READ)
-    async listPatients(): Promise<Patient[]> {
-        return await this.patientService.listPatients();
+    async listPatients(@Query() filters: ListPatientQueryDto = {}): Promise<Patient[]> {
+        return await this.patientService.listPatients(filters);
+    }
+
+    @Get("/users")
+    @Requires("Patients", Action.READ)
+    @Requires("Users", Action.READ)
+    async getUsersWithPatientRole(@Query() filters: UserWithPatientRoleSearch = {}): Promise<UserWithoutPassword[]> {
+        return await this.patientService.getUsersWithPatientRole(filters);
     }
 
     @Get(':id')

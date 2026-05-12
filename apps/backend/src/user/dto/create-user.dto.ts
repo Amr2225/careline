@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsEmail, IsOptional, IsPhoneNumber, IsString, Matches, MinLength } from "class-validator";
+import { IsArray, IsBoolean, IsEmail, IsOptional, IsString, Matches, MinLength } from "class-validator";
 
 export class CreateUserDto {
     @IsEmail({}, { message: "Invalid email address" })
@@ -14,7 +14,7 @@ export class CreateUserDto {
 
     @IsString()
     @IsOptional()
-    @IsPhoneNumber("EG", { message: "Invalid phone number" })
+    // @IsPhoneNumber("EG", { message: "Invalid phone number" })
     phoneNumber?: string;
 
     @IsOptional()

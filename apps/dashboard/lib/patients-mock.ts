@@ -253,7 +253,7 @@ export type LinkableUser = {
   id: string
   name: string
   email: string
-  phone: string | null
+  phoneNumber: string | null
   createdAt: string
 }
 
@@ -262,28 +262,28 @@ export const MOCK_LINKABLE_USERS: LinkableUser[] = [
     id: "usr_u01",
     name: "Mariam Saleh",
     email: "mariam.saleh@example.com",
-    phone: "+20 100 818 7700",
+    phoneNumber: "+20 100 818 7700",
     createdAt: "2026-04-18T09:00:00.000Z",
   },
   {
     id: "usr_u02",
     name: "Hussein Tarek",
     email: "h.tarek@example.com",
-    phone: "+20 122 404 9090",
+    phoneNumber: "+20 122 404 9090",
     createdAt: "2026-04-22T11:30:00.000Z",
   },
   {
     id: "usr_u03",
     name: "Dina Roshdy",
     email: "dina.roshdy@example.com",
-    phone: null,
+    phoneNumber: null,
     createdAt: "2026-05-01T08:15:00.000Z",
   },
   {
     id: "usr_u04",
     name: "Tamer Helmy",
     email: "tamer.helmy@example.com",
-    phone: "+20 111 303 5050",
+    phoneNumber: "+20 111 303 5050",
     createdAt: "2026-05-05T14:45:00.000Z",
   },
 ]

@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsString } from "class-validator";
 import { CreatePatientDto } from "./create-patient.dto";
 import { PartialType } from "@nestjs/mapped-types";
 

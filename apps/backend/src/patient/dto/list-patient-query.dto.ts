@@ -13,6 +13,10 @@ export class ListPatientQueryDto implements ListPatientQuery {
     email?: string;
 
     @IsOptional()
+    @IsString()
+    phoneNumber?: string;
+
+    @IsOptional()
     @IsBoolean()
     @Transform(({ value }) => value === "true")
     isActive?: boolean;
@@ -28,4 +32,10 @@ export class ListPatientQueryDto implements ListPatientQuery {
     @IsEnum(BloodType)
     @IsOptional()
     bloodType?: BloodType;
+}
+
+export class UserWithPatientRoleSearch {
+    @IsOptional()
+    @IsString()
+    search?: string;
 }

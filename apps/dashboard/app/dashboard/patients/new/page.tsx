@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import {
   AtSign,
@@ -15,25 +15,21 @@ import { Button } from "@careline/ui/components/button"
 import { Input } from "@careline/ui/components/input"
 import { cn } from "@careline/ui/lib/utils"
 import { PatientForm } from "@/components/patient-form"
-import { MOCK_LINKABLE_USERS, type LinkableUser } from "@/lib/patients-mock"
+import { useUsersWithPatientRole } from "@/lib/queries/patient"
+import { UserWithoutPassword } from "@careline/shared/types/user.type"
+import { initials } from "@/lib/initials"
+import Spinner from "@/components/spinner"
 
 type FlowMode = "create" | "link"
 
 export default function NewPatientPage() {
   const [mode, setMode] = useState<FlowMode>("create")
-  const [selectedUser, setSelectedUser] = useState<LinkableUser | null>(null)
+  const [selectedUser, setSelectedUser] = useState<UserWithoutPassword | null>(
+    null
+  )
   const [search, setSearch] = useState("")
-
-  const filteredUsers = useMemo(() => {
-    const q = search.trim().toLowerCase()
-    if (!q) return MOCK_LINKABLE_USERS
-    return MOCK_LINKABLE_USERS.filter(
-      (u) =>
-        u.name.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q) ||
-        (u.phone ?? "").toLowerCase().includes(q)
-    )
-  }, [search])
+  const { data, isPending, isError } = useUsersWithPatientRole({ search })
+  const usersWithPatientRole = data ?? []
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
@@ -103,10 +99,12 @@ export default function NewPatientPage() {
         </div>
       ) : (
         <UserPicker
-          users={filteredUsers}
+          users={usersWithPatientRole}
           search={search}
           onSearchChange={setSearch}
           onSelect={setSelectedUser}
+          isPending={isPending}
+          isError={isError}
         />
       )}
     </div>
@@ -133,7 +131,7 @@ function ModeCard({
       className={cn(
         "group relative flex items-start gap-3 rounded-xl border p-4 text-left transition-all",
         active
-          ? "border-primary/40 bg-primary/[0.05] ring-2 ring-primary/20"
+          ? "border-primary/40 bg-primary/5 ring-2 ring-primary/20"
           : "border-border/60 bg-card hover:border-border hover:bg-muted/40"
       )}
     >
@@ -165,11 +163,15 @@ function UserPicker({
   search,
   onSearchChange,
   onSelect,
+  isPending,
+  isError,
 }: {
-  users: LinkableUser[]
+  users: UserWithoutPassword[]
   search: string
-  onSearchChange: (v: string) => void
-  onSelect: (u: LinkableUser) => void
+  onSearchChange: (value: string) => void
+  onSelect: (user: UserWithoutPassword) => void
+  isPending: boolean
+  isError: boolean
 }) {
   return (
     <section className="shadow-ambient rounded-2xl border border-border/70 bg-card">
@@ -191,7 +193,15 @@ function UserPicker({
         </div>
       </div>
 
-      {users.length === 0 ? (
+      {isPending ? (
+        <div className="flex items-center justify-center p-16">
+          <Spinner />
+        </div>
+      ) : isError ? (
+        <div className="px-6 py-12 text-center text-sm text-destructive">
+          Couldn't load users. Check your connection and refresh.
+        </div>
+      ) : users.length === 0 ? (
         <div className="flex flex-col items-center gap-2 px-6 py-12 text-center">
           <span className="flex size-10 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
             <Search className="size-4" />
@@ -204,49 +214,40 @@ function UserPicker({
         </div>
       ) : (
         <ul className="divide-y divide-border/50">
-          {users.map((u) => (
-            <li key={u.id}>
+          {users.map((user) => (
+            <li key={user.id}>
               <button
                 type="button"
-                onClick={() => onSelect(u)}
+                onClick={() => onSelect(user)}
                 className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-muted/40"
               >
                 <span
                   className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary"
                   aria-hidden
                 >
-                  {initials(u.name)}
+                  {initials(user.name)}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">
-                    {u.name}
+                    {user.name}
                   </p>
                   <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
                       <AtSign className="size-3" />
-                      {u.email}
+                      {user.email}
                     </span>
                     <span className="inline-flex items-center gap-1 font-mono">
                       <Phone className="size-3" />
-                      {u.phone ?? "no phone"}
+                      {user.phone ?? "no phone"}
                     </span>
                   </p>
                 </div>
-                <span className="text-xs font-medium text-primary">
-                  Link →
-                </span>
+                <span className="text-xs font-medium text-primary">Link →</span>
               </button>
             </li>
           ))}
         </ul>
       )}
     </section>
-  )
-}
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/)
-  return (
-    (parts[0]?.[0] ?? "").toUpperCase() + (parts[1]?.[0] ?? "").toUpperCase()
   )
 }
