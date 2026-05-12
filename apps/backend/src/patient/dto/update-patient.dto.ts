@@ -6,6 +6,5 @@ export class UpdatePatientDto extends PartialType(CreatePatientDto) { }
 
 export class UpdatePatientMedicalDto {
     @IsString()
-    @IsOptional()
     medicalNotes: string;
 }

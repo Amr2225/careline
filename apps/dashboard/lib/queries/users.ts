@@ -40,6 +40,7 @@ export function useUpdateUser(id: string) {
   return useMutation({
     mutationFn: (payload: UpdateUserPayload) => usersApi.update(id, payload),
     onSuccess: (data) => {
+      // Any component currently using useUser(id) can show the updated data immediately without waiting for another network request. 
       queryClient.setQueryData(queryKeys.users.detail(id), data)
       void queryClient.invalidateQueries({ queryKey: queryKeys.users.all })
     },

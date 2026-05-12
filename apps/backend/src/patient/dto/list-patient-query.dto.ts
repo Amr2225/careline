@@ -1,8 +1,9 @@
 import { IsBoolean, IsEmail, IsEnum, IsOptional, IsString } from "class-validator";
 import { Transform } from "class-transformer";
-import { BloodType, Gender } from "@careline/shared/prisma/client";
+import { BloodType, Gender } from "@careline/shared/types/patient.type";
+import { ListPatientQuery } from "@careline/shared/types/patient.type";
 
-export class ListPatientQueryDto {
+export class ListPatientQueryDto implements ListPatientQuery {
     @IsOptional()
     @IsString()
     name?: string;

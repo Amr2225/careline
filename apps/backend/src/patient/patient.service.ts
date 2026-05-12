@@ -18,14 +18,14 @@ export class PatientService {
     async listPatients(listPatientQueryDto: ListPatientQueryDto = {}): Promise<Patient[]> {
         const patients: Patient[] = [];
 
-        const patientWhere: Prisma.PatientWhereInput = {};
-        const userWhere: Prisma.UserWhereInput = {};
+        let patientWhere: Prisma.PatientWhereInput = {};
+        let userWhere: Prisma.UserWhereInput = {};
         userWhere.userRoles = {
             some: {
                 role: {
                     name: "Patient"
                 }
-            }
+            },
         }
 
         patientWhere.OR = []
@@ -41,6 +41,11 @@ export class PatientService {
         if (listPatientQueryDto.medicalNotes) patientWhere.OR.push({ medicalNotes: { contains: listPatientQueryDto.medicalNotes, mode: "insensitive" } });
         if (listPatientQueryDto.gender) patientWhere.gender = listPatientQueryDto.gender;
 
+        // Check for empty queries and set them to Prisma.skip (Because prisma will return no data if the OR array is empty)
+        userWhere = { ...userWhere, OR: userWhere.OR.length > 0 ? userWhere.OR : Prisma.skip }
+        patientWhere = { ...patientWhere, OR: patientWhere.OR.length > 0 ? patientWhere.OR : Prisma.skip }
+
+
         const users = await this.dbService.user.findMany({
             where: userWhere,
             omit: {
@@ -48,12 +53,9 @@ export class PatientService {
                 isBootstrapAdmin: true,
             },
             include: {
-                patient: {
-                    where: patientWhere
-                }
+                patient: { where: patientWhere }
             }
         });
-        console.log("Patients: ", users);
 
         if (!users.length) return [];
 
@@ -93,8 +95,15 @@ export class PatientService {
 
     async createPatientWithUser(requestUserId: string, patient: CreatePatientWithUserDto): Promise<Patient> {
         // TODO: Validate the phone number in a seperate validationPipe
-        if (!patient.phoneNumber) throw new BadRequestException("Phone number is required");
+        if (!patient.phoneNumber) throw new BadRequestException("Phone number is required"); // Check for phone number in because it is optional in the userDTO but for a patient we must check for it.
         const validPhoneNumber = verifyPhoneNumber(patient.phoneNumber);
+
+        if (patient.emergencyContactPhone) {
+            const validEmergencyContactPhone = verifyPhoneNumber(patient.emergencyContactPhone);
+            if (!validEmergencyContactPhone) throw new BadRequestException("Invalid emergency contact phone number");
+
+            patient.emergencyContactPhone = validEmergencyContactPhone;
+        }
 
         try {
             const patientUser = await this.dbService.user.create({
@@ -105,7 +114,7 @@ export class PatientService {
                     phoneNumber: validPhoneNumber,
                     patient: {
                         create: {
-                            dateOfBirth: patient.dateOfBirth,
+                            dateOfBirth: new Date(patient.dateOfBirth),
                             gender: patient.gender,
                             address: skipUndefined(patient.address),
                             emergencyContactName: skipUndefined(patient.emergencyContactName),
