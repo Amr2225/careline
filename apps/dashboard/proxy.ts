@@ -8,6 +8,7 @@ export function proxy(request: NextRequest) {
 
     const accessToken = request.cookies.get("accessToken")?.value
     const refreshToken = request.cookies.get("refreshToken")?.value
+    // const csrfToken = request.cookies.get("csrfToken")?.value
     const isAuthenticated = Boolean(accessToken || refreshToken)
 
     const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route))

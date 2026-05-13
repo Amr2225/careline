@@ -60,6 +60,7 @@ import {
 } from "@/lib/queries/patient"
 import { extractErrorMessage } from "@/lib/errors"
 import { UserWithoutPassword } from "@careline/shared/types/user.type"
+import { useUpdateUser } from "@/lib/queries/users"
 
 type Mode = "create" | "edit" | "link"
 
@@ -84,12 +85,18 @@ const baseSchema = z.object({
   phoneNumber: z
     .string()
     .trim()
-    .regex(phoneRegex, "Enter a valid phone number."),
+    .regex(phoneRegex, "Enter a valid phone number.")
+    .transform((value) => value.replace(/\s/g, "")),
   dateOfBirth: z.string().min(1, "Date of birth is required."),
   gender: z.enum(Gender),
   address: z.string().trim().optional().or(z.literal("")),
   emergencyContactName: z.string().trim().optional().or(z.literal("")),
-  emergencyContactPhone: z.string().trim().optional().or(z.literal("")),
+  emergencyContactPhone: z
+    .string()
+    .trim()
+    .transform((value) => (value ? value.replace(/\s/g, "") : ""))
+    .optional()
+    .or(z.literal("")),
   bloodType: z.enum(BloodType).optional(),
   allergies: z.string().trim().optional().or(z.literal("")),
   chronicConditions: z.string().trim().optional().or(z.literal("")),
@@ -120,7 +127,7 @@ const linkSchema = baseSchema
     userId: z.string().min(1, "User ID is required"),
   })
 
-type PatientFormValues = z.infer<typeof createSchema>
+type CreateSchemaType = z.infer<typeof createSchema>
 type LinkSchemaType = z.infer<typeof linkSchema>
 type EditSchemaType = z.infer<typeof editSchema>
 
@@ -136,9 +143,9 @@ export function PatientForm({
 }: PatientFormProps) {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
-  console.log("linkedUser", linkedUser?.id)
 
   const createPatientWithUser = useCreatePatientWithUser()
+  const updateUser = useUpdateUser(initial?.userId ?? "")
   const createPatient = useCreatePatient()
   const updatePatient = useUpdatePatient(patientId ?? "")
 
@@ -149,7 +156,7 @@ export function PatientForm({
     resolver: zodResolver(resolverSchema),
     shouldUnregister: true,
     defaultValues: {
-      userId: linkedUser?.id ?? "",
+      // userId: linkedUser?.id ?? "",
       name: linkedUser?.name ?? initial?.name ?? "",
       email: linkedUser?.email ?? initial?.email ?? "",
       phoneNumber: linkedUser?.phoneNumber ?? initial?.phoneNumber ?? "+20 ",
@@ -174,14 +181,11 @@ export function PatientForm({
     createPatient.isPending ||
     updatePatient.isPending
 
-  const errors = form.formState.errors as FieldErrors<PatientFormValues>
+  const errors = form.formState.errors as FieldErrors<CreateSchemaType>
+  const changedFields = form.formState.dirtyFields as Partial<CreateSchemaType>
   const contactDisabled = !scope.canEditContact
   const medicalNotesDisabled = !scope.canEditMedicalNotes
   const readOnlyEverything = contactDisabled && medicalNotesDisabled
-
-  useEffect(() => {
-    console.log("FROM ERRORS", errors)
-  }, [errors])
 
   useEffect(() => {
     form.setValue("userId", linkedUser?.id ?? "")
@@ -190,8 +194,8 @@ export function PatientForm({
   const onSubmit = form.handleSubmit(async (values) => {
     if (mode === "create") {
       try {
-        const createPayload = values as PatientFormValues // TODO: change the name of this type
-        createPayload.phoneNumber = createPayload.phoneNumber.replace(/\s/g, "") //remove spaces from phone number
+        const createPayload = values as CreateSchemaType
+        createPayload.phoneNumber = createPayload.phoneNumber //remove spaces from phone number
         createPayload.emergencyContactPhone =
           createPayload.emergencyContactPhone?.replace(/\s/g, "") //remove spaces from emergency contact phone number
         await createPatientWithUser.mutateAsync(createPayload)
@@ -207,6 +211,7 @@ export function PatientForm({
         })
       }
     }
+
     if (mode === "link") {
       try {
         await createPatient.mutateAsync(values as LinkSchemaType)
@@ -224,7 +229,52 @@ export function PatientForm({
 
     if (mode === "edit") {
       try {
-        await updatePatient.mutateAsync(values)
+        const editValues = values as EditSchemaType
+
+        const updatedValues = Object.fromEntries(
+          (Object.keys(editValues) as Array<keyof EditSchemaType>)
+            .filter((key) => changedFields[key])
+            .map((key) => [key, editValues[key]])
+        ) as Partial<EditSchemaType>
+
+        type userFields = "name" | "email" | "phoneNumber" | "password"
+
+        const userUpdatePayload: Record<userFields, string | undefined> = {
+          name: updatedValues?.name,
+          email: updatedValues?.email,
+          phoneNumber: updatedValues?.phoneNumber,
+          password: updatedValues?.password,
+        }
+
+        const patientUpdatePayload = Object.fromEntries(
+          (Object.keys(editValues) as Array<keyof EditSchemaType>)
+            .filter(
+              (key) =>
+                !Object.keys(userUpdatePayload).includes(key) &&
+                changedFields[key]
+            )
+            .map((key) => [key, editValues[key]])
+        ) as Partial<EditSchemaType>
+
+        const userValuesChanged = Object.values(userUpdatePayload).some(
+          (value) => value !== undefined && value !== null && value !== ""
+        )
+
+        const patientValuesChanged = Object.values(patientUpdatePayload).some(
+          (value) => value !== undefined && value !== null && value !== ""
+        )
+
+        console.log("Values: ", values)
+        console.log("Updated Values", updatedValues)
+        console.log("Changed Fields", changedFields)
+        console.log("userUpdatePayload", userUpdatePayload)
+        console.log("patientUpdatePayload", patientUpdatePayload)
+
+        console.log("userValuesChanged", userValuesChanged)
+        console.log("patientValuesChange", patientValuesChanged)
+
+        if (userValuesChanged) await updateUser.mutateAsync(userUpdatePayload)
+        if (patientValuesChanged) await updatePatient.mutateAsync(updatedValues)
         toast.success("Patient updated", { description: "Changes saved." })
       } catch (error) {
         toast.error("Patient update failed", {
@@ -232,7 +282,6 @@ export function PatientForm({
         })
       }
     }
-
     form.reset({ ...values, password: "" })
   })
 
@@ -439,20 +488,20 @@ export function PatientForm({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="p-sex" className={labelClass}>
+              <FieldLabel htmlFor="p-gender" className={labelClass}>
                 <UsersIcon className="size-4" />
-                Sex
+                Gender
               </FieldLabel>
               <Controller
                 control={form.control}
                 name="gender"
                 render={({ field }) => (
                   <Select
-                    value={field.value ?? Gender.MALE}
+                    value={field.value}
                     onValueChange={field.onChange}
                     disabled={contactDisabled}
                   >
-                    <SelectTrigger id="p-sex">
+                    <SelectTrigger id="p-gender">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

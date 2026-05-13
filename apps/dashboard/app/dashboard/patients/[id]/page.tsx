@@ -34,6 +34,7 @@ import {
   BloodTypeLabel,
   GenderLabel,
 } from "@careline/shared/types/patient.type"
+import Loading from "@/components/loading"
 
 type ScopePreset = "manager" | "receptionist" | "doctor" | "scheduler"
 
@@ -60,6 +61,14 @@ const SCOPES: Record<ScopePreset, PatientScope & { label: string }> = {
   },
 }
 
+// export const calculateScop = (
+//   requiredPermissions: string[],
+//   userPermissions: string[]
+// ): ScopePreset => {
+
+//   return "doctor"
+// }
+
 export default function PatientDetailPage({
   params,
 }: {
@@ -68,11 +77,11 @@ export default function PatientDetailPage({
   const { id } = use(params)
   const patientQuery = usePatient(id)
 
-  const patient = patientQuery.data ?? null
   const [scopePreset, setScopePreset] = useState<ScopePreset>("manager")
-  const [isActive, setIsActive] = useState(patient?.isActive ?? true)
+  const [isActive, setIsActive] = useState(true)
 
-  if (!patient) {
+  if (patientQuery.isPending && !patientQuery.data) return <Loading />
+  if (patientQuery.isError && !patientQuery.data) {
     return (
       <div className="mx-auto max-w-md py-16 text-center">
         <p className="text-sm text-muted-foreground">Patient not found.</p>
@@ -83,6 +92,7 @@ export default function PatientDetailPage({
     )
   }
 
+  const patient = patientQuery.data
   const scope = SCOPES[scopePreset]
   const age = calculateAge(patient.dateOfBirth)
 
@@ -105,7 +115,7 @@ export default function PatientDetailPage({
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div>
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" className="p-0" size="sm" asChild>
           <Link href="/dashboard/patients">
             <ChevronLeft className="size-4" />
             Back to patients

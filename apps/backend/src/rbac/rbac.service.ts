@@ -1,12 +1,12 @@
 import { DbService } from '@/db/db.service';
-import { Action } from '@careline/shared/types/rbac.type';
+import { Action, SYSTEM_ROLES, SystemRoleName } from '@careline/shared/types/rbac.type';
 import { Role } from '@careline/shared/types/rbac.type';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class RbacService {
     constructor(private readonly dbService: DbService) { }
-    private readonly PROTECTED_ROLES = ['Manager', 'Patient'];
+    private readonly PROTECTED_ROLES: SystemRoleName[] = [SYSTEM_ROLES.MANAGER, SYSTEM_ROLES.PATIENT];
     private readonly MANAGER_EQUIVALENT_PERMISSIONS = [
         { module: 'Users', action: Action.READ },
         { module: 'Users', action: Action.WRITE },
@@ -78,7 +78,7 @@ export class RbacService {
 
     private async isRoleProtected(roleId: string): Promise<boolean> {
         const role = await this.dbService.role.findUnique({ where: { id: roleId } });
-        return role?.isSystem === true && this.PROTECTED_ROLES.includes(role?.name);
+        return role?.isSystem === true && this.PROTECTED_ROLES.includes(role?.name as SystemRoleName);
     }
 
     async canEditRolePermission(roleId: string): Promise<boolean> {

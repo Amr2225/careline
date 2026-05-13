@@ -3,9 +3,8 @@ import { DbService } from '@/db/db.service';
 import { RbacService } from '@/rbac/rbac.service';
 import { Prisma } from '@careline/shared/prisma/client';
 import { CreateRoleDto } from './dto/create-roles.dto';
-import { Action } from '@careline/shared/types/rbac.type';
+import { Action, MODULE_NAMES } from '@careline/shared/types/rbac.type';
 import { UpdateRoleDto } from './dto/update-roles.dto';
-import { MODULE_NAMES } from '@careline/shared/types/modules.type';
 
 @Injectable()
 export class RolesService {
@@ -57,6 +56,7 @@ export class RolesService {
                             }
 
                             if (!this.isValidAction(action)) throw new BadRequestException("Invalid action");
+                            this.assertActionAppliesToModule(module, action as Action);
 
                             return {
                                 module: { connect: { name: module } },
@@ -79,12 +79,18 @@ export class RolesService {
         return value !== undefined && Object.values(Action).includes(value as Action);
     }
 
+    private assertActionAppliesToModule(module: string, action: Action) {
+        if (action === Action.UPDATE_MEDICAL && module !== "Patients") {
+            throw new BadRequestException(`Action ${action} does not apply to module ${module}`);
+        }
+    }
+
     async update(roleId: string, updateRoleDto: UpdateRoleDto) {
         if (!await this.rbacService.canEditRolePermission(roleId)) throw new ForbiddenException("This role is not editable");
 
         const permissions = updateRoleDto.permissions ? [...new Set(updateRoleDto.permissions)] : undefined;
 
-        await this.db.role.update({
+        return await this.db.role.update({
             where: { id: roleId },
             data: {
                 name: updateRoleDto.name ?? Prisma.skip,
@@ -94,6 +100,7 @@ export class RolesService {
                     create: permissions.map((permission) => {
                         const [module, action] = permission.split(":");
                         if (!this.isValidAction(action)) throw new BadRequestException("Invalid action");
+                        this.assertActionAppliesToModule(module, action as Action);
 
                         return {
                             module: { connect: { name: module } },
@@ -101,6 +108,13 @@ export class RolesService {
                         }
                     }),
                 } : Prisma.skip,
+            }, select: {
+                id: true,
+                _count: {
+                    select: {
+                        users: true
+                    }
+                }
             }
         })
 
