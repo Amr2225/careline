@@ -6,6 +6,7 @@ import { UserEntity, UserWithoutPassword } from '@careline/shared/types/user.typ
 import { RbacService } from '@/rbac/rbac.service';
 import { hashPassword } from '@/common/password.utils';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SYSTEM_ROLES } from '@careline/shared/types/rbac.type';
 
 type Role = {
     id: string;
@@ -34,7 +35,7 @@ export class UserService {
     async getUsers(queryUserDto: UsersFilter = {}): Promise<UserWithoutPassword[]> {
         const where: Prisma.UserWhereInput = {
             userRoles: {
-                none: { role: { name: "Patient" } }
+                none: { role: { name: SYSTEM_ROLES.PATIENT } }
             }
         }
 

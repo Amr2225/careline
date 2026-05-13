@@ -1,4 +1,4 @@
-import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
+import { BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { DbService } from "@/db/db.service";
 
@@ -7,7 +7,7 @@ import { DbService } from "@/db/db.service";
 export class ValidateRoles implements PipeTransform {
     constructor(private readonly dbService: DbService) { }
 
-    async transform(value: CreateUserDto, _metadata: ArgumentMetadata) {
+    async transform(value: CreateUserDto) {
         const requestedRoles = [...new Set(value.roles ?? [])];
 
         if (!requestedRoles.length) return value;

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Action } from '@careline/shared/prisma/enums';
+import { Action } from '@careline/shared/types/rbac.type';
 import { DbService } from '@/db/db.service';
 import { RbacService } from './rbac.service';
 import { User } from '@careline/shared/prisma/client';

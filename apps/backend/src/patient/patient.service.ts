@@ -1,5 +1,5 @@
 import { DbService } from '@/db/db.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdatePatientMedicalDto } from './dto/update-patient.dto';
 import { Patient } from '@careline/shared/types/patient.type';
 import { CreatePatientDto, CreatePatientWithUserDto } from './dto/create-patient.dto';
@@ -8,9 +8,9 @@ import { ListPatientQueryDto, UserWithPatientRoleSearch } from './dto/list-patie
 import { Prisma } from '@careline/shared/prisma/client';
 import { PatientIncludeUser, transformPatient, transformUserToPatient, UserIncludePatient } from '@/common/transformUser.utils';
 import { hashPassword } from '@/common/password.utils';
-import { verifyPhoneNumber } from '@/common/phone.utils';
 import { skipUndefined } from '@/common/skipUndefined.utils';
 import { UserWithoutPassword } from '@careline/shared/types/user.type';
+import { SYSTEM_ROLES } from '@careline/shared/types/rbac.type';
 
 @Injectable()
 export class PatientService {
@@ -24,7 +24,7 @@ export class PatientService {
         userWhere.userRoles = {
             some: {
                 role: {
-                    name: "Patient"
+                    name: SYSTEM_ROLES.PATIENT
                 }
             },
         }
@@ -36,12 +36,10 @@ export class PatientService {
         if (listPatientQueryDto.name) userWhere.OR.push({ name: { contains: listPatientQueryDto.name, mode: "insensitive" } })
         if (listPatientQueryDto.email) userWhere.OR.push({ email: { contains: listPatientQueryDto.email, mode: "insensitive" } })
         if (listPatientQueryDto.isActive !== undefined) userWhere.isActive = listPatientQueryDto.isActive;
-        if (listPatientQueryDto.phoneNumber) {
-            const validPhoneNumber = verifyPhoneNumber(listPatientQueryDto.phoneNumber);
-            userWhere.OR.push({ phoneNumber: validPhoneNumber });
-        }
+        if (listPatientQueryDto.phoneNumber) userWhere.OR.push({ phoneNumber: { contains: listPatientQueryDto.phoneNumber, mode: "insensitive" } });
 
         // Patients Fields
+        // TODO: Assess this, better to be AND but let's test it first.
         if (listPatientQueryDto.bloodType) patientWhere.OR.push({ bloodType: listPatientQueryDto.bloodType });
         if (listPatientQueryDto.medicalNotes) patientWhere.OR.push({ medicalNotes: { contains: listPatientQueryDto.medicalNotes, mode: "insensitive" } });
         if (listPatientQueryDto.gender) patientWhere.gender = listPatientQueryDto.gender;
@@ -77,7 +75,7 @@ export class PatientService {
         let where: Prisma.UserWhereInput = {}
         where.userRoles = {
             some: {
-                role: { name: "Patient" }
+                role: { name: SYSTEM_ROLES.PATIENT }
             }
         }
         where.patient = null;
@@ -107,13 +105,15 @@ export class PatientService {
                 include: {
                     user: {
                         select: {
-                            name: true
+                            name: true,
+                            email: true,
+                            phoneNumber: true,
                         }
                     }
                 }
             });
 
-            if (!patient) throw new BadRequestException("Patient not found");
+            if (!patient) throw new NotFoundException("Patient not found");
 
             return transformPatient(patient as PatientIncludeUser);
         } catch (error) {
@@ -126,22 +126,13 @@ export class PatientService {
     }
 
     async createPatientWithUser(requestUserId: string, patient: CreatePatientWithUserDto): Promise<Patient> {
-        // TODO: Validate the phone number in a seperate validationPipe
-        if (!patient.phoneNumber) throw new BadRequestException("Phone number is required"); // Check for phone number in because it is optional in the userDTO but for a patient we must check for it.
-        const validPhoneNumber = verifyPhoneNumber(patient.phoneNumber);
-
-        if (patient.emergencyContactPhone) {
-            const validEmergencyContactPhone = verifyPhoneNumber(patient.emergencyContactPhone);
-            patient.emergencyContactPhone = validEmergencyContactPhone;
-        }
-
         try {
             const patientUser = await this.dbService.user.create({
                 data: {
                     name: patient.name,
                     email: patient.email,
                     passwordHash: await hashPassword(patient.password),
-                    phoneNumber: validPhoneNumber,
+                    phoneNumber: patient.phoneNumber,
                     patient: {
                         create: {
                             dateOfBirth: new Date(patient.dateOfBirth),
@@ -164,7 +155,7 @@ export class PatientService {
                             },
                             role: {
                                 connect: {
-                                    name: "Patient"
+                                    name: SYSTEM_ROLES.PATIENT
                                 }
                             }
                         }
@@ -198,7 +189,7 @@ export class PatientService {
                         userRoles: {
                             some: {
                                 role: {
-                                    name: "Patient"
+                                    name: SYSTEM_ROLES.PATIENT
                                 }
                             }
                         }

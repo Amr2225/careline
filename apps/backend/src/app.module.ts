@@ -41,6 +41,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(doubleCsrfProtection)
       .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .exclude({ path: 'auth/refresh', method: RequestMethod.POST })
       .forRoutes('*wildcard');
   }
 }

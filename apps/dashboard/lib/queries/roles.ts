@@ -40,7 +40,7 @@ export function useUpdateRole(id: string) {
     mutationFn: (payload: UpdateRolePayload) => rolesApi.update(id, payload),
     onSuccess: (data) => {
       queryClient.setQueryData(queryKeys.roles.detail(id), data)
-      void queryClient.invalidateQueries({ queryKey: queryKeys.roles.all })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.roles.list() })
     },
   })
 }
