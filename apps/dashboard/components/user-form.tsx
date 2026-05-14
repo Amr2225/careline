@@ -4,7 +4,15 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { AtSign, Eye, EyeOff, KeyRound, ShieldCheck, User2 } from "lucide-react"
+import {
+  AtSign,
+  Eye,
+  EyeOff,
+  KeyRound,
+  Link,
+  ShieldCheck,
+  User2,
+} from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@careline/ui/components/button"
 import { Input } from "@careline/ui/components/input"
@@ -18,7 +26,6 @@ import {
 } from "@careline/ui/components/field"
 import { RoleMultiSelect } from "@/components/role-multi-select"
 import Spinner from "@/components/spinner"
-import type { Role } from "@/lib/api/roles"
 import type { UpdateUserPayload, UserDetail } from "@/lib/api/users"
 import {
   useCreateUser,
@@ -31,24 +38,24 @@ import {
   editUserSchema,
   type UserFormValues,
 } from "@/lib/schemas"
+import { Skeleton } from "@careline/ui/components/skeleton"
+import { useRoles } from "@/lib/queries/roles"
 
 type Mode = "create" | "edit"
 
 type UserFormProps = {
   mode: Mode
-  roles: Role[]
   initial?: UserDetail
 }
 
-export function UserForm({ mode, roles, initial }: UserFormProps) {
+export function UserForm({ mode, initial }: UserFormProps) {
   const router = useRouter()
+  const rolesQuery = useRoles()
   const createUser = useCreateUser()
   const updateUser = useUpdateUser(initial?.id ?? "")
   const updateRoles = useUpdateUserRoles(initial?.id ?? "")
 
   const [showPassword, setShowPassword] = useState(false)
-
-  console.log(initial)
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(
@@ -72,8 +79,33 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
     mode === "edit" &&
     initial !== undefined &&
     watchedEmail.toLowerCase() !== initial.email.toLowerCase()
+  const errors = form.formState.errors
+  const isChangedFields = form.formState.isDirty
+
+  if (rolesQuery.isError && !rolesQuery.data) {
+    return (
+      <div className="mx-auto max-w-md py-16 text-center">
+        <p className="text-sm text-muted-foreground">Couldn't load roles</p>
+        <Button asChild variant="ghost" className="mt-3">
+          <Link
+            href="/dashboard/roles"
+            className="text-sm text-muted-foreground"
+          >
+            Back to roles
+          </Link>
+        </Button>
+      </div>
+    )
+  }
+
+  const roles = rolesQuery.data ?? []
 
   const onSubmit = form.handleSubmit(async (values) => {
+    if (!isChangedFields) {
+      toast.warning("No changes to save")
+      return
+    }
+
     try {
       if (mode === "create") {
         await createUser.mutateAsync({
@@ -97,12 +129,7 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
       if (values.isActive !== initial.isActive) patch.isActive = values.isActive
       if (values.roles && roles.length > 0) patch.roles = values.roles
 
-      // const initialRoles = initial.roles.map((role) => role.name).sort()
-      // const nextRoles = [...values.roles].sort()
-      // const rolesChanged = initialRoles.join(",") !== nextRoles.join(",")
-
       if (Object.keys(patch).length > 0) await updateUser.mutateAsync(patch)
-      // if (rolesChanged) await updateRoles.mutateAsync(values.roles)
 
       toast.success("User updated", {
         description: emailChanged
@@ -114,8 +141,6 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
       toast.error("Save failed", { description: extractErrorMessage(err) })
     }
   })
-
-  const errors = form.formState.errors
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
@@ -230,56 +255,60 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
             </p>
           </div>
         </header>
-        <FieldGroup>
-          <Field data-invalid={Boolean(errors.roles)}>
-            <FieldLabel
-              htmlFor="user-roles"
-              className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
-            >
-              <ShieldCheck className="size-4" />
-              Assigned roles
-            </FieldLabel>
-            <Controller
-              control={form.control}
-              name="roles"
-              render={({ field }) => (
-                <RoleMultiSelect
-                  roles={roles}
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Pick one or more staff roles"
-                />
-              )}
-            />
-            <FieldError errors={[errors.roles]} />
-          </Field>
-
-          {mode === "edit" ? (
-            <Controller
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <Field
-                  orientation="horizontal"
-                  className="rounded-xl border border-border/60 bg-muted/30 px-4 py-3"
-                >
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Account active</p>
-                    <FieldDescription>
-                      Inactive accounts are signed out everywhere and cannot log
-                      in.
-                    </FieldDescription>
-                  </div>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    aria-label="Account active"
+        {rolesQuery.isPending && !rolesQuery.data ? (
+          <RolesSkeleton />
+        ) : (
+          <FieldGroup>
+            <Field data-invalid={Boolean(errors.roles)}>
+              <FieldLabel
+                htmlFor="user-roles"
+                className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
+              >
+                <ShieldCheck className="size-4" />
+                Assigned roles
+              </FieldLabel>
+              <Controller
+                control={form.control}
+                name="roles"
+                render={({ field }) => (
+                  <RoleMultiSelect
+                    roles={roles}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Pick one or more staff roles"
                   />
-                </Field>
-              )}
-            />
-          ) : null}
-        </FieldGroup>
+                )}
+              />
+              <FieldError errors={[errors.roles]} />
+            </Field>
+
+            {mode === "edit" ? (
+              <Controller
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <Field
+                    orientation="horizontal"
+                    className="rounded-xl border border-border/60 bg-muted/30 px-4 py-3"
+                  >
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Account active</p>
+                      <FieldDescription>
+                        Inactive accounts are signed out everywhere and cannot
+                        log in.
+                      </FieldDescription>
+                    </div>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      aria-label="Account active"
+                    />
+                  </Field>
+                )}
+              />
+            ) : null}
+          </FieldGroup>
+        )}
       </section>
 
       <div className="shadow-ambient sticky bottom-4 flex justify-end gap-3 rounded-2xl border border-border/70 bg-card/95 p-4 backdrop-blur-sm">
@@ -303,5 +332,23 @@ export function UserForm({ mode, roles, initial }: UserFormProps) {
         </Button>
       </div>
     </form>
+  )
+}
+
+function RolesSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-1.5">
+        <Skeleton className="size-4 rounded" />
+        <Skeleton className="h-3 w-28" />
+      </div>
+      <div className="flex min-h-14 items-center justify-between rounded-xl border border-border/70 bg-background px-4 py-2">
+        <div className="flex items-center rounded-full border border-border/70 bg-muted/30 px-3 py-1.5">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="ml-2 size-3 rounded-full" />
+        </div>
+        <Skeleton className="size-4 rounded" />
+      </div>
+    </div>
   )
 }

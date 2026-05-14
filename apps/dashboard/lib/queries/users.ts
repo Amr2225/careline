@@ -22,6 +22,7 @@ export function useUser(id: string) {
     queryKey: queryKeys.users.detail(id),
     queryFn: () => usersApi.get(id),
     enabled: Boolean(id),
+    placeholderData: (prev) => prev
   })
 }
 

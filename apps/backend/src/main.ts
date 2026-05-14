@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { NextFunction, Request } from 'express';
+import { DbConnectionErrorFilter } from './db/db-connection.error';
 
 
 async function bootstrap() {
@@ -48,6 +49,7 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api/v1/')
+  app.useGlobalFilters(new DbConnectionErrorFilter())
   await app.listen(config.getOrThrow<number>('PORT'));
 }
 

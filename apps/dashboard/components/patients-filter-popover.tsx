@@ -23,16 +23,11 @@ import { ListPatientQuery } from "@careline/shared/types/patient.type"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { shallowEqual } from "@/lib/shallowEqual"
 
-// export type PatientFilterField = "name" | "email" | "phone"
+// export type PatientFilterField = Omit<ListPatientQuery, "limit" | "page" | "geneder" | "isActive">
 export type PatientFilterField = keyof Omit<
   ListPatientQuery,
-  "gender" | "isActive"
+  "gender" | "isActive" | "limit" | "page"
 >
-
-// export type PatientFilter = {
-//   field: PatientFilterField
-//   value: string
-// }
 
 const FIELD_META: Record<
   PatientFilterField,
@@ -70,8 +65,8 @@ const ALL_FIELDS: PatientFilterField[] = Object.keys(
 ) as PatientFilterField[]
 
 type Props = {
-  filters: Omit<ListPatientQuery, "gender" | "isActive">
-  onChange: (next: ListPatientQuery) => void
+  filters: Omit<ListPatientQuery, "gender" | "isActive" | "limit" | "page">
+  onChange: (next: Omit<ListPatientQuery, "limit" | "page">) => void
 }
 
 export function PatientsFilterPopover({ filters, onChange }: Props) {
@@ -250,7 +245,7 @@ export function ActiveFilterChips({
   filters,
   onRemove,
 }: {
-  filters: ListPatientQuery
+  filters: Omit<ListPatientQuery, "gender" | "isActive" | "limit" | "page">
   onRemove: (field: PatientFilterField) => void
 }) {
   if (Object.keys(filters).length === 0) return null

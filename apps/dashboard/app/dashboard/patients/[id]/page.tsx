@@ -298,7 +298,6 @@ export default function PatientDetailPage({
         mode="edit"
         scope={scope}
         initial={{ ...patient, isActive }}
-        patientId={id}
       />
 
       <PlaceholderSection

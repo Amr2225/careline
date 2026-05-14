@@ -1,8 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import Link from "next/link"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Controller, FieldErrors, useForm } from "react-hook-form"
+import {
+  Controller,
+  FieldErrors,
+  useForm,
+  UseFormReturn,
+} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   AtSign,
@@ -60,7 +66,10 @@ import {
 } from "@/lib/queries/patient"
 import { extractErrorMessage } from "@/lib/errors"
 import { UserWithoutPassword } from "@careline/shared/types/user.type"
-import { useUpdateUser } from "@/lib/queries/users"
+import { useUpdateUser, useUser } from "@/lib/queries/users"
+import { AxiosError } from "axios"
+import { UserDetail } from "@/lib/api/users"
+import { UseQueryResult } from "@tanstack/react-query"
 
 type Mode = "create" | "edit" | "link"
 
@@ -74,7 +83,6 @@ type PatientFormProps = {
   scope: PatientScope // TODO: will be deleted
   initial?: Patient
   linkedUser?: UserWithoutPassword
-  patientId?: string
 }
 
 const phoneRegex = /^\+\d{1,3}\s?\d[\d\s-]{6,}$/
@@ -112,20 +120,17 @@ const passwordSchema = z
 
 const createSchema = baseSchema.extend({
   password: passwordSchema,
-  // userId: z.string().min(1, "User ID is required"),
 })
 const editSchema = baseSchema.extend({
   password: z.union([z.literal(""), passwordSchema]),
 })
 
-// Link mode: identity comes from the existing User, so name/email/phone/password
+// Link mode: identity comes from the existing User, so name/email/password
 // are not user-editable here.
-const linkSchema = baseSchema
-  .omit({ name: true, email: true, phoneNumber: true })
-  .extend({
-    password: z.literal("").optional(),
-    userId: z.string().min(1, "User ID is required"),
-  })
+const linkSchema = baseSchema.omit({ name: true, email: true }).extend({
+  password: z.literal("").optional(),
+  userId: z.string().min(1, "User ID is required"),
+})
 
 type CreateSchemaType = z.infer<typeof createSchema>
 type LinkSchemaType = z.infer<typeof linkSchema>
@@ -139,150 +144,183 @@ export function PatientForm({
   scope,
   initial,
   linkedUser,
-  patientId,
 }: PatientFormProps) {
-  const router = useRouter()
-  const [showPassword, setShowPassword] = useState(false)
-
-  const createPatientWithUser = useCreatePatientWithUser()
-  const updateUser = useUpdateUser(initial?.userId ?? "")
-  const createPatient = useCreatePatient()
-  const updatePatient = useUpdatePatient(patientId ?? "")
-
-  const resolverSchema =
-    mode === "create" ? createSchema : mode === "link" ? linkSchema : editSchema
-
-  const form = useForm<ResolverSchemaType>({
-    resolver: zodResolver(resolverSchema),
-    shouldUnregister: true,
-    defaultValues: {
-      // userId: linkedUser?.id ?? "",
-      name: linkedUser?.name ?? initial?.name ?? "",
-      email: linkedUser?.email ?? initial?.email ?? "",
-      phoneNumber: linkedUser?.phoneNumber ?? initial?.phoneNumber ?? "+20 ",
-      password: "",
-      dateOfBirth: initial?.dateOfBirth ?? "",
-      gender: initial?.gender ?? Gender.MALE,
-      address: initial?.address ?? "",
-      emergencyContactName: initial?.emergencyContactName ?? "",
-      emergencyContactPhone: initial?.emergencyContactPhone ?? "",
-      bloodType: initial?.bloodType ?? BloodType.UNKNOWN,
-      allergies: initial?.allergies ?? "",
-      chronicConditions: initial?.chronicConditions ?? "",
-      currentMedications: initial?.currentMedications ?? "",
-      medicalNotes: initial?.medicalNotes ?? "",
-      isActive: initial?.isActive ?? true,
-    },
-    mode: "onTouched",
-  })
-
-  const isSubmitting =
-    createPatientWithUser.isPending ||
-    createPatient.isPending ||
-    updatePatient.isPending
-
-  const errors = form.formState.errors as FieldErrors<CreateSchemaType>
-  const changedFields = form.formState.dirtyFields as Partial<CreateSchemaType>
   const contactDisabled = !scope.canEditContact
   const medicalNotesDisabled = !scope.canEditMedicalNotes
   const readOnlyEverything = contactDisabled && medicalNotesDisabled
 
-  useEffect(() => {
-    form.setValue("userId", linkedUser?.id ?? "")
-  }, [linkedUser])
+  const curretnForm: Record<Mode, React.ReactNode> = {
+    create: (
+      <CreateUserForm
+        readOnlyEverything={readOnlyEverything}
+        contactDisabled={contactDisabled}
+        initialData={initial}
+        linkedUser={linkedUser}
+      />
+    ),
+    link: (
+      <LinkUserForm
+        readOnlyEverything={readOnlyEverything}
+        contactDisabled={contactDisabled}
+        initialData={initial}
+        linkedUser={linkedUser}
+      />
+    ),
+    edit: (
+      <EditUserForm
+        readOnlyEverything={readOnlyEverything}
+        contactDisabled={contactDisabled}
+        initialData={initial}
+        medicalNotesDisabled={medicalNotesDisabled}
+      />
+    ),
+  }
+
+  // useEffect(() => {
+  //   form.setValue("userId", linkedUser?.id ?? "")
+  // }, [linkedUser])
+
+  return curretnForm[mode]
+}
+
+const labelClass =
+  "flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
+
+function ReadOnlyField({
+  icon,
+  label,
+  value,
+  mono,
+}: {
+  icon: React.ReactNode
+  label: string
+  value: string
+  mono?: boolean
+}) {
+  return (
+    <div className="rounded-xl border border-border/50 bg-card/80 p-3">
+      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+        {icon}
+        {label}
+      </p>
+      <p
+        className={
+          "mt-1.5 truncate text-sm font-medium text-foreground " +
+          (mono ? "font-mono tabular-nums" : "")
+        }
+        title={value}
+      >
+        {value}
+      </p>
+    </div>
+  )
+}
+
+function FormSection({
+  title,
+  description,
+  icon,
+  accent,
+  children,
+}: {
+  title: string
+  description: string
+  icon: React.ReactNode
+  accent?: "medical"
+  children: React.ReactNode
+}) {
+  return (
+    <section
+      className={
+        "shadow-ambient rounded-2xl border bg-card p-6 " +
+        (accent === "medical"
+          ? "border-primary/30 bg-primary/3"
+          : "border-border/70")
+      }
+    >
+      <header className="mb-5 flex items-center gap-3">
+        <span
+          className={
+            "flex size-9 items-center justify-center rounded-full " +
+            (accent === "medical"
+              ? "bg-primary/15 text-primary"
+              : "bg-muted text-muted-foreground")
+          }
+        >
+          {icon}
+        </span>
+        <div>
+          <h2 className="text-base font-semibold tracking-tight">{title}</h2>
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </div>
+      </header>
+      {children}
+    </section>
+  )
+}
+
+interface BaseSubFormsProps {
+  readOnlyEverything: boolean
+  contactDisabled: boolean
+  initialData?: Patient
+}
+
+interface LinkUserFormProps extends BaseSubFormsProps {
+  linkedUser?: UserWithoutPassword
+}
+
+function LinkUserForm({
+  readOnlyEverything,
+  contactDisabled,
+  initialData,
+  linkedUser,
+}: LinkUserFormProps) {
+  const router = useRouter()
+  const { mutateAsync: createPatient, isSuccess } = useCreatePatient()
+
+  const form = useForm<LinkSchemaType>({
+    resolver: zodResolver(linkSchema),
+    shouldUnregister: true,
+    mode: "onTouched",
+    defaultValues: {
+      userId: linkedUser?.id ?? "",
+      phoneNumber: initialData?.phoneNumber ?? linkedUser?.phoneNumber ?? "",
+      dateOfBirth: initialData?.dateOfBirth ?? "",
+      gender: initialData?.gender ?? Gender.MALE,
+      address: initialData?.address ?? "",
+      emergencyContactName: initialData?.emergencyContactName ?? "",
+      emergencyContactPhone: initialData?.emergencyContactPhone ?? "",
+      bloodType: initialData?.bloodType ?? BloodType.UNKNOWN,
+      allergies: initialData?.allergies ?? "",
+      chronicConditions: initialData?.chronicConditions ?? "",
+      currentMedications: initialData?.currentMedications ?? "",
+    },
+  })
+
+  const errors = form.formState.errors as FieldErrors<LinkSchemaType>
+  const isChangedFields = form.formState.isDirty
+  const isSubmitting = form.formState.isSubmitting
+  // const isSubmitted = form.formState.isSubmitted
 
   const onSubmit = form.handleSubmit(async (values) => {
-    if (mode === "create") {
-      try {
-        const createPayload = values as CreateSchemaType
-        createPayload.phoneNumber = createPayload.phoneNumber //remove spaces from phone number
-        createPayload.emergencyContactPhone =
-          createPayload.emergencyContactPhone?.replace(/\s/g, "") //remove spaces from emergency contact phone number
-        await createPatientWithUser.mutateAsync(createPayload)
-
-        toast.success("Patient created", {
-          description: `${createPayload.name} can now sign into the patient app.`,
-        })
-        router.push("/dashboard/patients")
+    try {
+      if (!isChangedFields) {
+        toast.warning("No changes to save")
         return
-      } catch (error) {
-        toast.error("Patient creation failed", {
-          description: extractErrorMessage(error),
-        })
       }
-    }
 
-    if (mode === "link") {
-      try {
-        await createPatient.mutateAsync(values as LinkSchemaType)
+      await createPatient(values)
+      if (isSuccess) {
         toast.success("Patient profile linked", {
           description: `${linkedUser?.name ?? "User"} now has a patient record.`,
         })
-        router.push("/dashboard/patients")
-        return
-      } catch (error) {
-        toast.error("Patient creation failed", {
-          description: extractErrorMessage(error),
-        })
       }
+      router.push("/dashboard/patients")
+    } catch (error) {
+      toast.error("Patient creation failed", {
+        description: extractErrorMessage(error),
+      })
     }
-
-    if (mode === "edit") {
-      try {
-        const editValues = values as EditSchemaType
-
-        const updatedValues = Object.fromEntries(
-          (Object.keys(editValues) as Array<keyof EditSchemaType>)
-            .filter((key) => changedFields[key])
-            .map((key) => [key, editValues[key]])
-        ) as Partial<EditSchemaType>
-
-        type userFields = "name" | "email" | "phoneNumber" | "password"
-
-        const userUpdatePayload: Record<userFields, string | undefined> = {
-          name: updatedValues?.name,
-          email: updatedValues?.email,
-          phoneNumber: updatedValues?.phoneNumber,
-          password: updatedValues?.password,
-        }
-
-        const patientUpdatePayload = Object.fromEntries(
-          (Object.keys(editValues) as Array<keyof EditSchemaType>)
-            .filter(
-              (key) =>
-                !Object.keys(userUpdatePayload).includes(key) &&
-                changedFields[key]
-            )
-            .map((key) => [key, editValues[key]])
-        ) as Partial<EditSchemaType>
-
-        const userValuesChanged = Object.values(userUpdatePayload).some(
-          (value) => value !== undefined && value !== null && value !== ""
-        )
-
-        const patientValuesChanged = Object.values(patientUpdatePayload).some(
-          (value) => value !== undefined && value !== null && value !== ""
-        )
-
-        console.log("Values: ", values)
-        console.log("Updated Values", updatedValues)
-        console.log("Changed Fields", changedFields)
-        console.log("userUpdatePayload", userUpdatePayload)
-        console.log("patientUpdatePayload", patientUpdatePayload)
-
-        console.log("userValuesChanged", userValuesChanged)
-        console.log("patientValuesChange", patientValuesChanged)
-
-        if (userValuesChanged) await updateUser.mutateAsync(userUpdatePayload)
-        if (patientValuesChanged) await updatePatient.mutateAsync(updatedValues)
-        toast.success("Patient updated", { description: "Changes saved." })
-      } catch (error) {
-        toast.error("Patient update failed", {
-          description: extractErrorMessage(error),
-        })
-      }
-    }
-    form.reset({ ...values, password: "" })
   })
 
   return (
@@ -300,20 +338,7 @@ export function PatientForm({
         </div>
       ) : null}
 
-      {mode === "edit" && contactDisabled && !medicalNotesDisabled ? (
-        <div className="flex items-start gap-3 rounded-2xl border border-primary/25 bg-primary/5 p-4 text-sm text-primary">
-          <Stethoscope className="mt-0.5 size-4 shrink-0" />
-          <div>
-            <p className="font-medium">Doctor scope</p>
-            <p className="text-primary/80">
-              Only clinical notes are editable. Contact and intake fields are
-              maintained by reception.
-            </p>
-          </div>
-        </div>
-      ) : null}
-
-      {mode === "link" && linkedUser ? (
+      {linkedUser ? (
         <section className="shadow-ambient rounded-2xl border border-primary/25 bg-primary/4 p-6">
           <header className="mb-4 flex items-center gap-3">
             <span className="flex size-9 items-center justify-center rounded-full bg-primary/15 text-primary">
@@ -340,16 +365,432 @@ export function PatientForm({
               label="Email"
               value={linkedUser.email}
             />
-            <ReadOnlyField
-              icon={<Phone className="size-4" />}
-              label="Phone"
-              value={linkedUser.phoneNumber ?? "—"}
-              mono
-            />
+            <div
+              className="rounded-xl border border-border/50 bg-card/80 p-3 transition-colors data-[invalid=true]:border-destructive data-[invalid=true]:bg-destructive/5"
+              data-invalid={Boolean(errors.phoneNumber)}
+            >
+              <label
+                htmlFor="p-phone"
+                className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
+              >
+                <Phone className="size-4" />
+                Phone
+              </label>
+              <Controller
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <input
+                    id="p-phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    onBlur={field.onBlur}
+                    aria-invalid={Boolean(errors.phoneNumber)}
+                    placeholder="+20 100 123 4567"
+                    className="aria-invalid]:text-destructive mt-1.5 w-full truncate border-0 bg-transparent p-0 font-mono text-sm font-medium text-foreground tabular-nums outline-none placeholder:text-muted-foreground/60 focus:outline-none"
+                  />
+                )}
+              />
+              {errors.phoneNumber ? (
+                <p className="mt-1 text-xs text-destructive">
+                  {errors.phoneNumber.message}
+                </p>
+              ) : /^\+?\d{0,3}\s*$/.test(
+                  (form.watch("phoneNumber") ?? "").trim()
+                ) ? (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Phone number is required.
+                </p>
+              ) : null}
+            </div>
           </div>
         </section>
       ) : null}
 
+      {/* Shared Form Sections */}
+      <SharedFromSections
+        mode="link"
+        errors={errors}
+        form={form as UseFormReturn<ResolverSchemaType>}
+        contactDisabled={contactDisabled}
+      />
+
+      <div className="shadow-ambient sticky bottom-4 flex justify-end gap-3 rounded-2xl border border-border/70 bg-card/95 p-4 backdrop-blur-sm">
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={() => router.back()}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting || readOnlyEverything}
+        >
+          {isSubmitting ? <Spinner /> : "Link patient profile"}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+interface EditUserFormProps extends BaseSubFormsProps {
+  medicalNotesDisabled: boolean
+}
+function EditUserForm({
+  readOnlyEverything,
+  initialData,
+  contactDisabled,
+  medicalNotesDisabled,
+}: EditUserFormProps) {
+  const router = useRouter()
+  const [existingUserId, setExistingUserId] = useState<string | null>(null)
+
+  const updateUser = useUpdateUser(initialData?.userId ?? "")
+  const updatePatient = useUpdatePatient(initialData?.patientId ?? "")
+  const existingUserQuery = useUser(existingUserId ?? "")
+
+  const form = useForm<EditSchemaType>({
+    resolver: zodResolver(editSchema),
+    shouldUnregister: true,
+    mode: "onTouched",
+    defaultValues: {
+      name: initialData?.name,
+      email: initialData?.email,
+      phoneNumber: initialData?.phoneNumber,
+      password: "",
+      dateOfBirth: initialData?.dateOfBirth,
+      gender: initialData?.gender,
+      address: initialData?.address ?? "",
+      emergencyContactName: initialData?.emergencyContactName ?? "",
+      emergencyContactPhone: initialData?.emergencyContactPhone ?? "",
+      bloodType: initialData?.bloodType ?? BloodType.UNKNOWN,
+      allergies: initialData?.allergies ?? "",
+      chronicConditions: initialData?.chronicConditions ?? "",
+      currentMedications: initialData?.currentMedications ?? "",
+      medicalNotes: initialData?.medicalNotes ?? "",
+      isActive: initialData?.isActive ?? true,
+    },
+  })
+
+  const errors = form.formState.errors as FieldErrors<EditSchemaType>
+  const changedFields = form.formState.dirtyFields
+  const isChangedFields = form.formState.isDirty
+  const isSubmitting = form.formState.isSubmitting
+
+  const onSubmit = form.handleSubmit(async (values) => {
+    type userFields = "name" | "email" | "phoneNumber" | "password"
+    if (!isChangedFields) {
+      toast.warning("No changes to save")
+      return
+    }
+
+    const updatedValues = Object.fromEntries(
+      (Object.keys(values) as Array<keyof EditSchemaType>)
+        .filter((key) => changedFields[key])
+        .map((key) => [key, values[key as keyof EditSchemaType]])
+    ) as Partial<EditSchemaType>
+
+    const userUpdatePayload: Record<userFields, string | undefined> = {
+      name: updatedValues?.name,
+      email: updatedValues?.email,
+      phoneNumber: updatedValues?.phoneNumber,
+      password: updatedValues?.password,
+    }
+
+    const patientUpdatePayload = Object.fromEntries(
+      (Object.keys(values) as Array<keyof EditSchemaType>)
+        .filter(
+          (key) =>
+            !Object.keys(userUpdatePayload).includes(key) && changedFields[key]
+        )
+        .map((key) => [key, values[key]])
+    ) as Partial<EditSchemaType>
+
+    const userValuesChanged = Object.values(userUpdatePayload).some(
+      (value) => value !== undefined && value !== null && value !== ""
+    )
+
+    const patientValuesChanged = Object.values(patientUpdatePayload).some(
+      (value) => value !== undefined && value !== null && value !== ""
+    )
+    try {
+      if (userValuesChanged) await updateUser.mutateAsync(userUpdatePayload)
+      if (patientValuesChanged)
+        await updatePatient.mutateAsync(patientUpdatePayload)
+
+      toast.success("Patient updated", { description: "Changes saved." })
+      form.reset({ ...values, password: "" })
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.existingUserId) {
+        setExistingUserId(error.response?.data.existingUserId)
+      }
+      toast.error("Patient update failed", {
+        description: extractErrorMessage(error),
+      })
+    }
+  })
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-8">
+      {readOnlyEverything ? (
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-900 dark:text-amber-200">
+          <Lock className="mt-0.5 size-4 shrink-0" />
+          <div>
+            <p className="font-medium">Read-only access</p>
+            <p className="text-amber-900/80 dark:text-amber-200/80">
+              You can view this patient, but you don't have permission to edit
+              any fields. Ask a Manager to grant Patients:UPDATE access.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {contactDisabled && !medicalNotesDisabled ? (
+        <div className="flex items-start gap-3 rounded-2xl border border-primary/25 bg-primary/5 p-4 text-sm text-primary">
+          <Stethoscope className="mt-0.5 size-4 shrink-0" />
+          <div>
+            <p className="font-medium">Doctor scope</p>
+            <p className="text-primary/80">
+              Only clinical notes are editable. Contact and intake fields are
+              maintained by reception.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Shared from sections */}
+      <SharedFromSections
+        errors={errors}
+        form={form as UseFormReturn<ResolverSchemaType>}
+        mode="edit"
+        contactDisabled={contactDisabled}
+        existingUserQuery={existingUserQuery}
+      />
+
+      <FormSection
+        title="Clinical notes"
+        description="Doctor's record. Requires Patients:UPDATE_MEDICAL."
+        icon={<Stethoscope className="size-4" />}
+        accent="medical"
+      >
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="p-notes" className={labelClass}>
+              <Stethoscope className="size-4" />
+              Notes
+            </FieldLabel>
+            <Textarea
+              id="p-notes"
+              rows={5}
+              placeholder={
+                medicalNotesDisabled
+                  ? "Only users with Patients:UPDATE_MEDICAL can edit this field."
+                  : "Observations, plan of care, follow-up instructions…"
+              }
+              disabled={medicalNotesDisabled}
+              {...form.register("medicalNotes")}
+            />
+            <FieldDescription>
+              {medicalNotesDisabled
+                ? "Read-only — clinical record is doctor-managed."
+                : "Visible to anyone with clinical access. Treat as part of the medical record."}
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
+      </FormSection>
+
+      <FormSection
+        title="Account"
+        description="Deactivating signs the patient out and blocks login."
+        icon={<Lock className="size-4" />}
+      >
+        <Controller
+          control={form.control}
+          name="isActive"
+          render={({ field }) => (
+            <Field
+              orientation="horizontal"
+              className="rounded-xl border border-border/60 bg-muted/30 px-4 py-3"
+            >
+              <div className="flex-1">
+                <p className="text-sm font-medium">Account active</p>
+                <FieldDescription>
+                  Inactive patients can't log into the patient app and won't
+                  appear in default lists.
+                </FieldDescription>
+              </div>
+              <Switch
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={contactDisabled}
+              />
+            </Field>
+          )}
+        />
+      </FormSection>
+
+      <div className="shadow-ambient sticky bottom-4 flex justify-end gap-3 rounded-2xl border border-border/70 bg-card/95 p-4 backdrop-blur-sm">
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={() => router.back()}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting || readOnlyEverything}
+        >
+          {isSubmitting ? <Spinner /> : "Save changes"}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+interface CreateUserFormProps extends BaseSubFormsProps {
+  linkedUser?: UserWithoutPassword
+}
+function CreateUserForm({
+  readOnlyEverything,
+  initialData,
+  linkedUser,
+  contactDisabled,
+}: CreateUserFormProps) {
+  const router = useRouter()
+  const [existingUserId, setExistingUserId] = useState<string | null>(null)
+
+  const createPatientWithUser = useCreatePatientWithUser()
+  const existingUserQuery = useUser(existingUserId ?? "")
+
+  const form = useForm<CreateSchemaType>({
+    resolver: zodResolver(createSchema),
+    shouldUnregister: true,
+    mode: "onTouched",
+    defaultValues: {
+      name: linkedUser?.name ?? initialData?.name ?? "",
+      email: linkedUser?.email ?? initialData?.email ?? "",
+      phoneNumber:
+        linkedUser?.phoneNumber ?? initialData?.phoneNumber ?? "+20 ",
+      password: "",
+      dateOfBirth: initialData?.dateOfBirth ?? "",
+      gender: initialData?.gender ?? Gender.MALE,
+      address: initialData?.address ?? "",
+      emergencyContactName: initialData?.emergencyContactName ?? "",
+      emergencyContactPhone: initialData?.emergencyContactPhone ?? "",
+      bloodType: initialData?.bloodType ?? BloodType.UNKNOWN,
+      allergies: initialData?.allergies ?? "",
+      chronicConditions: initialData?.chronicConditions ?? "",
+      currentMedications: initialData?.currentMedications ?? "",
+      medicalNotes: initialData?.medicalNotes ?? "",
+      isActive: initialData?.isActive ?? true,
+    },
+  })
+
+  const errors = form.formState.errors
+  const isChangedFields = form.formState.isDirty
+  const isSubmitting = form.formState.isSubmitting
+
+  const onSubmit = form.handleSubmit(async (values) => {
+    if (!isChangedFields) {
+      toast.warning("No changes to save")
+      return
+    }
+
+    try {
+      await createPatientWithUser.mutateAsync(values)
+      toast.success("Patient created", {
+        description: `${values.name} can now sign into the patient app.`,
+      })
+      router.push("/dashboard/patients")
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.existingUserId) {
+        setExistingUserId(error.response?.data.existingUserId)
+      }
+
+      toast.error("Patient creation failed", {
+        description: extractErrorMessage(error),
+      })
+    }
+  })
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-8">
+      {readOnlyEverything ? (
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-900 dark:text-amber-200">
+          <Lock className="mt-0.5 size-4 shrink-0" />
+          <div>
+            <p className="font-medium">Read-only access</p>
+            <p className="text-amber-900/80 dark:text-amber-200/80">
+              You can view this patient, but you don't have permission to edit
+              any fields. Ask a Manager to grant Patients:UPDATE access.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Shared from sections */}
+      <SharedFromSections
+        form={form as UseFormReturn<ResolverSchemaType>}
+        contactDisabled={contactDisabled}
+        errors={errors}
+        mode="create"
+        existingUserQuery={existingUserQuery}
+      />
+
+      <div className="shadow-ambient sticky bottom-4 flex justify-end gap-3 rounded-2xl border border-border/70 bg-card/95 p-4 backdrop-blur-sm">
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={() => router.back()}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting || readOnlyEverything}
+        >
+          {isSubmitting ? <Spinner /> : "Create patient"}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+interface SharedFromSectionsProps {
+  errors: FieldErrors<CreateSchemaType>
+  contactDisabled: boolean
+  form: UseFormReturn<ResolverSchemaType>
+  mode: "create" | "link" | "edit"
+  existingUserQuery?: UseQueryResult<UserDetail, Error>
+}
+function SharedFromSections({
+  errors,
+  contactDisabled,
+  form,
+  mode,
+  existingUserQuery,
+}: SharedFromSectionsProps) {
+  const [showPassword, setShowPassword] = useState(false)
+
+  const isPending = existingUserQuery?.isPending
+  const data = existingUserQuery?.data ?? null
+
+  return (
+    <>
       {/* Identity — hidden in link mode (uses existing User) */}
       {mode !== "link" ? (
         <FormSection
@@ -408,8 +849,28 @@ export function PatientForm({
                     />
                   )}
                 />
-                {errors.phoneNumber ? (
-                  <FieldError errors={[errors.phoneNumber]} />
+                {errors.phoneNumber || (!isPending && data) ? (
+                  <>
+                    {errors.phoneNumber && (
+                      <FieldError errors={[errors.phoneNumber]} />
+                    )}
+                    {!isPending && data && (
+                      <FieldError>
+                        User with this phone number{" "}
+                        {existingUserQuery?.data?.phoneNumber} belongs to{" "}
+                        <span className="font-bold">
+                          {existingUserQuery?.data?.name}.
+                        </span>
+                        <Button asChild className="ml-2" variant="link">
+                          <Link
+                            href={`/dashboard/users/${existingUserQuery?.data?.id}`}
+                          >
+                            View user
+                          </Link>
+                        </Button>
+                      </FieldError>
+                    )}
+                  </>
                 ) : (
                   <FieldDescription>
                     Used for patient login and queue identification.
@@ -644,177 +1105,6 @@ export function PatientForm({
           </div>
         </FieldGroup>
       </FormSection>
-
-      {/* Clinical notes — gated behind UPDATE_MEDICAL */}
-      {mode === "edit" ? (
-        <FormSection
-          title="Clinical notes"
-          description="Doctor's record. Requires Patients:UPDATE_MEDICAL."
-          icon={<Stethoscope className="size-4" />}
-          accent="medical"
-        >
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="p-notes" className={labelClass}>
-                <Stethoscope className="size-4" />
-                Notes
-              </FieldLabel>
-              <Textarea
-                id="p-notes"
-                rows={5}
-                placeholder={
-                  medicalNotesDisabled
-                    ? "Only users with Patients:UPDATE_MEDICAL can edit this field."
-                    : "Observations, plan of care, follow-up instructions…"
-                }
-                disabled={medicalNotesDisabled}
-                {...form.register("medicalNotes")}
-              />
-              <FieldDescription>
-                {medicalNotesDisabled
-                  ? "Read-only — clinical record is doctor-managed."
-                  : "Visible to anyone with clinical access. Treat as part of the medical record."}
-              </FieldDescription>
-            </Field>
-          </FieldGroup>
-        </FormSection>
-      ) : null}
-
-      {/* Status */}
-      {mode === "edit" ? (
-        <FormSection
-          title="Account"
-          description="Deactivating signs the patient out and blocks login."
-          icon={<Lock className="size-4" />}
-        >
-          <Controller
-            control={form.control}
-            name="isActive"
-            render={({ field }) => (
-              <Field
-                orientation="horizontal"
-                className="rounded-xl border border-border/60 bg-muted/30 px-4 py-3"
-              >
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Account active</p>
-                  <FieldDescription>
-                    Inactive patients can't log into the patient app and won't
-                    appear in default lists.
-                  </FieldDescription>
-                </div>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  disabled={contactDisabled}
-                />
-              </Field>
-            )}
-          />
-        </FormSection>
-      ) : null}
-
-      <div className="shadow-ambient sticky bottom-4 flex justify-end gap-3 rounded-2xl border border-border/70 bg-card/95 p-4 backdrop-blur-sm">
-        <Button
-          type="button"
-          variant="ghost"
-          size="lg"
-          onClick={() => router.back()}
-          disabled={isSubmitting}
-        >
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          size="lg"
-          disabled={isSubmitting || readOnlyEverything}
-        >
-          {isSubmitting ? (
-            <Spinner />
-          ) : mode === "create" ? (
-            "Create patient"
-          ) : mode === "link" ? (
-            "Link patient profile"
-          ) : (
-            "Save changes"
-          )}
-        </Button>
-      </div>
-    </form>
-  )
-}
-
-const labelClass =
-  "flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase"
-
-function ReadOnlyField({
-  icon,
-  label,
-  value,
-  mono,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: string
-  mono?: boolean
-}) {
-  return (
-    <div className="rounded-xl border border-border/50 bg-card/80 p-3">
-      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
-        {icon}
-        {label}
-      </p>
-      <p
-        className={
-          "mt-1.5 truncate text-sm font-medium text-foreground " +
-          (mono ? "font-mono tabular-nums" : "")
-        }
-        title={value}
-      >
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function FormSection({
-  title,
-  description,
-  icon,
-  accent,
-  children,
-}: {
-  title: string
-  description: string
-  icon: React.ReactNode
-  accent?: "medical"
-  children: React.ReactNode
-}) {
-  return (
-    <section
-      className={
-        "shadow-ambient rounded-2xl border bg-card p-6 " +
-        (accent === "medical"
-          ? "border-primary/30 bg-primary/3"
-          : "border-border/70")
-      }
-    >
-      <header className="mb-5 flex items-center gap-3">
-        <span
-          className={
-            "flex size-9 items-center justify-center rounded-full " +
-            (accent === "medical"
-              ? "bg-primary/15 text-primary"
-              : "bg-muted text-muted-foreground")
-          }
-        >
-          {icon}
-        </span>
-        <div>
-          <h2 className="text-base font-semibold tracking-tight">{title}</h2>
-          <p className="text-sm text-muted-foreground">{description}</p>
-        </div>
-      </header>
-      {children}
-    </section>
+    </>
   )
 }

@@ -1,11 +1,11 @@
-import { CreatePatientPayload, CreatePatientWithUserPayload, ListPatientQuery, Patient, UpdatePatientMedicalPayload, UpdatePatientPayload } from "@careline/shared/types/patient.type";
+import { CreatePatientPayload, CreatePatientWithUserPayload, ListPatientQuery, PaginatedPatientList, Patient, UpdatePatientMedicalPayload, UpdatePatientPayload } from "@careline/shared/types/patient.type";
 import { api } from "@/lib/api";
 import { UserWithoutPassword } from "@careline/shared/types/user.type";
 
 
 export const patientApi = {
-    list: async (query: ListPatientQuery = {}): Promise<Patient[]> => {
-        const { data } = await api.get<Patient[]>("/patients", { params: query })
+    list: async (query: ListPatientQuery): Promise<PaginatedPatientList> => {
+        const { data } = await api.get<PaginatedPatientList>("/patients", { params: query })
         return data;
     },
 

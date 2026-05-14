@@ -7,12 +7,12 @@ import { ChevronLeft, RotateCcw, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@careline/ui/components/button"
 import { Badge } from "@careline/ui/components/badge"
-import Spinner from "@/components/spinner"
 import { UserForm } from "@/components/user-form"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { useDeactivateUser, useUpdateUser, useUser } from "@/lib/queries/users"
-import { useRoles } from "@/lib/queries/roles"
 import { extractErrorMessage } from "@/lib/errors"
+
+import Loading from "@/components/loading"
 
 export default function EditUserPage({
   params,
@@ -22,9 +22,33 @@ export default function EditUserPage({
   const { id } = use(params)
   const router = useRouter()
   const userQuery = useUser(id)
-  const rolesQuery = useRoles()
   const deactivate = useDeactivateUser()
   const updateUser = useUpdateUser(id)
+
+  const handleReactivate = async () => {
+    try {
+      await updateUser.mutateAsync({ isActive: true })
+      toast.success("User reactivated", {
+        description: "They can log in again.",
+      })
+    } catch {
+      toast.error("Couldn't reactivate.")
+    }
+  }
+
+  if (userQuery.isPending && !userQuery.data) return <Loading />
+  if (userQuery.isError && !userQuery.data) {
+    return (
+      <div className="mx-auto max-w-md py-16 text-center">
+        <p className="text-sm text-muted-foreground">User not found.</p>
+        <Button asChild variant="ghost" className="mt-3">
+          <Link href="/dashboard/users">Back to staff</Link>
+        </Button>
+      </div>
+    )
+  }
+
+  const user = userQuery.data
 
   const handleDeactivate = async () => {
     try {
@@ -40,42 +64,10 @@ export default function EditUserPage({
     }
   }
 
-  const handleReactivate = async () => {
-    try {
-      await updateUser.mutateAsync({ isActive: true })
-      toast.success("User reactivated", {
-        description: "They can log in again.",
-      })
-    } catch {
-      toast.error("Couldn't reactivate.")
-    }
-  }
-
-  if (userQuery.isPending || rolesQuery.isPending) {
-    return (
-      <div className="flex justify-center py-16">
-        <Spinner />
-      </div>
-    )
-  }
-  if (userQuery.isError || !userQuery.data) {
-    return (
-      <div className="mx-auto max-w-md py-16 text-center">
-        <p className="text-sm text-muted-foreground">User not found.</p>
-        <Button asChild variant="ghost" className="mt-3">
-          <Link href="/dashboard/users">Back to staff</Link>
-        </Button>
-      </div>
-    )
-  }
-
-  const user = userQuery.data
-  const roles = rolesQuery.data ?? []
-
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" className="p-0" size="sm" asChild>
           <Link href="/dashboard/users">
             <ChevronLeft className="size-4" />
             Back to staff
@@ -122,7 +114,7 @@ export default function EditUserPage({
                       {user.name}
                     </span>{" "}
                     out of every device and prevent them from logging in until
-                    reactivated. Their role assignments are kept.
+                    reectivated. Their role assignments are kept.
                   </span>
                 }
                 actionLabel="Deactivate"
@@ -143,7 +135,7 @@ export default function EditUserPage({
         </div>
       </div>
 
-      <UserForm mode="edit" roles={roles} initial={user} />
+      <UserForm mode="edit" initial={user} />
     </div>
   )
 }

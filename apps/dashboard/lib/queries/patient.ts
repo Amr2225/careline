@@ -4,7 +4,7 @@ import { patientApi, } from "@/lib/api/patients"
 import { queryKeys } from "./keys"
 
 // TODO: implement pagination for this query.
-export function usePatients(query: ListPatientQuery = {}) {
+export function usePatients(query: ListPatientQuery = { limit: 10, page: 1 }) {
     return useQuery({
         queryKey: queryKeys.patients.list(query),
         queryFn: () => patientApi.list(query),

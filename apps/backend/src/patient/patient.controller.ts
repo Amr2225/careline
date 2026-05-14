@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { PatientService } from './patient.service';
-import { Patient } from '@careline/shared/types/patient.type';
+import { PaginatedPatientList, Patient } from '@careline/shared/types/patient.type';
 import { CreatePatientDto, CreatePatientWithUserDto } from './dto/create-patient.dto';
 import { UpdatePatientDto, UpdatePatientMedicalDto } from './dto/update-patient.dto';
 import { User } from '@/auth/decorators/user.decorator';
@@ -15,7 +15,7 @@ export class PatientController {
 
     @Get()
     @Requires(["Patients:READ"])
-    async listPatients(@Query() filters: ListPatientQueryDto = {}): Promise<Patient[]> {
+    async listPatients(@Query() filters: ListPatientQueryDto = { limit: 10, page: 1 }): Promise<PaginatedPatientList> {
         return await this.patientService.listPatients(filters);
     }
 

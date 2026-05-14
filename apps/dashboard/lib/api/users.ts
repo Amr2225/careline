@@ -14,6 +14,11 @@ export type UserDetail = Omit<UserListItem, 'userRoles'> & {
   roles: Role[]
   permissions: string[]
   updatedAt: string
+  phoneNumber?: string
+  id: string
+  name: string
+  isActive: boolean
+  email: string
 }
 
 export type ListUsersQuery = {

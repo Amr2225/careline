@@ -1,5 +1,5 @@
 import { IsArray, Matches, MinLength } from "class-validator";
-import { IsEmail, IsPhoneNumber, IsString } from "class-validator";
+import { IsEmail, IsString } from "class-validator";
 import { IsOptional } from "class-validator";
 
 export class UpdateUserDto {
@@ -13,7 +13,6 @@ export class UpdateUserDto {
 
     @IsString()
     @IsOptional()
-    @IsPhoneNumber("EG", { message: "Invalid phone number" })
     phoneNumber?: string;
 
     @IsString({ message: "Password must be a string" })

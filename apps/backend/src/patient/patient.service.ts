@@ -1,7 +1,7 @@
 import { DbService } from '@/db/db.service';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdatePatientMedicalDto } from './dto/update-patient.dto';
-import { Patient } from '@careline/shared/types/patient.type';
+import { PaginatedPatientList, Patient } from '@careline/shared/types/patient.type';
 import { CreatePatientDto, CreatePatientWithUserDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { ListPatientQueryDto, UserWithPatientRoleSearch } from './dto/list-patient-query.dto';
@@ -16,8 +16,20 @@ import { SYSTEM_ROLES } from '@careline/shared/types/rbac.type';
 export class PatientService {
     constructor(private readonly dbService: DbService) { }
 
-    async listPatients(listPatientQueryDto: ListPatientQueryDto = {}): Promise<Patient[]> {
-        const patients: Patient[] = [];
+    async listPatients(listPatientQueryDto: ListPatientQueryDto): Promise<PaginatedPatientList> {
+        const patinetsList: PaginatedPatientList = {
+            data: [],
+            meta: {
+                totalCount: 0,
+                totalPages: 0,
+                currentPage: listPatientQueryDto.page,
+                hasNextPage: false,
+                hasPrevPage: false,
+                totalActive: 0,
+                totalInactive: 0,
+                seenThisMonth: 0
+            }
+        }
 
         let patientWhere: Prisma.PatientWhereInput = {};
         let userWhere: Prisma.UserWhereInput = {};
@@ -48,27 +60,48 @@ export class PatientService {
         userWhere = { ...userWhere, OR: userWhere.OR.length > 0 ? userWhere.OR : Prisma.skip }
         patientWhere = { ...patientWhere, OR: patientWhere.OR.length > 0 ? patientWhere.OR : Prisma.skip }
 
+        const limit = listPatientQueryDto.limit;
+        const page = listPatientQueryDto?.page;
+        const skip = (page - 1) * limit;
 
-        const users = await this.dbService.user.findMany({
-            where: userWhere,
-            omit: {
-                passwordHash: true,
-                isBootstrapAdmin: true,
-            },
-            include: {
-                patient: { where: patientWhere }
-            }
-        });
+        const [users, patientsCount, activePatientsCount, inactivePatientsCount] = await this.dbService.$transaction([
+            this.dbService.user.findMany({
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' },
+                where: userWhere,
+                omit: {
+                    passwordHash: true,
+                    isBootstrapAdmin: true,
+                },
+                include: {
+                    patient: { where: patientWhere }
+                }
+            }),
+            this.dbService.user.count({ where: { ...userWhere, patient: patientWhere } }),
+            this.dbService.user.count({ where: { isActive: true, userRoles: { some: { role: { name: SYSTEM_ROLES.PATIENT } } } } }),
+            this.dbService.user.count({ where: { isActive: false, userRoles: { some: { role: { name: SYSTEM_ROLES.PATIENT } } } } })
+        ])
 
-        if (!users.length) return [];
-
+        if (!users.length) return patinetsList;
         for (const user of users) {
             if (!user.patient) continue;
 
-            patients.push(transformUserToPatient(user as UserIncludePatient));
+            patinetsList.data.push(transformUserToPatient(user as UserIncludePatient));
         }
-        return patients;
 
+        console.log("LIMIT: ", limit);
+        console.log("TOTAL PAGES: ", Math.ceil(patientsCount / limit));
+
+        patinetsList.meta.totalCount = patientsCount;
+        patinetsList.meta.totalPages = Math.ceil(patientsCount / limit);
+        patinetsList.meta.currentPage = page;
+        patinetsList.meta.hasNextPage = page < patinetsList.meta.totalPages;
+        patinetsList.meta.hasPrevPage = page > 1;
+        patinetsList.meta.totalActive = activePatientsCount;
+        patinetsList.meta.totalInactive = inactivePatientsCount;
+
+        return patinetsList;
     }
 
     async getUsersWithPatientRole(filters: UserWithPatientRoleSearch = {}): Promise<UserWithoutPassword[]> {
@@ -202,28 +235,38 @@ export class PatientService {
 
             if (!user) throw new BadRequestException("User not found or does not have the Patient role");
 
-            const patientData = await this.dbService.patient.create({
-                data: {
-                    dateOfBirth: new Date(patient.dateOfBirth),
-                    gender: patient.gender,
-                    address: skipUndefined(patient.address),
-                    emergencyContactName: skipUndefined(patient.emergencyContactName),
-                    emergencyContactPhone: skipUndefined(patient.emergencyContactPhone),
-                    bloodType: skipUndefined(patient.bloodType),
-                    allergies: skipUndefined(patient.allergies),
-                    chronicConditions: skipUndefined(patient.chronicConditions),
-                    currentMedications: skipUndefined(patient.currentMedications),
-                    userId: user.id,
-                },
-                include: {
-                    user: {
-                        omit: {
-                            passwordHash: true,
-                            isBootstrapAdmin: true,
+            const [_, patientData] = await this.dbService.$transaction([
+                this.dbService.user.update({
+                    where: { id: user.id },
+                    data: {
+                        phoneNumber: patient.phoneNumber
+                    }
+                }),
+
+                this.dbService.patient.create({
+                    data: {
+                        dateOfBirth: new Date(patient.dateOfBirth),
+                        gender: patient.gender,
+                        address: skipUndefined(patient.address),
+                        emergencyContactName: skipUndefined(patient.emergencyContactName),
+                        emergencyContactPhone: skipUndefined(patient.emergencyContactPhone),
+                        bloodType: skipUndefined(patient.bloodType),
+                        allergies: skipUndefined(patient.allergies),
+                        chronicConditions: skipUndefined(patient.chronicConditions),
+                        currentMedications: skipUndefined(patient.currentMedications),
+                        userId: user.id,
+                    },
+                    include: {
+                        user: {
+                            omit: {
+                                passwordHash: true,
+                                isBootstrapAdmin: true,
+                            }
                         }
                     }
-                }
-            });
+                })
+            ])
+            // const patientData = ;
 
             return transformPatient(patientData as PatientIncludeUser);
         } catch (error) {

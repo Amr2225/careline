@@ -20,6 +20,10 @@ export class CreatePatientDto {
     gender: Gender;
 
     @IsString()
+    @IsNotEmpty({ message: "Phone number is required" })
+    phoneNumber: string;
+
+    @IsString()
     @IsOptional()
     address?: string;
 

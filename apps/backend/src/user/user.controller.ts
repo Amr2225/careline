@@ -2,13 +2,14 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post
 import { CreateUserServiceInput, UpdateUserServiceInput, UserService } from "@/user/user.service"
 import { User } from '@careline/shared/prisma/client';
 import { CreateUserDto } from '@/user/dto/create-user.dto';
-import type { UserWithoutPassword } from '@careline/shared/types/user.type';
+import type { UserEntity, UserWithoutPassword } from '@careline/shared/types/user.type';
 import { User as CurrentUser } from '@/auth/decorators/user.decorator';
 import { Requires } from '@/rbac/decorator/requires.decorator';
 import { ValidateRoles } from './pipes/validate-roles.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserRolesDto } from './dto/update-user-roles.dto';
 import { QueryUserDto } from './dto/query-user.dto';
+import { ValidatePhoneNumber } from '@/patient/pipes/validate-phone.pipe';
 
 
 @Controller('users')
@@ -23,7 +24,7 @@ export class UserController {
 
     @Post()
     @Requires(["Users:WRITE"])
-    async createUser(@CurrentUser() currentUser: UserWithoutPassword, @Body(ValidateRoles) user: CreateUserDto): Promise<User> {
+    async createUser(@CurrentUser() currentUser: UserWithoutPassword, @Body(ValidateRoles, ValidatePhoneNumber()) user: CreateUserDto): Promise<User> {
         return await this.userService.createUser(currentUser.id, user as CreateUserServiceInput);
     }
 
@@ -35,10 +36,8 @@ export class UserController {
 
     @Patch(':id')
     @Requires(["Users:UPDATE"])
-    @HttpCode(HttpStatus.NO_CONTENT)
-    async updateUser(@CurrentUser() currentUser: UserWithoutPassword, @Param('id') id: string, @Body(ValidateRoles) updateUserDto: UpdateUserDto) {
-        await this.userService.updateUser(id, updateUserDto as UpdateUserServiceInput, currentUser.id);
-        return { message: 'User updated successfully' };
+    async updateUser(@CurrentUser() currentUser: UserWithoutPassword, @Param('id') id: string, @Body(ValidateRoles, ValidatePhoneNumber(false)) updateUserDto: UpdateUserDto): Promise<UserEntity> {
+        return await this.userService.updateUser(id, updateUserDto as UpdateUserServiceInput, currentUser.id);
     }
 
     @Patch(':id/role')

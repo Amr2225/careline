@@ -1,4 +1,5 @@
 import type { BloodType as PrismaBloodType, Gender as PrismaGender } from "@careline/shared/prisma/client";
+import { Pagination } from "./pagination.type";
 
 export enum Gender {
     MALE = "MALE",
@@ -77,6 +78,8 @@ export interface UpdatePatientMedicalPayload {
 }
 
 export interface ListPatientQuery {
+    limit: number;
+    page: number;
     name?: string;
     phoneNumber?: string;
     email?: string;
@@ -86,6 +89,16 @@ export interface ListPatientQuery {
     bloodType?: BloodType;
 }
 
+interface PatientStats {
+    totalActive: number;
+    totalInactive: number;
+    seenThisMonth: number;
+}
+
+export interface PaginatedPatientList {
+    data: Patient[]
+    meta: Pagination & PatientStats
+}
 
 export interface Patient {
     patientId?: string;

@@ -60,45 +60,65 @@ import {
 } from "@careline/shared/types/patient.type"
 import { usePatients } from "@/lib/queries/patient"
 import Spinner from "@/components/spinner"
+import { parseAsInteger, useQueryState } from "nuqs"
+import { initials } from "@/lib/initials"
 
 const ALL_GENDERS = "__all__"
-const PAGE_SIZE_OPTIONS = [10, 25, 50] as const
-const DEFAULT_PAGE_SIZE = 10
+const PAGE_SIZE_OPTIONS = [1, 5, 10, 25, 50] as const
+// const DEFAULT_PAGE_SIZE = 10
 
 const columnHelper = createColumnHelper<Patient>()
 
-// TODO: implement pagination.
 export default function PatientsListPage() {
   const router = useRouter()
-  const [filters, setFilters] = useState<ListPatientQuery>({})
+  const [filters, setFilters] = useState<
+    Omit<ListPatientQuery, "limit" | "page">
+  >({})
+
   const [gender, setGender] = useState<string>(ALL_GENDERS)
   const [showInactive, setShowInactive] = useState(false)
   const [sorting, setSorting] = useState<SortingState>([
     { id: "name", desc: false },
   ])
-  const [pageIndex, setPageIndex] = useState(0)
-  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE)
+  // const [pageIndex, setPageIndex] = useState(0)
+  // const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE)
 
-  const { data, isPending, isError } = usePatients(filters)
-  const patients = data ?? []
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(0))
+  const [limit, setLimit] = useQueryState(
+    "limit",
+    parseAsInteger.withDefault(10)
+  )
+
+  const query: ListPatientQuery = useMemo(
+    () => ({
+      ...filters,
+      limit,
+      page: page + 1,
+    }),
+    [filters, limit, page]
+  )
+
+  const { data, isPending, isError } = usePatients(query)
+  const patients = data?.data ?? []
+  const patientsMetaData = data?.meta
 
   // Reset to first page when filter inputs change.
   useEffect(() => {
-    setPageIndex(0)
-  }, [filters, gender, showInactive, pageSize])
+    setPage(0)
+  }, [filters, gender, showInactive])
 
   // TODO: this should come from the backend when implemeting pagination.
-  const stats = useMemo(() => {
-    if (!patients) return { total: 0, active: 0, inactive: 0, seenThisMonth: 0 }
-    const active = patients.filter((patient) => patient.isActive).length
+  // const stats = useMemo(() => {
+  //   if (!patients) return { total: 0, active: 0, inactive: 0, seenThisMonth: 0 }
+  //   const active = patients.filter((patient) => patient.isActive).length
 
-    return {
-      total: patients.length,
-      active,
-      inactive: patients.length - active,
-      seenThisMonth: 1,
-    }
-  }, [patients])
+  //   return {
+  //     total: patients.length,
+  //     active,
+  //     inactive: patients.length - active,
+  //     seenThisMonth: 1,
+  //   }
+  // }, [patients])
 
   const columns = useMemo(
     () => [
@@ -210,27 +230,35 @@ export default function PatientsListPage() {
     columns,
     state: {
       sorting,
-      pagination: { pageIndex, pageSize },
+      pagination: { pageIndex: page, pageSize: limit },
     },
+    manualPagination: true,
+    pageCount: patientsMetaData?.totalPages ?? 1,
+    rowCount: patientsMetaData?.totalCount ?? 0,
     onSortingChange: setSorting,
     onPaginationChange: (updater) => {
       const next =
         typeof updater === "function"
-          ? updater({ pageIndex, pageSize })
+          ? updater({ pageIndex: page, pageSize: limit })
           : updater
-      setPageIndex(next.pageIndex)
-      setPageSize(next.pageSize)
+
+      setPage(next.pageIndex)
+      setLimit(next.pageSize)
     },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   })
 
-  const totalRows = patients.length
-  const totalPages = table.getPageCount() || 1
-  const currentPage = pageIndex + 1
-  const rangeStart = totalRows === 0 ? 0 : pageIndex * pageSize + 1
-  const rangeEnd = Math.min(totalRows, (pageIndex + 1) * pageSize)
+  const totalRows = patientsMetaData?.totalCount ?? 0
+  const currentPage = page + 1
+  const rangeStart = totalRows === 0 ? 0 : page * limit + 1
+  const rangeEnd = Math.min(totalRows, (page + 1) * limit)
+
+  console.log("PAGE: ", page)
+  console.log("LIMIT: ", limit)
+  console.log("RANGE START: ", rangeStart)
+  console.log("RANGE END: ", rangeEnd)
+  console.log("TOTAL ROWS: ", totalRows)
 
   return (
     <div className="space-y-8">
@@ -255,25 +283,25 @@ export default function PatientsListPage() {
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total patients"
-          value={stats.total}
+          value={patientsMetaData?.totalCount ?? 0}
           accent="primary"
           icon={<HeartPulse className="size-4" />}
         />
         <StatCard
           label="Active"
-          value={stats.active}
+          value={patientsMetaData?.totalActive ?? 0}
           accent="primary"
           icon={<Sparkles className="size-4" />}
         />
         <StatCard
           label="Inactive"
-          value={stats.inactive}
+          value={patientsMetaData?.totalInactive ?? 0}
           accent="muted"
           icon={<Activity className="size-4" />}
         />
         <StatCard
           label="Seen this month"
-          value={stats.seenThisMonth}
+          value={patientsMetaData?.seenThisMonth ?? 0}
           accent="muted"
           icon={<CalendarClock className="size-4" />}
         />
@@ -413,13 +441,15 @@ export default function PatientsListPage() {
         {totalRows > 0 ? (
           <PaginationBar
             page={currentPage}
-            totalPages={totalPages}
-            pageSize={pageSize}
+            totalPages={patientsMetaData?.totalPages ?? 1}
+            pageSize={limit}
             rangeStart={rangeStart}
             rangeEnd={rangeEnd}
             total={totalRows}
             onPageChange={(p) => table.setPageIndex(p - 1)}
             onPageSizeChange={(s) => table.setPageSize(s)}
+            canPrev={patientsMetaData?.hasPrevPage ?? false}
+            canNext={patientsMetaData?.hasNextPage ?? false}
           />
         ) : null}
       </section>
@@ -440,6 +470,8 @@ function PaginationBar({
   rangeStart,
   rangeEnd,
   total,
+  canPrev,
+  canNext,
   onPageChange,
   onPageSizeChange,
 }: {
@@ -449,12 +481,12 @@ function PaginationBar({
   rangeStart: number
   rangeEnd: number
   total: number
+  canPrev: boolean
+  canNext: boolean
   onPageChange: (next: number) => void
   onPageSizeChange: (next: number) => void
 }) {
   const pageNumbers = buildPageList(page, totalPages)
-  const canPrev = page > 1
-  const canNext = page < totalPages
 
   return (
     <div className="flex flex-col gap-3 border-t border-border/60 px-5 py-3 text-xs sm:flex-row sm:items-center sm:justify-between">
@@ -462,7 +494,7 @@ function PaginationBar({
         <span>
           Showing{" "}
           <span className="font-mono font-medium text-foreground tabular-nums">
-            {rangeStart}–{rangeEnd}
+            {rangeStart}-{rangeEnd}
           </span>{" "}
           of{" "}
           <span className="font-mono font-medium text-foreground tabular-nums">
@@ -504,8 +536,8 @@ function PaginationBar({
           Previous
         </Button>
         <div className="flex items-center gap-1 px-1">
-          {pageNumbers.map((item, idx) =>
-            item === "…" ? (
+          {pageNumbers.map((pageNumber, idx) =>
+            pageNumber === "…" ? (
               <span
                 key={`gap-${idx}`}
                 className="px-1.5 text-muted-foreground"
@@ -515,18 +547,18 @@ function PaginationBar({
               </span>
             ) : (
               <button
-                key={item}
+                key={pageNumber}
                 type="button"
-                onClick={() => onPageChange(item)}
-                aria-current={item === page ? "page" : undefined}
+                onClick={() => onPageChange(pageNumber)}
+                aria-current={pageNumber === page ? "page" : undefined}
                 className={cn(
                   "flex size-7 items-center justify-center rounded-md font-mono text-xs tabular-nums transition-colors",
-                  item === page
+                  pageNumber === page
                     ? "bg-primary/15 font-semibold text-primary"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
-                {item}
+                {pageNumber}
               </button>
             )
           )}
@@ -553,10 +585,13 @@ function buildPageList(page: number, total: number): Array<number | "…"> {
   const out: Array<number | "…"> = [1]
   const start = Math.max(2, page - 1)
   const end = Math.min(total - 1, page + 1)
+
   if (start > 2) out.push("…")
+
   for (let i = start; i <= end; i++) out.push(i)
   if (end < total - 1) out.push("…")
   out.push(total)
+
   return out
 }
 
@@ -635,12 +670,5 @@ function EmptyState({
         </Button>
       )}
     </div>
-  )
-}
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/)
-  return (
-    (parts[0]?.[0] ?? "").toUpperCase() + (parts[1]?.[0] ?? "").toUpperCase()
   )
 }
