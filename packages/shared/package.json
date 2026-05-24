@@ -8,8 +8,8 @@
   },
   "exports": {
     "./prisma/*": {
-      "types": "./dist/prisma/*.d.ts",
-      "default": "./dist/prisma/*.js"
+      "types": "./prisma/*.d.ts",
+      "default": "./prisma/*.js"
     },
     "./types/*": {
       "types": "./dist/types/*.d.ts",

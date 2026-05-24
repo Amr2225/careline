@@ -6,6 +6,8 @@ import { UserEntity, UserWithoutPassword } from '@careline/shared/types/user.typ
 import { RbacService } from '@/rbac/rbac.service';
 import { hashPassword } from '@/common/password.utils';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SYSTEM_ROLES } from '@careline/shared/types/rbac.type';
+import { skipUndefined } from '@/common/skipUndefined.utils';
 
 type Role = {
     id: string;
@@ -19,6 +21,7 @@ export type CreateUserServiceInput = Omit<CreateUserDto, 'roles'> & {
 export type UpdateUserServiceInput = Omit<UpdateUserDto, 'roles'> & {
     roles?: Role[];
 }
+
 
 type UsersFilter = {
     name?: string;
@@ -34,7 +37,7 @@ export class UserService {
     async getUsers(queryUserDto: UsersFilter = {}): Promise<UserWithoutPassword[]> {
         const where: Prisma.UserWhereInput = {
             userRoles: {
-                none: { role: { name: "Patient" } }
+                none: { role: { name: SYSTEM_ROLES.PATIENT } }
             }
         }
 
@@ -157,7 +160,7 @@ export class UserService {
         }
     }
 
-    async updateUser(id: string, user: UpdateUserServiceInput, requestUserId: string): Promise<User> {
+    async updateUser(id: string, user: UpdateUserServiceInput, requestUserId: string): Promise<UserEntity> {
         if (user.roles && user.roles.length > 0) {
             const currentUserRoles = await this.rbacService.getRoles(id);
 
@@ -173,24 +176,24 @@ export class UserService {
             }
         }
 
+        let updatedUser: User;
         if (!user.email) {
             try {
-                const updatedUser = await this.db.user.update({
+                updatedUser = await this.db.user.update({
                     where: { id },
                     data: {
-                        name: user.name ?? Prisma.skip,
+                        name: skipUndefined(user.name),
                         passwordHash: user.password ? await hashPassword(user.password) : Prisma.skip,
-                        userRoles: user.roles && user.roles.length > 0 ? {
+                        phoneNumber: skipUndefined(user.phoneNumber),
+                        userRoles: {
                             deleteMany: {},
-                            create: user.roles.map((role) => ({
+                            create: user.roles && user.roles.length > 0 ? user.roles.map((role) => ({
                                 roleId: role.id,
                                 assignedById: requestUserId,
-                            })),
-                        } : Prisma.skip,
+                            })) : Prisma.skip
+                        },
                     }
                 })
-
-                return updatedUser;
 
             } catch (error) {
                 if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
@@ -202,27 +205,27 @@ export class UserService {
         }
 
         try {
-            const [updatedUser] = await this.db.$transaction([
+            [updatedUser] = await this.db.$transaction([
                 this.db.user.update({
                     where: { id },
                     data: {
-                        name: user.name,
-                        email: user.email,
+                        name: skipUndefined(user.name),
+                        email: skipUndefined(user.email),
+                        phoneNumber: skipUndefined(user.phoneNumber),
                         passwordHash: user.password ? await hashPassword(user.password) : Prisma.skip,
-                        userRoles: user.roles && user.roles.length > 0 ? {
+                        userRoles: {
                             deleteMany: {},
-                            create: user.roles.map((role) => ({
+                            create: user.roles && user.roles.length > 0 ? user.roles.map((role) => ({
                                 roleId: role.id,
                                 assignedById: requestUserId,
-                            })),
-                        } : Prisma.skip,
+                            })) : Prisma.skip
+                        },
                     }
                 }),
 
                 this.db.refreshToken.updateMany({ where: { userId: id, revokedAt: null }, data: { revokedAt: new Date() } })
             ])
 
-            return updatedUser;
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
                 throw new BadRequestException("User not found");
@@ -230,6 +233,11 @@ export class UserService {
 
             throw error;
         }
+
+        const roles = await this.rbacService.getRoles(id);
+        const permissions = await this.rbacService.getPremissionsForUser(id);
+
+        return { ...updatedUser, roles, permissions: Array.from(permissions) };
     }
 
     async updateUserRole(id: string, currentRoleId: string, newRoleId: string) {

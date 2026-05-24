@@ -4,7 +4,18 @@ import { useMemo } from "react"
 import { Lock } from "lucide-react"
 import { Action } from "@careline/shared/types/rbac.type"
 import { Checkbox } from "@careline/ui/components/checkbox"
-import { ACTIONS, MODULE_NAMES, type ModuleName } from "@/lib/permissions"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@careline/ui/components/tooltip"
+import {
+  ACTIONS,
+  MODULE_NAMES,
+  isActionApplicable,
+  type ModuleName,
+} from "@/lib/permissions"
 import { cn } from "@careline/ui/lib/utils"
 
 export type MatrixValue = Record<ModuleName, Record<Action, boolean>>
@@ -14,6 +25,7 @@ const ACTION_LABELS: Record<Action, string> = {
   [Action.WRITE]: "Write",
   [Action.UPDATE]: "Update",
   [Action.DELETE]: "Delete",
+  [Action.UPDATE_MEDICAL]: "Medical",
 }
 
 const ACTION_HINT: Record<Action, string> = {
@@ -21,6 +33,7 @@ const ACTION_HINT: Record<Action, string> = {
   [Action.WRITE]: "Create",
   [Action.UPDATE]: "Edit",
   [Action.DELETE]: "Remove",
+  [Action.UPDATE_MEDICAL]: "Clinical notes",
 }
 
 export function emptyMatrix(): MatrixValue {
@@ -54,6 +67,7 @@ export function matrixToPermissions(matrix: MatrixValue): string[] {
 
   for (const module of MODULE_NAMES) {
     for (const action of ACTIONS) {
+      if (!isActionApplicable(module, action)) continue
       if (matrix[module][action]) result.push(`${module}:${action}`)
     }
   }
@@ -75,38 +89,47 @@ export function PermissionMatrix({
   readOnly = false,
   lockReason,
 }: PermissionMatrixProps) {
+  const applicableCount = useMemo(() => {
+    let n = 0
+    for (const m of MODULE_NAMES)
+      for (const a of ACTIONS) if (isActionApplicable(m, a)) n++
+    return n
+  }, [])
+
   const grantCount = useMemo(() => {
     let n = 0
-    for (const m of MODULE_NAMES) for (const a of ACTIONS) if (value[m][a]) n++
+    for (const m of MODULE_NAMES)
+      for (const a of ACTIONS) if (isActionApplicable(m, a) && value[m][a]) n++
     return n
   }, [value])
 
   const rowState = (m: ModuleName): CellState => {
-    const checks = ACTIONS.map((a) => value[m][a])
-    const trueCount = checks.filter(Boolean).length
+    const applicable = ACTIONS.filter((a) => isActionApplicable(m, a))
+    const trueCount = applicable.filter((a) => value[m][a]).length
 
     if (trueCount === 0) return "unchecked"
-    if (trueCount === ACTIONS.length) return "checked"
+    if (trueCount === applicable.length) return "checked"
     return "indeterminate"
   }
 
   const colState = (a: Action): CellState => {
-    const checks = MODULE_NAMES.map((m) => value[m][a])
-    const trueCount = checks.filter(Boolean).length
+    const applicable = MODULE_NAMES.filter((m) => isActionApplicable(m, a))
+    const trueCount = applicable.filter((m) => value[m][a]).length
 
     if (trueCount === 0) return "unchecked"
-    if (trueCount === MODULE_NAMES.length) return "checked"
+    if (trueCount === applicable.length) return "checked"
     return "indeterminate"
   }
 
   const totalState = (): CellState => {
     if (grantCount === 0) return "unchecked"
-    if (grantCount === MODULE_NAMES.length * ACTIONS.length) return "checked"
+    if (grantCount === applicableCount) return "checked"
     return "indeterminate"
   }
 
   const setCell = (m: ModuleName, a: Action, v: boolean) => {
     if (readOnly) return
+    if (!isActionApplicable(m, a)) return
     onChange({ ...value, [m]: { ...value[m], [a]: v } })
   }
 
@@ -115,7 +138,9 @@ export function PermissionMatrix({
 
     const next = rowState(m) !== "checked"
     const updated: MatrixValue = { ...value, [m]: { ...value[m] } }
-    for (const a of ACTIONS) updated[m][a] = next
+    for (const a of ACTIONS) {
+      if (isActionApplicable(m, a)) updated[m][a] = next
+    }
     onChange(updated)
   }
 
@@ -124,6 +149,7 @@ export function PermissionMatrix({
     const next = colState(a) !== "checked"
     const updated: MatrixValue = { ...value }
     for (const m of MODULE_NAMES) {
+      if (!isActionApplicable(m, a)) continue
       updated[m] = { ...updated[m], [a]: next }
     }
     onChange(updated)
@@ -134,8 +160,10 @@ export function PermissionMatrix({
     const next = totalState() !== "checked"
     const updated: MatrixValue = {} as MatrixValue
     for (const m of MODULE_NAMES) {
-      updated[m] = {} as Record<Action, boolean>
-      for (const a of ACTIONS) updated[m][a] = next
+      updated[m] = { ...value[m] }
+      for (const a of ACTIONS) {
+        if (isActionApplicable(m, a)) updated[m][a] = next
+      }
     }
     onChange(updated)
   }
@@ -144,6 +172,7 @@ export function PermissionMatrix({
     s === "indeterminate" ? "indeterminate" : s === "checked"
 
   return (
+    <TooltipProvider>
     <div className="shadow-ambient overflow-hidden rounded-2xl border border-border/70 bg-card">
       {readOnly && lockReason ? (
         <div className="flex items-center gap-2 border-b border-border/70 bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
@@ -203,19 +232,36 @@ export function PermissionMatrix({
                       {m}
                     </span>
                   </td>
-                  {ACTIONS.map((a) => (
-                    <td key={a} className="px-2 py-3">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={value[m][a]}
-                          onCheckedChange={(v) => setCell(m, a, v === true)}
-                          disabled={readOnly}
-                          aria-label={`${ACTION_LABELS[a]} ${m}`}
-                          className="size-5 rounded-md data-[state=checked]:border-primary data-[state=checked]:bg-primary"
-                        />
-                      </div>
-                    </td>
-                  ))}
+                  {ACTIONS.map((a) => {
+                    const applicable = isActionApplicable(m, a)
+                    const checkbox = (
+                      <Checkbox
+                        checked={applicable ? value[m][a] : false}
+                        onCheckedChange={(v) => setCell(m, a, v === true)}
+                        disabled={readOnly || !applicable}
+                        aria-label={`${ACTION_LABELS[a]} ${m}`}
+                        className="size-5 rounded-md data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+                      />
+                    )
+                    return (
+                      <td key={a} className="px-2 py-3">
+                        <div className="flex justify-center">
+                          {applicable ? (
+                            checkbox
+                          ) : (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="inline-flex">{checkbox}</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                This action does not apply to {m}.
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </td>
+                    )
+                  })}
                   <td className="px-3 py-3">
                     <div className="flex justify-center">
                       <Checkbox
@@ -273,5 +319,6 @@ export function PermissionMatrix({
         </span>
       </div>
     </div>
+    </TooltipProvider>
   )
 }

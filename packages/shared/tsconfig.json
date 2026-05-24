@@ -10,7 +10,7 @@
     "target": "ES2023",
     "paths": {
       "@types/*": ["./types/*"],
-      "@prisma/*": ["./primsa/*"]
+      "@prisma/*": ["./prisma/*"]
     }
   },
   "include": ["prisma/**/*.ts", "types/**/*.ts"],

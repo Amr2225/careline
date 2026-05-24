@@ -12,6 +12,7 @@ import {
 import Link from "next/link"
 import {
   ChartColumnIncreasing,
+  HeartPulse,
   LayoutDashboard,
   ListOrdered,
   Settings,
@@ -36,6 +37,11 @@ const links = [
     label: "Users",
     href: "/dashboard/users",
     icon: <Users />,
+  },
+  {
+    label: "Patients",
+    href: "/dashboard/patients",
+    icon: <HeartPulse />,
   },
   {
     label: "Roles",

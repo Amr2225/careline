@@ -7,11 +7,11 @@ import { ChevronLeft, Lock, Trash2, Users as UsersIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@careline/ui/components/button"
 import { Badge } from "@careline/ui/components/badge"
-import Spinner from "@/components/spinner"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { RoleForm } from "@/components/role-form"
 import { useDeleteRole, useRole } from "@/lib/queries/roles"
 import { extractErrorMessage } from "@/lib/errors"
+import Loading from "@/components/loading"
 
 const PROTECTED = new Set(["Manager", "Patient"])
 
@@ -37,14 +37,8 @@ export default function EditRolePage({
     }
   }
 
-  if (roleQuery.isPending) {
-    return (
-      <div className="flex justify-center py-16">
-        <Spinner />
-      </div>
-    )
-  }
-  if (roleQuery.isError || !roleQuery.data) {
+  if (roleQuery.isPending && !roleQuery.data) return <Loading />
+  if (roleQuery.isError && !roleQuery.data) {
     return (
       <div className="mx-auto max-w-md py-16 text-center">
         <p className="text-sm text-muted-foreground">Role not found.</p>

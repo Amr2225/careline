@@ -1,4 +1,5 @@
 import type { ListUsersQuery } from "@/lib/api/users"
+import { ListPatientQuery } from "@careline/shared/types/patient.type"
 
 export const queryKeys = {
   users: {
@@ -11,4 +12,10 @@ export const queryKeys = {
     list: () => ["roles", "list"] as const,
     detail: (id: string) => ["roles", "detail", id] as const,
   },
+  patients: {
+    all: ['patients'] as const,
+    list: (qeurry: ListPatientQuery) => ['patients', 'list', qeurry] as const,
+    detail: (patientId: string) => ['patients', 'detail', patientId] as const,
+    usersWithPatientRole: (search?: string) => ['patients', 'users', 'with-patient-role', search] as const,
+  }
 }

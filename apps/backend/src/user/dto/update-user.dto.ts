@@ -11,6 +11,10 @@ export class UpdateUserDto {
     @IsOptional()
     email?: string;
 
+    @IsString()
+    @IsOptional()
+    phoneNumber?: string;
+
     @IsString({ message: "Password must be a string" })
     @IsOptional()
     @MinLength(8, { message: "Password must be at least 8 characters long" })

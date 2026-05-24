@@ -12,6 +12,11 @@ export class CreateUserDto {
     @Matches(/^(?=.*[0-9])(?=.*[A-Z]).+$/, { message: "Password must contain at least one number, one uppercase letter, and one special character" })
     password: string;
 
+    @IsString()
+    @IsOptional()
+    // @IsPhoneNumber("EG", { message: "Invalid phone number" })
+    phoneNumber?: string;
+
     @IsOptional()
     @IsBoolean()
     isActive: boolean = true;

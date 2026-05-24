@@ -10,12 +10,38 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum BloodType {
+  A_POS
+  A_NEG
+  B_POS
+  B_NEG
+  AB_POS
+  AB_NEG
+  O_POS
+  O_NEG
+  UNKNOWN
+}
+
+enum Action {
+  READ
+  WRITE
+  UPDATE
+  DELETE
+  UPDATE_MEDICAL
+}
+
 model User {
   id               String   @id @default(cuid())
   email            String   @unique
   passwordHash     String
   name             String
   isActive         Boolean  @default(true)
+  phoneNumber      String?  @unique
   isBootstrapAdmin Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -23,8 +49,34 @@ model User {
   refreshTokens RefreshToken[]
   userRoles     UserRole[]     @relation("UserRoles")
   assignedRoles UserRole[]     @relation("AssignedRoles")
+  patient       Patient?
 
   @@map("users") // Name of the table
+}
+
+model Patient {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  dateOfBirth           DateTime @db.Date
+  gender                Gender
+  address               String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+
+  // medical history
+  bloodType          BloodType?
+  allergies          String? // free text
+  chronicConditions  String? // free text
+  currentMedications String? // free text
+  medicalNotes       String? // free text, doctor-editable
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("patients")
 }
 
 model RefreshToken {
@@ -42,13 +94,6 @@ model RefreshToken {
   @@index([userId])
   @@index([expiresAt]) // Creates a normal database index on expiresAt. It is not unique, so many users/tokens can have the same expiresAt value. 
   @@map("refresh_tokens") // Name of the table
-}
-
-enum Action {
-  READ
-  WRITE
-  UPDATE
-  DELETE
 }
 
 model Module {

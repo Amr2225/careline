@@ -4,20 +4,24 @@ import { Transform } from "class-transformer";
 export class QueryUserDto {
     @IsOptional()
     @IsString()
-    name: string;
+    name?: string;
 
     @IsOptional()
     @IsEmail()
-    email: string;
+    email?: string;
+
+    @IsOptional()
+    @IsString()
+    phoneNumber?: string;
 
     @IsOptional()
     @IsArray()
     @IsString({ each: true, message: "Roles must be an array of strings" })
     @Transform(({ value }) => value.split(","))
-    roles: string[];
+    roles?: string[];
 
     @IsOptional()
     @IsBoolean()
     @Transform(({ value }) => value === "true")
-    isActive: boolean;
+    isActive?: boolean;
 }

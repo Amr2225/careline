@@ -49,7 +49,9 @@ const roles = [
         description: "Senior Manager",
         permissions: modules.map(module => ({
             module: module.name,
-            action: ["READ", "WRITE", "UPDATE", "DELETE"],
+            action: module.name === "Patients"
+                ? ["READ", "WRITE", "UPDATE", "DELETE", "UPDATE_MEDICAL"]
+                : ["READ", "WRITE", "UPDATE", "DELETE"],
         }))
     },
     {
@@ -89,7 +91,7 @@ const roles = [
             },
             {
                 module: "Patients",
-                action: ["READ", "UPDATE"],
+                action: ["READ", "UPDATE", "UPDATE_MEDICAL"],
             }
         ]
     },

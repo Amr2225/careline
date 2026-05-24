@@ -1,6 +1,9 @@
+import { InternalServerErrorException } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
 import type { DoubleCsrfConfigOptions } from "csrf-csrf";
 import type { Request } from "express";
+import type { Duration, unitOfTime } from "moment";
+import moment from "moment";
 
 export const csrfConfig = (configService: ConfigService): DoubleCsrfConfigOptions => ({
     cookieName: 'csrfToken',
@@ -12,13 +15,25 @@ export const csrfConfig = (configService: ConfigService): DoubleCsrfConfigOption
         secure: true,
         sameSite: 'strict',
         path: '/',
+        maxAge: (() => {
+            const expiresIn = configService.getOrThrow<string>('REFRESH_TOKEN_EXPIRES_IN');
+            if (!expiresIn) {
+                throw new InternalServerErrorException(`REFRESH_TOKEN_EXPIRES_IN is not set`);
+            }
+
+            const [amount, unit] = expiresIn.split(" ") as [Duration, unitOfTime.DurationConstructor];
+            if (!amount || !unit) {
+                throw new InternalServerErrorException('JWT_EXPIRES_IN is not valid. It should be like "number unit"');
+            }
+
+            return moment.duration(Number(amount), unit).asMilliseconds();
+        })(),
     },
     getSecret: () => configService.getOrThrow<string>('CSRF_SECRET'),
     getSessionIdentifier: (req: Request) => req.cookies.refreshToken ?? "anonymous", // Should be a stable value that identifies the user, not the token itself refreshToken/SessionId/UserId
     getCsrfTokenFromRequest: (req: Request) => req.headers['x-csrf-token'] as string,
     errorConfig: {
         statusCode: 401,
-        message: 'Invalid CSRF token',
-        code: 'INVALID_CSRF_TOKEN',
+        message: 'INVALID_CSRF_TOKEN',
     }
 })

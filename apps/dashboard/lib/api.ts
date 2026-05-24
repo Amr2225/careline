@@ -1,5 +1,4 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios"
-// import { useRouter } from "next/router";
 
 const ALLOWED_METHODS = ["post", "patch", "put", "delete"];
 
@@ -50,7 +49,8 @@ refreshClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     return Promise.reject(error);
 })
 
-// TODO: Auth flow should be revised because after a long item and a refresh becoming invalid, it will be stuck in a loop where the proxy sees the refresh token in the cookie and this script will detect and invalid auth state.
+// Bug: Auth flow should be revised because after a long item and a refresh becoming invalid, it will be stuck in a loop where the proxy sees the refresh token in the cookie and this script will detect and invalid auth state.
+// TODO: There is a fix for the bug assess it.  
 api.interceptors.response.use((response) => response, async (error: AxiosError) => {
     const originalRequest = error.config as RetryConfig | undefined;
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {

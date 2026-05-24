@@ -12,6 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RbacGuard } from './rbac/guards/rbac.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesModule } from './roles/roles.module';
+import { PatientModule } from './patient/patient.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RolesModule } from './roles/roles.module';
     AuthModule,
     RbacModule,
     RolesModule,
+    PatientModule,
   ],
   controllers: [AppController],
   providers: [
@@ -39,6 +41,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(doubleCsrfProtection)
       .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .exclude({ path: 'auth/refresh', method: RequestMethod.POST })
       .forRoutes('*wildcard');
   }
 }
