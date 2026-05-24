@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
-import { NextFunction, Request } from 'express';
+// import { NextFunction, Request } from 'express';
 import { DbConnectionErrorFilter } from './db/db-connection.error';
 
 
@@ -43,10 +43,10 @@ async function bootstrap() {
   );
 
   app.use(cookieParser());
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    console.log("CSRF Token", req.cookies.csrfToken);
-    next();
-  });
+  // app.use((req: Request, _res: Response, next: NextFunction) => {
+  //   console.log("CSRF Token", req.cookies.csrfToken);
+  //   next();
+  // });
 
   app.setGlobalPrefix('api/v1/')
   app.useGlobalFilters(new DbConnectionErrorFilter())

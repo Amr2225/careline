@@ -20,7 +20,6 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type SortingState,
@@ -106,19 +105,6 @@ export default function PatientsListPage() {
   useEffect(() => {
     setPage(0)
   }, [filters, gender, showInactive])
-
-  // TODO: this should come from the backend when implemeting pagination.
-  // const stats = useMemo(() => {
-  //   if (!patients) return { total: 0, active: 0, inactive: 0, seenThisMonth: 0 }
-  //   const active = patients.filter((patient) => patient.isActive).length
-
-  //   return {
-  //     total: patients.length,
-  //     active,
-  //     inactive: patients.length - active,
-  //     seenThisMonth: 1,
-  //   }
-  // }, [patients])
 
   const columns = useMemo(
     () => [
@@ -253,12 +239,6 @@ export default function PatientsListPage() {
   const currentPage = page + 1
   const rangeStart = totalRows === 0 ? 0 : page * limit + 1
   const rangeEnd = Math.min(totalRows, (page + 1) * limit)
-
-  console.log("PAGE: ", page)
-  console.log("LIMIT: ", limit)
-  console.log("RANGE START: ", rangeStart)
-  console.log("RANGE END: ", rangeEnd)
-  console.log("TOTAL ROWS: ", totalRows)
 
   return (
     <div className="space-y-8">
