@@ -70,6 +70,8 @@ import { useUpdateUser, useUser } from "@/lib/queries/users"
 import { AxiosError } from "axios"
 import { UserDetail } from "@/lib/api/users"
 import { UseQueryResult } from "@tanstack/react-query"
+import DatePicker from "@careline/ui/components/date-picker-new"
+import moment from "moment"
 
 type Mode = "create" | "edit" | "link"
 
@@ -465,7 +467,7 @@ function EditUserForm({
       email: initialData?.email,
       phoneNumber: initialData?.phoneNumber,
       password: "",
-      dateOfBirth: initialData?.dateOfBirth,
+      dateOfBirth: initialData?.dateOfBirth ?? "",
       gender: initialData?.gender,
       address: initialData?.address ?? "",
       emergencyContactName: initialData?.emergencyContactName ?? "",
@@ -938,12 +940,22 @@ function SharedFromSections({
                 <CalendarDays className="size-4" />
                 Date of birth
               </FieldLabel>
-              <Input
-                id="p-dob"
-                type="date"
-                disabled={contactDisabled}
-                aria-invalid={Boolean(errors.dateOfBirth)}
-                {...form.register("dateOfBirth")}
+              <Controller
+                control={form.control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                  <DatePicker
+                    id="p-dob"
+                    disabled={contactDisabled}
+                    ariaInvalid={Boolean(errors.dateOfBirth)}
+                    value={field.value ?? ""}
+                    onChange={(date) =>
+                      field.onChange(
+                        date ? moment(date).format("YYYY-MM-DD") : ""
+                      )
+                    }
+                  />
+                )}
               />
               <FieldError errors={[errors.dateOfBirth]} />
             </Field>
