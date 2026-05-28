@@ -129,36 +129,70 @@ const roles = [
     }
 ]
 
+const settings = [
+    {
+        key: "appointmentDurationMinutes",
+        value: "30"
+    },
+    {
+        key: "slotCapacity",
+        value: "1"
+    },
+    {
+        key: "clinicHours",
+        value: JSON.stringify({
+            0: { "open": "09:00", "close": "17:00" },
+            1: { "open": "09:00", "close": "17:00" },
+            2: { "open": "09:00", "close": "17:00" },
+            3: { "open": "09:00", "close": "17:00" },
+            4: { "open": "09:00", "close": "17:00" },
+            5: null,
+            6: null
+        })
+    }
+]
+
 async function main() {
+    let rolesExists = false;
     const modulesData = await prisma.module.createMany({
         skipDuplicates: true,
         data: modules
     })
 
 
-    for (let role of roles) {
-        await prisma.role.create({
-            data: {
-                name: role.name,
-                description: role.description,
-                isSystem: true,
-                permissions: {
-                    create: role.permissions.map((permission) => permission.action.map((action) => ({
-                        action: action as Action,
-                        module: {
-                            connect: {
-                                name: permission.module
+    try {
+        for (let role of roles) {
+            await prisma.role.create({
+                data: {
+                    name: role.name,
+                    description: role.description,
+                    isSystem: true,
+                    permissions: {
+                        create: role.permissions.map((permission) => permission.action.map((action) => ({
+                            action: action as Action,
+                            module: {
+                                connect: {
+                                    name: permission.module
+                                }
                             }
-                        }
-                    }))
-                    ).flat()
+                        }))
+                        ).flat()
+                    }
                 }
-            }
-        })
+            })
+        }
+    } catch (error) {
+        rolesExists = true;
     }
+
+    const settingsData = await prisma.setting.createMany({
+        skipDuplicates: true,
+        data: settings
+    })
 
     const selectModules = await prisma.module.findMany();
     const selectRoles = await prisma.role.findMany();
+    const selectedSettings = await prisma.setting.findMany()
 
     console.log("\nSeed completed successfully");
     console.log("=".repeat(32));
@@ -166,6 +200,7 @@ async function main() {
     console.table([
         { Resource: "Modules", Created: modulesData.count, Total: selectModules.length },
         { Resource: "Roles", Created: roles.length, Total: selectRoles.length },
+        { Resource: "Settings", Created: settingsData.count, Total: selectedSettings.length },
     ]);
 
     console.log("\nSeeded modules");
@@ -176,14 +211,26 @@ async function main() {
         })),
     );
 
-    console.log("\nSeeded roles");
+    if (!rolesExists) {
+        console.log("\nSeeded roles");
+        console.table(
+            selectRoles.map(({ name, description, isSystem }) => ({
+                Name: name,
+                Description: description,
+                System: isSystem ? "Yes" : "No",
+            })),
+        );
+    } else {
+        console.log("\nRoles already exist");
+    }
+
+    console.log("\nSeeded settings");
     console.table(
-        selectRoles.map(({ name, description, isSystem }) => ({
-            Name: name,
-            Description: description,
-            System: isSystem ? "Yes" : "No",
-        })),
-    );
+        selectedSettings.map(({ key, value }) => ({
+            Name: key,
+            value,
+        }))
+    )
 }
 
 main().then(async () => {

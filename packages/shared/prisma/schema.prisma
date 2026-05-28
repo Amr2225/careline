@@ -73,7 +73,8 @@ model Patient {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
 
   @@index([userId])
   @@map("patients")
@@ -149,4 +150,72 @@ model UserRole {
   @@unique([userId, roleId])
   @@index([userId])
   @@map("user_roles")
+}
+
+model AvailableSlot {
+  id           String        @id @default(cuid())
+  startTime    DateTime      @unique
+  capacity     Int
+  bookedCount  Int           @default(0)
+  templateId   String?
+  template     SlotTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+
+  @@index([startTime])
+  @@index([templateId])
+  @@map("available_slots")
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  patientId   String
+  slotId      String
+  status      AppointmentStatus @default(BOOKED)
+  bookedAt    DateTime          @default(now())
+  cancelledAt DateTime?
+  updatedAt   DateTime          @updatedAt
+
+  patient Patient       @relation(fields: [patientId], references: [id], onDelete: Restrict)
+  slot    AvailableSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+
+  @@index([patientId, status])
+  @@index([slotId, status])
+  @@map("appointments")
+}
+
+enum AppointmentStatus {
+  BOOKED
+  LATE_ARRIVING // auto-flipped at slotTime - 5min if no scan yet
+  ARRIVED
+  IN_PROGRESS
+  DONE
+  NO_SHOW
+  CANCELLED
+}
+
+model SlotTemplate {
+  id               String    @id @default(cuid())
+  name             String
+  weekday          Int
+  startTime        String
+  endTime          String
+  capacityOverride Int?
+  isActive         Boolean   @default(true)
+  lastRunAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  slots AvailableSlot[]
+
+  @@map("slot_templates")
+}
+
+model Setting {
+  key         String   @id
+  value       String
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+
+  @@map("settings")
 }

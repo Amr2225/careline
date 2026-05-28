@@ -13,6 +13,12 @@ import { RbacGuard } from './rbac/guards/rbac.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesModule } from './roles/roles.module';
 import { PatientModule } from './patient/patient.module';
+import { SettingsService } from './settings/settings.service';
+import { SettingsController } from './settings/settings.controller';
+import { SettingsModule } from './settings/settings.module';
+import { SlotsModule } from './slots/slots.module';
+import { SlotTemplatesModule } from './slot-templates/slot-templates.module';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -27,11 +33,16 @@ import { PatientModule } from './patient/patient.module';
     RbacModule,
     RolesModule,
     PatientModule,
+    SettingsModule,
+    SlotsModule,
+    SlotTemplatesModule,
+    AppointmentsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, SettingsController],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
-    { provide: APP_GUARD, useClass: RbacGuard }
+    { provide: APP_GUARD, useClass: RbacGuard },
+    SettingsService
   ],
 })
 export class AppModule implements NestModule {

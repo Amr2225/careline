@@ -17,5 +17,10 @@ export const queryKeys = {
     list: (qeurry: ListPatientQuery) => ['patients', 'list', qeurry] as const,
     detail: (patientId: string) => ['patients', 'detail', patientId] as const,
     usersWithPatientRole: (search?: string) => ['patients', 'users', 'with-patient-role', search] as const,
+  },
+  appointments: {
+    all: ['appointments'] as const,
+    byDate: (date: string) => ['appointments', 'by-date', date] as const,
+    byDateRange: (from: string, to: string) => ['appointments', 'by-date-range', from, to] as const,
   }
 }

@@ -11,6 +11,7 @@ import {
 } from "@careline/ui/components/sidebar"
 import Link from "next/link"
 import {
+  Calendar,
   ChartColumnIncreasing,
   HeartPulse,
   LayoutDashboard,
@@ -49,6 +50,11 @@ const links = [
     icon: <ShieldCheck />,
   },
   {
+    label: "Appointments",
+    href: "/dashboard/appointments",
+    icon: <Calendar />,
+  },
+  {
     label: "Insights",
     href: "/dashboard/insights",
     icon: <ChartColumnIncreasing />,
@@ -84,17 +90,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   : pathname === link.href ||
                     pathname.startsWith(link.href + "/")
               return (
-              <SidebarMenuItem key={link.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActive}
-                  className="data-[active=true]:bg-primary/10 data-[active=true]:font-bold data-[active=true]:text-primary data-active:border-l-2 data-active:border-l-primary"
-                >
-                  <Link href={link.href} className="py-6">
-                    {link.icon} {link.label}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                <SidebarMenuItem key={link.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive}
+                    className="data-[active=true]:bg-primary/10 data-[active=true]:font-bold data-[active=true]:text-primary data-active:border-l-2 data-active:border-l-primary"
+                  >
+                    <Link href={link.href} className="py-6">
+                      {link.icon} {link.label}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               )
             })}
           </SidebarMenu>
