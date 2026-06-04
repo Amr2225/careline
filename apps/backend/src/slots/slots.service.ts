@@ -9,6 +9,7 @@ import { addMinutes } from 'date-fns';
 import { Prisma, AvailableSlot } from '@careline/shared/prisma/client';
 import { SlotWithProjectedPosition, SlotWithTemplateName } from '@careline/shared/types/slots.type';
 import { QuerySlotsDto } from './dto/query-slots.dto';
+import { AppointmentStatus } from '@careline/shared/prisma/index';
 
 @Injectable()
 export class SlotsService {
@@ -99,15 +100,16 @@ export class SlotsService {
     }
 
     async deleteSlot(id: string): Promise<void> {
-        try {
-            await this.dbService.availableSlot.delete({ where: { id } });
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-                throw new NotFoundException('Slot not found');
-            }
+        const slot = await this.dbService.availableSlot.findUnique({ where: { id }, include: { appointments: true } });
+        if (!slot) throw new NotFoundException('Slot not found');
 
-            throw error;
-        }
+        const allowedToDeleteStatuses: AppointmentStatus[] = ['NO_SHOW', 'CANCELLED'];
+        if (slot.appointments.some(appointment => !allowedToDeleteStatuses.includes(appointment.status))) throw new BadRequestException('Cannot delete slot with active appointments');
+
+        await this.dbService.$transaction(async (tx) => {
+            await tx.appointment.deleteMany({ where: { slotId: id } });
+            await tx.availableSlot.delete({ where: { id } });
+        }, { isolationLevel: "Serializable" });
     }
 
     async createBulk(dto: CreateBulkSlotsDto): Promise<any> {

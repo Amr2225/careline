@@ -1,12 +1,16 @@
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useMutationState, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { CreateSlotPayload, slotsApi, slotTemplatesApi } from "../api/slots"
 import { queryKeys } from "./keys"
 import { CreateBulkSlots } from "../schemas/slotsSchema"
 import { CreateSlotTemplateType, UpdateSlotTemplateType } from "../schemas/slotTemplateSchemas"
 import { toast } from "sonner"
 import { SlotTemplateEntity } from "@careline/shared/types/slot-templates.type"
+import { extractErrorMessage } from "../errors"
 
 // Slots
+/**
+ * A Hook to get the slots by date range
+ */
 export const useSlots = (from: string, to: string) => {
     return useQuery({
         queryKey: queryKeys.slots.getSlots(from, to),
@@ -16,6 +20,9 @@ export const useSlots = (from: string, to: string) => {
     })
 }
 
+/**
+ * A Hook to create a slot
+ */
 export const useCreateSlot = () => {
     const queryClient = useQueryClient()
     return useMutation({
@@ -26,6 +33,9 @@ export const useCreateSlot = () => {
     })
 }
 
+/**
+ * A Hook to create a bulk of slots
+ */
 export const useCreateBulkSlots = () => {
     const queryClient = useQueryClient()
     return useMutation({
@@ -36,7 +46,9 @@ export const useCreateBulkSlots = () => {
     })
 }
 
-// SLots Template
+/**
+ * A Hook to get all slot templates
+ */
 export const useSlotTemplates = () => {
     return useQuery({
         queryKey: queryKeys.slotTemplates.all,
@@ -46,6 +58,9 @@ export const useSlotTemplates = () => {
     })
 }
 
+/**
+ * A Hook to get a slot template by id
+ */
 export const useSlotTemplateById = (id: string) => {
     return useSuspenseQuery({
         queryKey: queryKeys.slotTemplates.detail(id),
@@ -54,6 +69,9 @@ export const useSlotTemplateById = (id: string) => {
     })
 }
 
+/**
+ * A Hook to create a slot template
+ */
 export const useCreateSlotTemplate = () => {
     const queryClient = useQueryClient()
     return useMutation({
@@ -65,6 +83,9 @@ export const useCreateSlotTemplate = () => {
     })
 }
 
+/**
+ * A Hook to update a slot template
+ */
 export const useUpdateSlotTemplate = (id?: string) => {
     const queryClient = useQueryClient()
     return useMutation({
@@ -76,6 +97,9 @@ export const useUpdateSlotTemplate = (id?: string) => {
     })
 }
 
+/**
+ * A Hook to delete a slot template
+ */
 export const useDeleteSlotTemplate = (id: string) => {
     const queryClient = useQueryClient()
     return useMutation({
@@ -85,4 +109,38 @@ export const useDeleteSlotTemplate = (id: string) => {
             void queryClient.invalidateQueries({ queryKey: queryKeys.slotTemplates.all })
         }
     })
+}
+
+/*
+* A Hook to delete a slot 
+*/
+export function useDeleteSlot(slotId: string) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationKey: queryKeys.slots.deleteSlot(slotId),
+        mutationFn: () => slotsApi.deleteSlot(slotId),
+        onSuccess: () => {
+            toast.success("Slot deleted successfully")
+            void queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes("by-date") })
+        },
+        onError: (error) => {
+            toast.error("Failed to delete slot", {
+                description: extractErrorMessage(error),
+            })
+        }
+    })
+}
+
+/**
+ * A Hoot to get the loading state of the delete slot mutation
+ */
+export function useDeleteSlotState(slotId: string) {
+    const state = useMutationState({
+        filters: { mutationKey: queryKeys.slots.deleteSlot(slotId) },
+        select: (mutation) => mutation.state.status
+    })
+
+    return {
+        isLoading: state.some(status => status === 'pending'),
+    }
 }

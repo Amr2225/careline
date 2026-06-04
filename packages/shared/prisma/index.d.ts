@@ -119,6 +119,15 @@ export const AppointmentStatus: {
 
 export type AppointmentStatus = (typeof AppointmentStatus)[keyof typeof AppointmentStatus]
 
+
+export const LateArrivalBucket: {
+  ON_TIME: 'ON_TIME',
+  FRONT_INSERT: 'FRONT_INSERT',
+  VERY_LATE: 'VERY_LATE'
+};
+
+export type LateArrivalBucket = (typeof LateArrivalBucket)[keyof typeof LateArrivalBucket]
+
 }
 
 export type Gender = $Enums.Gender
@@ -136,6 +145,10 @@ export const Action: typeof $Enums.Action
 export type AppointmentStatus = $Enums.AppointmentStatus
 
 export const AppointmentStatus: typeof $Enums.AppointmentStatus
+
+export type LateArrivalBucket = $Enums.LateArrivalBucket
+
+export const LateArrivalBucket: typeof $Enums.LateArrivalBucket
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1850,12 +1863,14 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     refreshTokens: number
+    noShowMarkedBy: number
     userRoles: number
     assignedRoles: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
+    noShowMarkedBy?: boolean | UserCountOutputTypeCountNoShowMarkedByArgs
     userRoles?: boolean | UserCountOutputTypeCountUserRolesArgs
     assignedRoles?: boolean | UserCountOutputTypeCountAssignedRolesArgs
   }
@@ -1876,6 +1891,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RefreshTokenWhereInput | $Types.Skip
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountNoShowMarkedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput | $Types.Skip
   }
 
   /**
@@ -2258,6 +2280,7 @@ export namespace Prisma {
     createdAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | User$noShowMarkedByArgs<ExtArgs> | $Types.Skip
     userRoles?: boolean | User$userRolesArgs<ExtArgs> | $Types.Skip
     assignedRoles?: boolean | User$assignedRolesArgs<ExtArgs> | $Types.Skip
     patient?: boolean | User$patientArgs<ExtArgs> | $Types.Skip
@@ -2303,6 +2326,7 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "isActive" | "phoneNumber" | "isBootstrapAdmin" | "createdAt" | "updatedAt", ExtArgs["result"]["user"], $Types.Skip>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | User$noShowMarkedByArgs<ExtArgs> | $Types.Skip
     userRoles?: boolean | User$userRolesArgs<ExtArgs> | $Types.Skip
     assignedRoles?: boolean | User$assignedRolesArgs<ExtArgs> | $Types.Skip
     patient?: boolean | User$patientArgs<ExtArgs> | $Types.Skip
@@ -2315,6 +2339,7 @@ export namespace Prisma {
     name: "User"
     objects: {
       refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+      noShowMarkedBy: Prisma.$AppointmentPayload<ExtArgs>[]
       userRoles: Prisma.$UserRolePayload<ExtArgs>[]
       assignedRoles: Prisma.$UserRolePayload<ExtArgs>[]
       patient: Prisma.$PatientPayload<ExtArgs> | null
@@ -2724,6 +2749,7 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     refreshTokens<T extends User$refreshTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    noShowMarkedBy<T extends User$noShowMarkedByArgs<ExtArgs> = {}>(args?: Subset<T, User$noShowMarkedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     userRoles<T extends User$userRolesArgs<ExtArgs> = {}>(args?: Subset<T, User$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedRoles<T extends User$assignedRolesArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     patient<T extends User$patientArgs<ExtArgs> = {}>(args?: Subset<T, User$patientArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3179,6 +3205,30 @@ export namespace Prisma {
     take?: number | $Types.Skip
     skip?: number | $Types.Skip
     distinct?: RefreshTokenScalarFieldEnum | RefreshTokenScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * User.noShowMarkedBy
+   */
+  export type User$noShowMarkedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput | $Types.Skip
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11094,6 +11144,10 @@ export namespace Prisma {
     bookedAt: Date | null
     cancelledAt: Date | null
     updatedAt: Date | null
+    arrivedAt: Date | null
+    lateArrival: $Enums.LateArrivalBucket | null
+    noShowAt: Date | null
+    noShowMarkedById: string | null
   }
 
   export type AppointmentMaxAggregateOutputType = {
@@ -11104,6 +11158,10 @@ export namespace Prisma {
     bookedAt: Date | null
     cancelledAt: Date | null
     updatedAt: Date | null
+    arrivedAt: Date | null
+    lateArrival: $Enums.LateArrivalBucket | null
+    noShowAt: Date | null
+    noShowMarkedById: string | null
   }
 
   export type AppointmentCountAggregateOutputType = {
@@ -11114,6 +11172,10 @@ export namespace Prisma {
     bookedAt: number
     cancelledAt: number
     updatedAt: number
+    arrivedAt: number
+    lateArrival: number
+    noShowAt: number
+    noShowMarkedById: number
     _all: number
   }
 
@@ -11126,6 +11188,10 @@ export namespace Prisma {
     bookedAt?: true | $Types.Skip
     cancelledAt?: true | $Types.Skip
     updatedAt?: true | $Types.Skip
+    arrivedAt?: true | $Types.Skip
+    lateArrival?: true | $Types.Skip
+    noShowAt?: true | $Types.Skip
+    noShowMarkedById?: true | $Types.Skip
   }
 
   export type AppointmentMaxAggregateInputType = {
@@ -11136,6 +11202,10 @@ export namespace Prisma {
     bookedAt?: true | $Types.Skip
     cancelledAt?: true | $Types.Skip
     updatedAt?: true | $Types.Skip
+    arrivedAt?: true | $Types.Skip
+    lateArrival?: true | $Types.Skip
+    noShowAt?: true | $Types.Skip
+    noShowMarkedById?: true | $Types.Skip
   }
 
   export type AppointmentCountAggregateInputType = {
@@ -11146,6 +11216,10 @@ export namespace Prisma {
     bookedAt?: true | $Types.Skip
     cancelledAt?: true | $Types.Skip
     updatedAt?: true | $Types.Skip
+    arrivedAt?: true | $Types.Skip
+    lateArrival?: true | $Types.Skip
+    noShowAt?: true | $Types.Skip
+    noShowMarkedById?: true | $Types.Skip
     _all?: true | $Types.Skip
   }
 
@@ -11229,6 +11303,10 @@ export namespace Prisma {
     bookedAt: Date
     cancelledAt: Date | null
     updatedAt: Date
+    arrivedAt: Date | null
+    lateArrival: $Enums.LateArrivalBucket | null
+    noShowAt: Date | null
+    noShowMarkedById: string | null
     _count: AppointmentCountAggregateOutputType | null
     _min: AppointmentMinAggregateOutputType | null
     _max: AppointmentMaxAggregateOutputType | null
@@ -11256,8 +11334,13 @@ export namespace Prisma {
     bookedAt?: boolean | $Types.Skip
     cancelledAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11268,8 +11351,13 @@ export namespace Prisma {
     bookedAt?: boolean | $Types.Skip
     cancelledAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11280,8 +11368,13 @@ export namespace Prisma {
     bookedAt?: boolean | $Types.Skip
     cancelledAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectScalar = {
@@ -11292,20 +11385,27 @@ export namespace Prisma {
     bookedAt?: boolean | $Types.Skip
     cancelledAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
   }
 
-  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "slotId" | "status" | "bookedAt" | "cancelledAt" | "updatedAt", ExtArgs["result"]["appointment"], $Types.Skip>
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "slotId" | "status" | "bookedAt" | "cancelledAt" | "updatedAt" | "arrivedAt" | "lateArrival" | "noShowAt" | "noShowMarkedById", ExtArgs["result"]["appointment"], $Types.Skip>
   export type AppointmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
   }
   export type AppointmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
   }
   export type AppointmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
   }
 
   export type $AppointmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11313,6 +11413,7 @@ export namespace Prisma {
     objects: {
       patient: Prisma.$PatientPayload<ExtArgs>
       slot: Prisma.$AvailableSlotPayload<ExtArgs>
+      noShowMarkedBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11322,6 +11423,10 @@ export namespace Prisma {
       bookedAt: Date
       cancelledAt: Date | null
       updatedAt: Date
+      arrivedAt: Date | null
+      lateArrival: $Enums.LateArrivalBucket | null
+      noShowAt: Date | null
+      noShowMarkedById: string | null
     }, ExtArgs["result"]["appointment"]>
     composites: {}
   }
@@ -11718,6 +11823,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     slot<T extends AvailableSlotDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AvailableSlotDefaultArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    noShowMarkedBy<T extends Appointment$noShowMarkedByArgs<ExtArgs> = {}>(args?: Subset<T, Appointment$noShowMarkedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11754,6 +11860,10 @@ export namespace Prisma {
     readonly bookedAt: FieldRef<"Appointment", 'DateTime'>
     readonly cancelledAt: FieldRef<"Appointment", 'DateTime'>
     readonly updatedAt: FieldRef<"Appointment", 'DateTime'>
+    readonly arrivedAt: FieldRef<"Appointment", 'DateTime'>
+    readonly lateArrival: FieldRef<"Appointment", 'LateArrivalBucket'>
+    readonly noShowAt: FieldRef<"Appointment", 'DateTime'>
+    readonly noShowMarkedById: FieldRef<"Appointment", 'String'>
   }
     
 
@@ -12152,6 +12262,25 @@ export namespace Prisma {
      * Limit how many Appointments to delete.
      */
     limit?: number | $Types.Skip
+  }
+
+  /**
+   * Appointment.noShowMarkedBy
+   */
+  export type Appointment$noShowMarkedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput | $Types.Skip
   }
 
   /**
@@ -14463,7 +14592,11 @@ export namespace Prisma {
     status: 'status',
     bookedAt: 'bookedAt',
     cancelledAt: 'cancelledAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    arrivedAt: 'arrivedAt',
+    lateArrival: 'lateArrival',
+    noShowAt: 'noShowAt',
+    noShowMarkedById: 'noShowMarkedById'
   };
 
   export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
@@ -14630,6 +14763,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'LateArrivalBucket'
+   */
+  export type EnumLateArrivalBucketFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LateArrivalBucket'>
+    
+
+
+  /**
+   * Reference to a field of type 'LateArrivalBucket[]'
+   */
+  export type ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LateArrivalBucket[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -14660,6 +14807,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     updatedAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenListRelationFilter | $Types.Skip
+    noShowMarkedBy?: AppointmentListRelationFilter | $Types.Skip
     userRoles?: UserRoleListRelationFilter | $Types.Skip
     assignedRoles?: UserRoleListRelationFilter | $Types.Skip
     patient?: XOR<PatientNullableScalarRelationFilter, PatientWhereInput> | null | $Types.Skip
@@ -14676,6 +14824,7 @@ export namespace Prisma {
     createdAt?: SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
     refreshTokens?: RefreshTokenOrderByRelationAggregateInput | $Types.Skip
+    noShowMarkedBy?: AppointmentOrderByRelationAggregateInput | $Types.Skip
     userRoles?: UserRoleOrderByRelationAggregateInput | $Types.Skip
     assignedRoles?: UserRoleOrderByRelationAggregateInput | $Types.Skip
     patient?: PatientOrderByWithRelationInput | $Types.Skip
@@ -14695,6 +14844,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     updatedAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenListRelationFilter | $Types.Skip
+    noShowMarkedBy?: AppointmentListRelationFilter | $Types.Skip
     userRoles?: UserRoleListRelationFilter | $Types.Skip
     assignedRoles?: UserRoleListRelationFilter | $Types.Skip
     patient?: XOR<PatientNullableScalarRelationFilter, PatientWhereInput> | null | $Types.Skip
@@ -15208,8 +15358,13 @@ export namespace Prisma {
     bookedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
     cancelledAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableFilter<"Appointment"> | string | null | $Types.Skip
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
     slot?: XOR<AvailableSlotScalarRelationFilter, AvailableSlotWhereInput> | $Types.Skip
+    noShowMarkedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
   }
 
   export type AppointmentOrderByWithRelationInput = {
@@ -15220,8 +15375,13 @@ export namespace Prisma {
     bookedAt?: SortOrder | $Types.Skip
     cancelledAt?: SortOrderInput | SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrderInput | SortOrder | $Types.Skip
+    lateArrival?: SortOrderInput | SortOrder | $Types.Skip
+    noShowAt?: SortOrderInput | SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrderInput | SortOrder | $Types.Skip
     patient?: PatientOrderByWithRelationInput | $Types.Skip
     slot?: AvailableSlotOrderByWithRelationInput | $Types.Skip
+    noShowMarkedBy?: UserOrderByWithRelationInput | $Types.Skip
   }
 
   export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
@@ -15235,8 +15395,13 @@ export namespace Prisma {
     bookedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
     cancelledAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableFilter<"Appointment"> | string | null | $Types.Skip
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
     slot?: XOR<AvailableSlotScalarRelationFilter, AvailableSlotWhereInput> | $Types.Skip
+    noShowMarkedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
   }, "id">
 
   export type AppointmentOrderByWithAggregationInput = {
@@ -15247,6 +15412,10 @@ export namespace Prisma {
     bookedAt?: SortOrder | $Types.Skip
     cancelledAt?: SortOrderInput | SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrderInput | SortOrder | $Types.Skip
+    lateArrival?: SortOrderInput | SortOrder | $Types.Skip
+    noShowAt?: SortOrderInput | SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrderInput | SortOrder | $Types.Skip
     _count?: AppointmentCountOrderByAggregateInput | $Types.Skip
     _max?: AppointmentMaxOrderByAggregateInput | $Types.Skip
     _min?: AppointmentMinOrderByAggregateInput | $Types.Skip
@@ -15263,6 +15432,10 @@ export namespace Prisma {
     bookedAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string | $Types.Skip
     cancelledAt?: DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null | $Types.Skip
     updatedAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableWithAggregatesFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableWithAggregatesFilter<"Appointment"> | string | null | $Types.Skip
   }
 
   export type SlotTemplateWhereInput = {
@@ -15405,6 +15578,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
@@ -15421,6 +15595,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
@@ -15437,6 +15612,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -15453,6 +15629,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -15988,8 +16165,12 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
     patient: PatientCreateNestedOneWithoutAppointmentsInput
     slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+    noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
   }
 
   export type AppointmentUncheckedCreateInput = {
@@ -16000,6 +16181,10 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
   }
 
   export type AppointmentUpdateInput = {
@@ -16008,8 +16193,12 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
     slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateInput = {
@@ -16020,6 +16209,10 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
   export type AppointmentCreateManyInput = {
@@ -16030,6 +16223,10 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
   }
 
   export type AppointmentUpdateManyMutationInput = {
@@ -16038,6 +16235,9 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateManyInput = {
@@ -16048,6 +16248,10 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
   export type SlotTemplateCreateInput = {
@@ -16246,6 +16450,12 @@ export namespace Prisma {
     none?: RefreshTokenWhereInput | $Types.Skip
   }
 
+  export type AppointmentListRelationFilter = {
+    every?: AppointmentWhereInput | $Types.Skip
+    some?: AppointmentWhereInput | $Types.Skip
+    none?: AppointmentWhereInput | $Types.Skip
+  }
+
   export type UserRoleListRelationFilter = {
     every?: UserRoleWhereInput | $Types.Skip
     some?: UserRoleWhereInput | $Types.Skip
@@ -16263,6 +16473,10 @@ export namespace Prisma {
   }
 
   export type RefreshTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder | $Types.Skip
+  }
+
+  export type AppointmentOrderByRelationAggregateInput = {
     _count?: SortOrder | $Types.Skip
   }
 
@@ -16381,16 +16595,6 @@ export namespace Prisma {
   export type UserScalarRelationFilter = {
     is?: UserWhereInput | $Types.Skip
     isNot?: UserWhereInput | $Types.Skip
-  }
-
-  export type AppointmentListRelationFilter = {
-    every?: AppointmentWhereInput | $Types.Skip
-    some?: AppointmentWhereInput | $Types.Skip
-    none?: AppointmentWhereInput | $Types.Skip
-  }
-
-  export type AppointmentOrderByRelationAggregateInput = {
-    _count?: SortOrder | $Types.Skip
   }
 
   export type PatientCountOrderByAggregateInput = {
@@ -16744,6 +16948,13 @@ export namespace Prisma {
     not?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Enums.AppointmentStatus | $Types.Skip
   }
 
+  export type EnumLateArrivalBucketNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+  }
+
   export type PatientScalarRelationFilter = {
     is?: PatientWhereInput | $Types.Skip
     isNot?: PatientWhereInput | $Types.Skip
@@ -16762,6 +16973,10 @@ export namespace Prisma {
     bookedAt?: SortOrder | $Types.Skip
     cancelledAt?: SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrder | $Types.Skip
+    lateArrival?: SortOrder | $Types.Skip
+    noShowAt?: SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrder | $Types.Skip
   }
 
   export type AppointmentMaxOrderByAggregateInput = {
@@ -16772,6 +16987,10 @@ export namespace Prisma {
     bookedAt?: SortOrder | $Types.Skip
     cancelledAt?: SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrder | $Types.Skip
+    lateArrival?: SortOrder | $Types.Skip
+    noShowAt?: SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrder | $Types.Skip
   }
 
   export type AppointmentMinOrderByAggregateInput = {
@@ -16782,6 +17001,10 @@ export namespace Prisma {
     bookedAt?: SortOrder | $Types.Skip
     cancelledAt?: SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrder | $Types.Skip
+    lateArrival?: SortOrder | $Types.Skip
+    noShowAt?: SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrder | $Types.Skip
   }
 
   export type EnumAppointmentStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -16792,6 +17015,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
     _min?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
     _max?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type EnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -16908,6 +17141,13 @@ export namespace Prisma {
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[] | $Types.Skip
   }
 
+  export type AppointmentCreateNestedManyWithoutNoShowMarkedByInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+  }
+
   export type UserRoleCreateNestedManyWithoutUserInput = {
     create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[] | $Types.Skip
     connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[] | $Types.Skip
@@ -16933,6 +17173,13 @@ export namespace Prisma {
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[] | $Types.Skip
     createMany?: RefreshTokenCreateManyUserInputEnvelope | $Types.Skip
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
   }
 
   export type UserRoleUncheckedCreateNestedManyWithoutUserInput = {
@@ -16985,6 +17232,20 @@ export namespace Prisma {
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[] | $Types.Skip
   }
 
+  export type AppointmentUpdateManyWithoutNoShowMarkedByNestedInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput | AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+  }
+
   export type UserRoleUpdateManyWithoutUserNestedInput = {
     create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[] | $Types.Skip
     connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[] | $Types.Skip
@@ -17035,6 +17296,20 @@ export namespace Prisma {
     update?: RefreshTokenUpdateWithWhereUniqueWithoutUserInput | RefreshTokenUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
     updateMany?: RefreshTokenUpdateManyWithWhereWithoutUserInput | RefreshTokenUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[] | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput | AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
   }
 
   export type UserRoleUncheckedUpdateManyWithoutUserNestedInput = {
@@ -17437,8 +17712,18 @@ export namespace Prisma {
     connect?: AvailableSlotWhereUniqueInput | $Types.Skip
   }
 
+  export type UserCreateNestedOneWithoutNoShowMarkedByInput = {
+    create?: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutNoShowMarkedByInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+  }
+
   export type EnumAppointmentStatusFieldUpdateOperationsInput = {
     set?: $Enums.AppointmentStatus | $Types.Skip
+  }
+
+  export type NullableEnumLateArrivalBucketFieldUpdateOperationsInput = {
+    set?: $Enums.LateArrivalBucket | null | $Types.Skip
   }
 
   export type PatientUpdateOneRequiredWithoutAppointmentsNestedInput = {
@@ -17455,6 +17740,16 @@ export namespace Prisma {
     upsert?: AvailableSlotUpsertWithoutAppointmentsInput | $Types.Skip
     connect?: AvailableSlotWhereUniqueInput | $Types.Skip
     update?: XOR<XOR<AvailableSlotUpdateToOneWithWhereWithoutAppointmentsInput, AvailableSlotUpdateWithoutAppointmentsInput>, AvailableSlotUncheckedUpdateWithoutAppointmentsInput> | $Types.Skip
+  }
+
+  export type UserUpdateOneWithoutNoShowMarkedByNestedInput = {
+    create?: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutNoShowMarkedByInput | $Types.Skip
+    upsert?: UserUpsertWithoutNoShowMarkedByInput | $Types.Skip
+    disconnect?: UserWhereInput | boolean | $Types.Skip
+    delete?: UserWhereInput | boolean | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNoShowMarkedByInput, UserUpdateWithoutNoShowMarkedByInput>, UserUncheckedUpdateWithoutNoShowMarkedByInput> | $Types.Skip
   }
 
   export type AvailableSlotCreateNestedManyWithoutTemplateInput = {
@@ -17739,6 +18034,13 @@ export namespace Prisma {
     not?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Enums.AppointmentStatus | $Types.Skip
   }
 
+  export type NestedEnumLateArrivalBucketNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+  }
+
   export type NestedEnumAppointmentStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.AppointmentStatus | EnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
     in?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
@@ -17747,6 +18049,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
     _min?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
     _max?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type NestedEnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -17803,6 +18115,42 @@ export namespace Prisma {
 
   export type RefreshTokenCreateManyUserInputEnvelope = {
     data: RefreshTokenCreateManyUserInput | RefreshTokenCreateManyUserInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  export type AppointmentCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    patient: PatientCreateNestedOneWithoutAppointmentsInput
+    slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+  }
+
+  export type AppointmentUncheckedCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateOrConnectWithoutNoShowMarkedByInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentCreateManyNoShowMarkedByInputEnvelope = {
+    data: AppointmentCreateManyNoShowMarkedByInput | AppointmentCreateManyNoShowMarkedByInput[]
     skipDuplicates?: boolean | $Types.Skip
   }
 
@@ -17923,6 +18271,39 @@ export namespace Prisma {
     ipAddress?: StringNullableFilter<"RefreshToken"> | string | null | $Types.Skip
   }
 
+  export type AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput = {
+    where: AppointmentWhereUniqueInput
+    update: XOR<AppointmentUpdateWithoutNoShowMarkedByInput, AppointmentUncheckedUpdateWithoutNoShowMarkedByInput>
+    create: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput = {
+    where: AppointmentWhereUniqueInput
+    data: XOR<AppointmentUpdateWithoutNoShowMarkedByInput, AppointmentUncheckedUpdateWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput = {
+    where: AppointmentScalarWhereInput
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentScalarWhereInput = {
+    AND?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+    OR?: AppointmentScalarWhereInput[] | $Types.Skip
+    NOT?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Appointment"> | string | $Types.Skip
+    patientId?: StringFilter<"Appointment"> | string | $Types.Skip
+    slotId?: StringFilter<"Appointment"> | string | $Types.Skip
+    status?: EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    cancelledAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableFilter<"Appointment"> | string | null | $Types.Skip
+  }
+
   export type UserRoleUpsertWithWhereUniqueWithoutUserInput = {
     where: UserRoleWhereUniqueInput
     update: XOR<UserRoleUpdateWithoutUserInput, UserRoleUncheckedUpdateWithoutUserInput>
@@ -18022,6 +18403,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
   }
@@ -18037,6 +18419,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
   }
@@ -18052,7 +18435,11 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
     slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+    noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
   }
 
   export type AppointmentUncheckedCreateWithoutPatientInput = {
@@ -18062,6 +18449,10 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
   }
 
   export type AppointmentCreateOrConnectWithoutPatientInput = {
@@ -18096,6 +18487,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
   }
@@ -18111,6 +18503,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
   }
@@ -18131,19 +18524,6 @@ export namespace Prisma {
     data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutPatientInput>
   }
 
-  export type AppointmentScalarWhereInput = {
-    AND?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
-    OR?: AppointmentScalarWhereInput[] | $Types.Skip
-    NOT?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
-    id?: StringFilter<"Appointment"> | string | $Types.Skip
-    patientId?: StringFilter<"Appointment"> | string | $Types.Skip
-    slotId?: StringFilter<"Appointment"> | string | $Types.Skip
-    status?: EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus | $Types.Skip
-    bookedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
-    cancelledAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
-    updatedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
-  }
-
   export type UserCreateWithoutRefreshTokensInput = {
     id?: string | $Types.Skip
     email: string
@@ -18154,6 +18534,7 @@ export namespace Prisma {
     isBootstrapAdmin?: boolean | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
@@ -18169,6 +18550,7 @@ export namespace Prisma {
     isBootstrapAdmin?: boolean | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
@@ -18200,6 +18582,7 @@ export namespace Prisma {
     isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -18215,6 +18598,7 @@ export namespace Prisma {
     isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -18457,6 +18841,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -18472,6 +18857,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -18517,6 +18903,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -18532,6 +18919,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -18563,6 +18951,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
   }
@@ -18578,6 +18967,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
   }
@@ -18635,6 +19025,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
   }
@@ -18650,6 +19041,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
   }
@@ -18691,7 +19083,11 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
     patient: PatientCreateNestedOneWithoutAppointmentsInput
+    noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
   }
 
   export type AppointmentUncheckedCreateWithoutSlotInput = {
@@ -18701,6 +19097,10 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
   }
 
   export type AppointmentCreateOrConnectWithoutSlotInput = {
@@ -18828,6 +19228,43 @@ export namespace Prisma {
     create: XOR<AvailableSlotCreateWithoutAppointmentsInput, AvailableSlotUncheckedCreateWithoutAppointmentsInput>
   }
 
+  export type UserCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    email: string
+    passwordHash: string
+    name: string
+    isActive?: boolean | $Types.Skip
+    phoneNumber?: string | null | $Types.Skip
+    isBootstrapAdmin?: boolean | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
+    assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+  }
+
+  export type UserUncheckedCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    email: string
+    passwordHash: string
+    name: string
+    isActive?: boolean | $Types.Skip
+    phoneNumber?: string | null | $Types.Skip
+    isBootstrapAdmin?: boolean | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+  }
+
+  export type UserCreateOrConnectWithoutNoShowMarkedByInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput>
+  }
+
   export type PatientUpsertWithoutAppointmentsInput = {
     update: XOR<PatientUpdateWithoutAppointmentsInput, PatientUncheckedUpdateWithoutAppointmentsInput>
     create: XOR<PatientCreateWithoutAppointmentsInput, PatientUncheckedCreateWithoutAppointmentsInput>
@@ -18902,6 +19339,49 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
+  export type UserUpsertWithoutNoShowMarkedByInput = {
+    update: XOR<UserUpdateWithoutNoShowMarkedByInput, UserUncheckedUpdateWithoutNoShowMarkedByInput>
+    create: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput>
+    where?: UserWhereInput | $Types.Skip
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNoShowMarkedByInput = {
+    where?: UserWhereInput | $Types.Skip
+    data: XOR<UserUpdateWithoutNoShowMarkedByInput, UserUncheckedUpdateWithoutNoShowMarkedByInput>
+  }
+
+  export type UserUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    passwordHash?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
+    assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+  }
+
+  export type UserUncheckedUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    passwordHash?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+  }
+
   export type AvailableSlotCreateWithoutTemplateInput = {
     id?: string | $Types.Skip
     startTime: Date | string
@@ -18968,6 +19448,19 @@ export namespace Prisma {
     ipAddress?: string | null | $Types.Skip
   }
 
+  export type AppointmentCreateManyNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+  }
+
   export type UserRoleCreateManyUserInput = {
     id?: string | $Types.Skip
     roleId: string
@@ -19010,6 +19503,45 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type AppointmentUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
   }
 
   export type UserRoleUpdateWithoutUserInput = {
@@ -19061,6 +19593,10 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
   }
 
   export type AppointmentUpdateWithoutPatientInput = {
@@ -19069,7 +19605,11 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateWithoutPatientInput = {
@@ -19079,6 +19619,10 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
@@ -19088,6 +19632,10 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
   export type RolePermissionCreateManyModuleInput = {
@@ -19173,6 +19721,10 @@ export namespace Prisma {
     bookedAt?: Date | string | $Types.Skip
     cancelledAt?: Date | string | null | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
   }
 
   export type AppointmentUpdateWithoutSlotInput = {
@@ -19181,7 +19733,11 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateWithoutSlotInput = {
@@ -19191,6 +19747,10 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateManyWithoutSlotInput = {
@@ -19200,6 +19760,10 @@ export namespace Prisma {
     bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
   export type AvailableSlotCreateManyTemplateInput = {

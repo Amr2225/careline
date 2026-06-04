@@ -6,10 +6,11 @@ import { User } from '@/auth/decorators/user.decorator';
 import { QueryAppointmentsByDateDto } from './dto/query-appointment.dto';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { AppointmentDetail, AppointmentWithSlot, SlotAndAppointments, WeeklyAppointmentsView } from '@careline/shared/types/appointment.type';
+import { ArrivalService } from '@/arrival/arrival.service';
 
 @Controller('appointments')
 export class AppointmentsController {
-    constructor(private readonly appointmentsService: AppointmentsService) { }
+    constructor(private readonly appointmentsService: AppointmentsService, private readonly arrivaleService: ArrivalService) { }
 
     @Get("/by-date")
     @Requires(["Appointments:READ"])
@@ -45,5 +46,24 @@ export class AppointmentsController {
     @Requires(["Appointments:UPDATE"])
     async cancelAppointment(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword) {
         return await this.appointmentsService.cancel(apptId, callerUser.id);
+    }
+
+    // Arrival
+    @Post(":id/arrive")
+    @Requires(["Appointments:READ"])
+    async arrive(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword) {
+        return await this.arrivaleService.recordArrival(apptId, callerUser.id);
+    }
+
+    @Post(":id/mark-arrived")
+    @Requires(["Appointments:UPDATE"])
+    async markArrive(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword): Promise<AppointmentWithSlot> {
+        return await this.arrivaleService.recordArrival(apptId, callerUser.id);
+    }
+
+    @Post(":id/no-show")
+    @Requires(["Appointments:UPDATE"])
+    async markNoShow(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword): Promise<AppointmentWithSlot> {
+        return await this.arrivaleService.markNoShow(apptId, callerUser.id);
     }
 }

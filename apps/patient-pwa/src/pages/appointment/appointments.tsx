@@ -11,6 +11,7 @@ import { format, formatRelative } from "date-fns"
 import { enUS } from "date-fns/locale"
 import { AppointmentsSkeleton } from "./components/appointments-skeleton"
 import { ApiError } from "@/components/Api-error"
+import { useNavStore } from "@/store/nav.store.js"
 
 type Status = keyof typeof AppointmentStatus
 
@@ -34,46 +35,9 @@ const customLocale = {
 
 export default function AppointmentsPage() {
   const [showPast, setShowPast] = useState(false)
-  const [openId, setOpenId] = useState<string | null>(null)
+  const openId = useNavStore((state) => state.openAppointmentId)
+  const setOpenId = useNavStore((state) => state.setOpenAppointmentId)
   const { data: appointments, isLoading, isError } = useGetMyAppointments()
-
-  // const appointments: MockAppointment[] = [
-  //   {
-  //     id: "a_1",
-  //     date: "Tomorrow, May 25",
-  //     time: "09:30",
-  //     status: "BOOKED",
-  //     position: 2,
-  //   },
-  //   {
-  //     id: "a_2",
-  //     date: "Fri, May 29",
-  //     time: "14:00",
-  //     status: "BOOKED",
-  //     position: 4,
-  //   },
-  //   {
-  //     id: "a_3",
-  //     date: "Mon, May 18",
-  //     time: "10:00",
-  //     status: "DONE",
-  //     position: null,
-  //   },
-  //   {
-  //     id: "a_4",
-  //     date: "Tue, May 12",
-  //     time: "11:30",
-  //     status: "DONE",
-  //     position: null,
-  //   },
-  //   {
-  //     id: "a_5",
-  //     date: "Sat, May 02",
-  //     time: "13:00",
-  //     status: "CANCELLED",
-  //     position: null,
-  //   },
-  // ]
 
   const upcoming = useMemo(() => {
     return (
@@ -231,7 +195,7 @@ export default function AppointmentsPage() {
                             </span>
                             <div>
                               <p className="text-xs font-medium text-slate-700">
-                                {format(a.slot.startTime, "EEE, MMM p")}
+                                {format(a.slot.startTime, "EEE, d MMM p")}
                               </p>
                               <p className="font-mono text-sm text-slate-500 tabular-nums">
                                 {format(a.slot.startTime, "p")}

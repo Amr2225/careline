@@ -91,6 +91,7 @@ export class AppointmentsService {
             if (!daysSet.has(day)) daysSet.set(day, []);
         }
 
+        // This returns the entire week with the slots for each day if available
         return Array.from(daysSet.entries()).map(([date, slots]) => ({
             date,
             slots
@@ -106,7 +107,9 @@ export class AppointmentsService {
 
         if (appt.status === AppointmentStatus.CANCELLED
             || appt.status === AppointmentStatus.DONE
-            || appt.status === AppointmentStatus.NO_SHOW) {
+            || appt.status === AppointmentStatus.NO_SHOW
+            || appt.status === AppointmentStatus.LATE_ARRIVING
+        ) {
             return 0;
         }
 

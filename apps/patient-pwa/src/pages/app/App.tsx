@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { BottomNavBar, type BottomNavTab } from "@/components/bottom-nav-bar.js"
 import AuthGuard from "@/providers/AuthGuard.js"
@@ -11,6 +10,7 @@ import {
   ProfilePage,
 } from "./components/index.js"
 import { useAuthStore } from "@/store/user.store.js"
+import { useNavStore } from "@/store/nav.store.js"
 import AppointmentsPage from "../appointment/appointments.js"
 import BookingPage from "../book/page.js"
 
@@ -27,7 +27,8 @@ const pageCopy: Record<BottomNavTab, React.ReactElement> = {
 function App() {
   const user = useAuthStore((state) => state.user)
 
-  const [activeTab, setActiveTab] = useState<BottomNavTab>("home")
+  const activeTab = useNavStore((state) => state.activeTab)
+  const setActiveTab = useNavStore((state) => state.setActiveTab)
   const activePage = pageCopy[activeTab]
 
   return (

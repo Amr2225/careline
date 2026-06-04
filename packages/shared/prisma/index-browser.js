@@ -209,7 +209,11 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   status: 'status',
   bookedAt: 'bookedAt',
   cancelledAt: 'cancelledAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  arrivedAt: 'arrivedAt',
+  lateArrival: 'lateArrival',
+  noShowAt: 'noShowAt',
+  noShowMarkedById: 'noShowMarkedById'
 };
 
 exports.Prisma.SlotTemplateScalarFieldEnum = {
@@ -279,6 +283,12 @@ exports.AppointmentStatus = exports.$Enums.AppointmentStatus = {
   DONE: 'DONE',
   NO_SHOW: 'NO_SHOW',
   CANCELLED: 'CANCELLED'
+};
+
+exports.LateArrivalBucket = exports.$Enums.LateArrivalBucket = {
+  ON_TIME: 'ON_TIME',
+  FRONT_INSERT: 'FRONT_INSERT',
+  VERY_LATE: 'VERY_LATE'
 };
 
 exports.Prisma.ModelName = {

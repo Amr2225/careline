@@ -22,10 +22,12 @@ export const queryKeys = {
     all: ['appointments'] as const,
     byDate: (date: string) => ['appointments', 'by-date', date] as const,
     byDateRange: (from: string, to: string) => ['appointments', 'by-date-range', from, to] as const,
+    mutationKey: (appointmentId: string) => ['mark-arrive-no-show', appointmentId] as const
   },
   slots: {
     all: ['slots'] as const,
     getSlots: (from: string, to: string) => ['slots', 'get-slots', from, to] as const,
+    deleteSlot: (slotId: string) => ['slots-delete', slotId] as const,
   },
   slotTemplates: {
     all: ['slot-templates'] as const,

@@ -1,4 +1,4 @@
-import { SlotAndAppointments, WeeklyAppointmentsView } from "@careline/shared/types/appointment.type"
+import { AppointmentWithSlot, SlotAndAppointments, WeeklyAppointmentsView } from "@careline/shared/types/appointment.type"
 import { api } from "../api"
 
 export const appointmentsApi = {
@@ -9,6 +9,14 @@ export const appointmentsApi = {
     },
     getByDateRange: async (from: string, to: string) => {
         const { data } = await api.get<WeeklyAppointmentsView[]>("appointments/by-date-range", { params: { from, to } })
+        return data
+    },
+    markArrived: async (id: string) => {
+        const { data } = await api.post<AppointmentWithSlot>(`appointments/${id}/mark-arrived`)
+        return data
+    },
+    markNoShow: async (id: string) => {
+        const { data } = await api.post<AppointmentWithSlot>(`appointments/${id}/no-show`)
         return data
     }
 }

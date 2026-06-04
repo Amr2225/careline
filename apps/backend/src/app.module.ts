@@ -19,6 +19,9 @@ import { SettingsModule } from './settings/settings.module';
 import { SlotsModule } from './slots/slots.module';
 import { SlotTemplatesModule } from './slot-templates/slot-templates.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { ArrivalModule } from './arrival/arrival.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 
 @Module({
   imports: [
@@ -27,6 +30,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
       envFilePath: ".env",
       validate
     }),
+    ScheduleModule.forRoot(),
     DbModule,
     UserModule,
     AuthModule,
@@ -37,6 +41,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
     SlotsModule,
     SlotTemplatesModule,
     AppointmentsModule,
+    ArrivalModule,
   ],
   controllers: [AppController, SettingsController],
   providers: [

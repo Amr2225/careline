@@ -46,10 +46,11 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  refreshTokens RefreshToken[]
-  userRoles     UserRole[]     @relation("UserRoles")
-  assignedRoles UserRole[]     @relation("AssignedRoles")
-  patient       Patient?
+  refreshTokens  RefreshToken[]
+  noShowMarkedBy Appointment[]
+  userRoles      UserRole[]     @relation("UserRoles")
+  assignedRoles  UserRole[]     @relation("AssignedRoles")
+  patient        Patient?
 
   @@map("users") // Name of the table
 }
@@ -176,8 +177,14 @@ model Appointment {
   cancelledAt DateTime?
   updatedAt   DateTime          @updatedAt
 
-  patient Patient       @relation(fields: [patientId], references: [id], onDelete: Restrict)
-  slot    AvailableSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  arrivedAt        DateTime?
+  lateArrival      LateArrivalBucket? // set when status → ARRIVED
+  noShowAt         DateTime?
+  noShowMarkedById String?
+
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Restrict)
+  slot           AvailableSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  noShowMarkedBy User?         @relation(fields: [noShowMarkedById], references: [id], onDelete: SetNull)
 
   @@index([patientId, status])
   @@index([slotId, status])
@@ -192,6 +199,12 @@ enum AppointmentStatus {
   DONE
   NO_SHOW
   CANCELLED
+}
+
+enum LateArrivalBucket {
+  ON_TIME // scan before slotTime-5min OR within slotTime-5min..slotTime+5min window (i.e., not late or barely late, no front-skip)
+  FRONT_INSERT // scan in slotTime-5min..slotTime+15min after they were marked LATE_ARRIVING
+  VERY_LATE // scan after slotTime+15min
 }
 
 model SlotTemplate {

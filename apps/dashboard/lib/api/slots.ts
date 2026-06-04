@@ -23,6 +23,10 @@ export const slotsApi = {
     createBulkSlots: async (slots: CreateBulkSlots): Promise<{ message: string }> => {
         const { data } = await api.post<{ message: string }>('/slots/bulk', slots);
         return data;
+    },
+    deleteSlot: async (id: string): Promise<string> => {
+        const { data } = await api.delete<{ message: string }>(`/slots/${id}`);
+        return data.message;
     }
 }
 
