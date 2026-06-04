@@ -9,19 +9,19 @@ import {
   QueuePage,
   DataPage,
   ProfilePage,
-} from "./_components/index.js"
+} from "./components/index.js"
 import { useAuthStore } from "@/store/user.store.js"
-import AppointmentsPage from "../appointments/page.js"
+import AppointmentsPage from "../appointment/appointments.js"
 import BookingPage from "../book/page.js"
 
 const pageCopy: Record<BottomNavTab, React.ReactElement> = {
   home: <HomePage />,
+  book: <BookingPage />,
   history: <HistoryPage />,
+  appointments: <AppointmentsPage />,
   queue: <QueuePage />,
   date: <DataPage />,
   profile: <ProfilePage />,
-  book: <BookingPage />,
-  appointments: <AppointmentsPage />,
 }
 
 function App() {

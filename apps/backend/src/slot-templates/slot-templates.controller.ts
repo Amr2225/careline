@@ -32,7 +32,7 @@ export class SlotTemplatesController {
 
     @Patch(":id")
     @Requires(["Appointments:UPDATE"])
-    async updateSlotTemplate(@Param('id') id: string, @Body() updateSlotTemplateDto: UpdateTemplateDto): Promise<SlotTemplate> {
+    async updateSlotTemplate(@Param('id') id: string, @Body() updateSlotTemplateDto: UpdateTemplateDto): Promise<SlotTemplateEntity> {
         return await this.slotTemplatesService.update(id, updateSlotTemplateDto);
     }
 

@@ -2,9 +2,10 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query
 import { SlotsService } from './slots.service';
 import { AvailableSlot } from '@careline/shared/prisma/client';
 import { Requires } from '@/rbac/decorator/requires.decorator';
-import { QueryAvailableSlotsDto } from './dto/query-available-slots.dto';
+import { QueryAvailableSlotsDto, QuerySlotsDto } from './dto/query-slots.dto';
 import { CreateBulkSlotsDto, CreateSlotDto } from './dto/create-slot.dto';
 import { ValidateWorkingHours } from './pipe/validate-workinghours.pipe';
+import { SlotWithProjectedPosition, SlotWithTemplateName } from '@careline/shared/types/slots.type';
 
 @Controller('slots')
 export class SlotsController {
@@ -12,8 +13,8 @@ export class SlotsController {
 
     @Get()
     @Requires(["Appointments:READ"])
-    async getSlots(): Promise<AvailableSlot[]> {
-        return await this.slotsService.getSlots();
+    async getSlots(@Query() query: QuerySlotsDto): Promise<SlotWithTemplateName[]> {
+        return await this.slotsService.getSlots(query);
     }
 
     @Get("available")
@@ -24,7 +25,7 @@ export class SlotsController {
 
     @Get("next-available")
     @Requires(["Appointments:READ"])
-    async getNextAvailableSlot(): Promise<AvailableSlot | null> {
+    async getNextAvailableSlot(): Promise<SlotWithProjectedPosition | null> {
         return await this.slotsService.getNextAvailableSlot();
     }
 
@@ -35,7 +36,7 @@ export class SlotsController {
     }
 
     @Post("bulk")
-    @HttpCode(HttpStatus.CREATED)
+    // @HttpCode(HttpStatus.CREATED)
     @Requires(["Appointments:WRITE"])
     async createBulkSlots(@Body() createSlotDto: CreateBulkSlotsDto) {
         await this.slotsService.createBulk(createSlotDto);

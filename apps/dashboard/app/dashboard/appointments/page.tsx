@@ -7,21 +7,23 @@ import {
   CalendarPlus,
   CalendarRange,
   ChevronDown,
-  ChevronRight,
   Clock,
   LayoutTemplate,
+  MoreHorizontal,
+  Plus,
   Trash2,
   Users,
 } from "lucide-react"
 import { format, addDays, isSameDay } from "date-fns"
 import { Button } from "@careline/ui/components/button"
 import { Badge } from "@careline/ui/components/badge"
-import { Calendar } from "@careline/ui/components/calendar"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@careline/ui/components/popover"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@careline/ui/components/dropdown-menu"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,6 +50,13 @@ import {
   AppointmentStatus,
   SlotAndAppointments,
 } from "@careline/shared/types/appointment.type"
+import { DateFilter } from "./_components/dateFilter"
+import {
+  AppointmentsDaySkeleton,
+  WeekViewSkeleton,
+} from "./_components/AppointmentsSkeleton"
+import { ErrorState } from "./_components/states"
+import { parseAsIsoDate, useQueryState } from "nuqs"
 
 type SlotStatus = "empty" | "partial" | "full"
 
@@ -61,137 +70,42 @@ const STATUS_TONE: Record<keyof typeof AppointmentStatus, string> = {
   LATE_ARRIVING: "",
 }
 
-function fmtWeekRange(start: Date) {
-  const end = addDays(start, 6)
-  const sameMonth = start.getMonth() === end.getMonth()
-
-  if (sameMonth) return `${format(start, "MMMM d")} - ${format(end, "d, yyyy")}`
-  return `${format(start, "MMMM d")} - ${format(end, "MMMM d, yyyy")}`
-}
-// GET /api/v1/appointments/by-date?date=YYYY-MM-DD
-// GET /api/v1/slots/available?date=YYYY-MM-DD
-// const mockSlots: MockSlot[] = [
-//   {
-//     id: "s_1",
-//     time: "09:00",
-//     capacity: 1,
-//     bookings: [
-//       {
-//         id: "a1",
-//         patientName: "Sara Ahmed",
-//         status: "DONE",
-//         bookedAt: "2026-06-20T08:15:00Z",
-//       },
-//     ],
-//   },
-//   {
-//     id: "s_2",
-//     time: "09:30",
-//     capacity: 1,
-//     bookings: [
-//       {
-//         id: "a2",
-//         patientName: "Mohamed Hassan",
-//         status: "IN_PROGRESS",
-//         bookedAt: "2026-05-21T10:02",
-//       },
-//     ],
-//   },
-//   {
-//     id: "s_3",
-//     time: "10:00",
-//     capacity: 2,
-//     bookings: [
-//       {
-//         id: "a3",
-//         patientName: "Lina Yusuf",
-//         status: "ARRIVED",
-//         bookedAt: "2026-05-22T14:11",
-//       },
-//       {
-//         id: "a4",
-//         patientName: "Omar Tarek",
-//         status: "BOOKED",
-//         bookedAt: "2026-05-23T09:00",
-//       },
-//     ],
-//   },
-//   {
-//     id: "s_4",
-//     time: "10:30",
-//     capacity: 2,
-//     bookings: [
-//       {
-//         id: "a5",
-//         patientName: "Mariam Khaled",
-//         status: "BOOKED",
-//         bookedAt: "2026-05-22T16:45",
-//       },
-//     ],
-//   },
-//   { id: "s_5", time: "11:00", capacity: 2, bookings: [] },
-//   {
-//     id: "s_6",
-//     time: "11:30",
-//     capacity: 1,
-//     bookings: [
-//       {
-//         id: "a6",
-//         patientName: "Karim Adel",
-//         status: "BOOKED",
-//         bookedAt: "2026-05-23T11:00",
-//       },
-//     ],
-//   },
-//   { id: "s_7", time: "13:00", capacity: 1, bookings: [] },
-//   { id: "s_8", time: "13:30", capacity: 1, bookings: [] },
-//   {
-//     id: "s_9",
-//     time: "14:00",
-//     capacity: 1,
-//     bookings: [
-//       {
-//         id: "a7",
-//         patientName: "Nour Hany",
-//         status: "NO_SHOW",
-//         bookedAt: "2026-05-20T18:30",
-//       },
-//     ],
-//   },
-//   { id: "s_10", time: "14:30", capacity: 1, bookings: [] },
-// ]
-
 export default function AppointmentsDayPage() {
-  const [date, setDate] = useState<Date>(new Date())
+  const [date, setDate] = useQueryState<Date>(
+    "date",
+    parseAsIsoDate.withDefault(new Date())
+  )
   const [expanded, setExpanded] = useState<string | null>("s_3")
   const [view, setView] = useState<"day" | "week">("day")
 
   const {
-    data: mockSlots,
+    data: slots,
     isLoading,
     isError,
+    refetch,
   } = useAppointmentsByDate(date.toISOString())
 
   const stats = useMemo(() => {
-    if (mockSlots) {
-      const total = mockSlots.length
-      const booked = mockSlots.reduce(
-        (acc, s) =>
-          acc + s.bookings.filter((b) => b.status !== "NO_SHOW").length,
-        0
-      )
-      const totalCapacity = mockSlots.reduce((acc, s) => acc + s.capacity, 0)
-      const empty = mockSlots.filter((s) => s.bookings.length === 0).length
+    if (slots) {
+      const total = slots.length
+      const booked = slots.reduce((acc, s) => acc + s.bookedCount, 0)
+      const totalCapacity = slots.reduce((acc, s) => acc + s.capacity, 0)
+      const empty = slots.filter((s) => s.bookings.length === 0).length
       return { total, booked, totalCapacity, empty }
     }
 
     return { total: 0, booked: 0, totalCapacity: 0, empty: 0 }
-  }, [mockSlots])
+  }, [slots])
 
-  const isToday = isSameDay(date, new Date())
-
-  if (isLoading && !mockSlots) return <div>Loading...</div>
-  if (isError) return <div>Error</div>
+  if (isLoading && !slots) return <AppointmentsDaySkeleton />
+  if (isError)
+    return (
+      <ErrorState
+        title="Couldn't load appointments"
+        description="We couldn't fetch the slots for this day. Check your connection and try again."
+        onRetry={() => void refetch()}
+      />
+    )
 
   return (
     <div className="space-y-8">
@@ -205,25 +119,41 @@ export default function AppointmentsDayPage() {
             or set up a recurring weekly template.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/dashboard/appointments/slots">
-              <CalendarRange className="size-4" />
-              All slots
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/dashboard/appointments/templates">
-              <LayoutTemplate className="size-4" />
-              Templates
-            </Link>
-          </Button>
+        <div className="flex items-center gap-2">
           <Button asChild>
             <Link href="/dashboard/appointments/slots/new">
               <CalendarPlus className="size-4" />
               Create slots
             </Link>
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" aria-label="More slot options">
+                <MoreHorizontal className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/appointments/slots">
+                  <CalendarRange className="size-4" />
+                  All slots
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/appointments/templates">
+                  <LayoutTemplate className="size-4" />
+                  Templates
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/appointments/slots/single">
+                  <Plus className="size-4" />
+                  Add single slot
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
@@ -257,60 +187,7 @@ export default function AppointmentsDayPage() {
       <section className="shadow-ambient overflow-hidden rounded-2xl border border-border/70 bg-card">
         <div className="flex flex-col gap-4 border-b border-border/60 p-5 sm:flex-row sm:items-center sm:justify-between">
           {/* Date Filters */}
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setDate(addDays(date, view === "week" ? -7 : -1))}
-              aria-label={view === "week" ? "Previous week" : "Previous day"}
-            >
-              <ChevronRight className="size-4 rotate-180" />
-              Prev
-            </Button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="min-w-[220px] justify-between"
-                >
-                  <span className="flex items-center gap-2">
-                    <CalendarDays className="size-4" />
-                    {view === "week"
-                      ? fmtWeekRange(date)
-                      : format(date, "EEEE, MMMM d, yyyy")}
-                  </span>
-                  <ChevronDown className="size-4 opacity-60" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  required
-                  selected={date}
-                  onSelect={setDate}
-                  defaultMonth={date}
-                />
-              </PopoverContent>
-            </Popover>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setDate(addDays(date, view === "week" ? 7 : 1))}
-              aria-label={view === "week" ? "Next week" : "Next day"}
-            >
-              Next
-              <ChevronRight className="size-4" />
-            </Button>
-            {!isToday ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setDate(new Date())}
-              >
-                Today
-              </Button>
-            ) : null}
-          </div>
+          <DateFilter date={date} setDate={setDate} view={view} />
 
           <div className="flex items-center gap-3">
             <ViewToggle value={view} onChange={setView} />
@@ -333,17 +210,15 @@ export default function AppointmentsDayPage() {
           />
         ) : (
           <ul className="divide-y divide-border/40">
-            {mockSlots!.map((slot) => {
-              const filled = slot.bookings.filter(
-                (b) => b.status !== "NO_SHOW"
-              ).length
+            {slots!.map((slot) => {
+              const isOpen = expanded === slot.id
+              const filled = slot.bookedCount
               const status: SlotStatus =
                 filled === 0
                   ? "empty"
                   : filled >= slot.capacity
                     ? "full"
                     : "partial"
-              const isOpen = expanded === slot.id
 
               return (
                 <li
@@ -490,44 +365,6 @@ function ViewToggle({
   )
 }
 
-// type WeekSlot = {
-//   id: string
-//   time: string
-//   capacity: number
-//   bookings: Appointment[]
-// }
-
-type WeekDayBucket = {
-  date: Date
-  slots: SlotAndAppointments[]
-}
-
-// const POOL: {
-//   name: string
-//   status: AppointmentStatus
-//   bookedAt: string
-// }[] = [
-//   { name: "Sara Ahmed", status: "BOOKED", bookedAt: "2026-05-22T10:00:00Z" },
-//   { name: "Mohamed Hassan", status: "ARRIVED", bookedAt: "2026-05-23T08:30" },
-//   { name: "Lina Yusuf", status: "IN_PROGRESS", bookedAt: "2026-05-22T14:11" },
-//   { name: "Omar Tarek", status: "BOOKED", bookedAt: "2026-05-23T09:00" },
-//   { name: "Mariam Khaled", status: "DONE", bookedAt: "2026-05-21T11:00" },
-//   { name: "Karim Adel", status: "BOOKED", bookedAt: "2026-05-23T11:00" },
-//   { name: "Nour Hany", status: "NO_SHOW", bookedAt: "2026-05-20T18:30" },
-// ]
-
-// function makeBookings(seed: number, count: number): MockBooking[] {
-//   return Array.from({ length: count }, (_, i) => {
-//     const pick = POOL[(seed + i) % POOL.length]!
-//     return {
-//       id: `b-${seed}-${i}`,
-//       patientName: pick.name,
-//       status: pick.status,
-//       bookedAt: pick.bookedAt,
-//     }
-//   })
-// }
-
 function WeekView({
   weekStart,
   onPickDay,
@@ -535,87 +372,27 @@ function WeekView({
   weekStart: Date
   onPickDay: (d: Date) => void
 }) {
-  // GET /api/v1/slots/available?from=YYYY-MM-DD&to=YYYY-MM-DD
-  // GET /api/v1/appointments/by-date-range
-  const days2: WeekDayBucket[] = Array.from({ length: 7 }, (_, i) => {
-    const d = addDays(weekStart, i)
-    const dow = d.getDay()
-    if (dow === 5 || dow === 6) return { date: d, slots: [] }
-    const base: SlotAndAppointments[] = [
-      {
-        id: `${i}-1`,
-        time: "09:00",
-        capacity: 1,
-        bookedCount: 0,
-        bookings: [],
-      },
-      {
-        id: `${i}-2`,
-        time: "09:30",
-        bookedCount: 0,
-        capacity: 1,
-        bookings: [],
-      },
-      {
-        id: `${i}-3`,
-        time: "10:00",
-        bookedCount: 0,
-        capacity: 2,
-        bookings: [],
-      },
-      {
-        id: `${i}-4`,
-        time: "10:30",
-        bookedCount: 0,
-        capacity: 2,
-        bookings: [],
-      },
-      {
-        id: `${i}-5`,
-        time: "11:00",
-        bookedCount: 0,
-        capacity: 2,
-        bookings: [],
-      },
-      {
-        id: `${i}-6`,
-        time: "13:00",
-        bookedCount: 0,
-        capacity: 1,
-        bookings: [],
-      },
-      {
-        id: `${i}-7`,
-        time: "13:30",
-        bookedCount: 0,
-        capacity: 1,
-        bookings: [],
-      },
-      {
-        id: `${i}-8`,
-        time: "14:00",
-        capacity: 1,
-        bookedCount: 0,
-        bookings: [],
-      },
-    ]
-    return { date: d, slots: base }
-  })
-
   const {
     data: days,
     isLoading,
     isError,
+    refetch,
   } = useAppointmentsByDateRange(
     new Date(weekStart).toISOString(),
     new Date(addDays(weekStart, 6)).toISOString()
   )
 
   const today = new Date()
-  console.log("week days: ", days)
-
-  if (isLoading && !days) return <div>Loading...</div>
-  if (isError) return <div>Error</div>
+  if (isLoading && !days) return <WeekViewSkeleton />
+  if (isError)
+    return (
+      <ErrorState
+        className="border-0 bg-transparent shadow-none"
+        title="Couldn't load this week"
+        description="We couldn't fetch the slots for this week. Check your connection and try again."
+        onRetry={() => void refetch()}
+      />
+    )
 
   return (
     <div className="grid grid-cols-2 divide-y divide-border/40 sm:grid-cols-4 sm:divide-x sm:divide-y-0 lg:grid-cols-7">
@@ -623,11 +400,7 @@ function WeekView({
         days.map((day) => {
           const isToday = isSameDay(day.date, today)
           const dayBooked = day.slots.reduce(
-            (acc, s) =>
-              acc +
-              s.bookings.filter(
-                (booking: Appointment) => booking.status !== "NO_SHOW"
-              ).length,
+            (acc, slot) => acc + slot.bookedCount,
             0
           )
           const dayCap = day.slots.reduce((acc, s) => acc + s.capacity, 0)
@@ -643,7 +416,7 @@ function WeekView({
             >
               <button
                 type="button"
-                onClick={() => onPickDay(day.date)}
+                onClick={() => onPickDay(new Date(day.date))}
                 className={cn(
                   "flex cursor-pointer items-center justify-between gap-2 border-b border-border/40 px-3 py-2.5 text-left transition-colors hover:bg-primary/6",
                   isToday && "bg-primary/5"
@@ -729,7 +502,7 @@ function SlotHoverTile({
   slot: SlotAndAppointments
   filled: number
   status: SlotStatus
-  date: Date
+  date: string
 }) {
   return (
     <HoverCard openDelay={120} closeDelay={80}>

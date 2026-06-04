@@ -12,6 +12,31 @@ import {
   Info,
   Sparkles,
 } from "lucide-react"
+import { Button } from "@careline/ui/components/button"
+import { Input } from "@careline/ui/components/input"
+import { Label } from "@careline/ui/components/label"
+import { Calendar } from "@careline/ui/components/calendar"
+import { Switch } from "@careline/ui/components/switch"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@careline/ui/components/popover"
+import { cn } from "@careline/ui/lib/utils"
+import { useSettings } from "@/lib/queries/settings"
+import { useCreateBulkSlots } from "@/lib/queries/slots"
+import { toast } from "sonner"
+import { ErrorState, FormPageSkeleton } from "../../_components/states"
+
+const WEEKDAYS = [
+  { value: 0, short: "Sun", long: "Sunday" },
+  { value: 1, short: "Mon", long: "Monday" },
+  { value: 2, short: "Tue", long: "Tuesday" },
+  { value: 3, short: "Wed", long: "Wednesday" },
+  { value: 4, short: "Thu", long: "Thursday" },
+  { value: 5, short: "Fri", long: "Friday" },
+  { value: 6, short: "Sat", long: "Saturday" },
+]
 const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const MONTH_SHORT = [
   "Jan",
@@ -35,52 +60,17 @@ function fmtDate(d: Date) {
 function differenceInCalendarDays(end: Date, start: Date) {
   const e = new Date(end.getFullYear(), end.getMonth(), end.getDate())
   const s = new Date(start.getFullYear(), start.getMonth(), start.getDate())
-  return Math.round((e.getTime() - s.getTime()) / 86400_000)
+  return Math.round((e.getTime() - s.getTime()) / 86_400_000) // 86_400_000 = 1 day in milliseconds
 }
 
 function parseHM(hm: string): [number, number] {
   const [h, m] = hm.split(":").map(Number)
   return [h ?? 0, m ?? 0]
 }
-import { Button } from "@careline/ui/components/button"
-import { Input } from "@careline/ui/components/input"
-import { Label } from "@careline/ui/components/label"
-import { Calendar } from "@careline/ui/components/calendar"
-import { Switch } from "@careline/ui/components/switch"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@careline/ui/components/popover"
-import { cn } from "@careline/ui/lib/utils"
-
-const WEEKDAYS = [
-  { value: 0, short: "Sun", long: "Sunday" },
-  { value: 1, short: "Mon", long: "Monday" },
-  { value: 2, short: "Tue", long: "Tuesday" },
-  { value: 3, short: "Wed", long: "Wednesday" },
-  { value: 4, short: "Thu", long: "Thursday" },
-  { value: 5, short: "Fri", long: "Friday" },
-  { value: 6, short: "Sat", long: "Saturday" },
-]
-
 export default function NewSlotsPage() {
   const router = useRouter()
-
-  // GET /api/v1/settings — for default duration / capacity / clinic hours
-  const mockSettings = {
-    appointmentDurationMinutes: 30,
-    slotCapacity: 1,
-    clinicHours: {
-      "0": { open: "09:00", close: "17:00" },
-      "1": { open: "09:00", close: "17:00" },
-      "2": { open: "09:00", close: "17:00" },
-      "3": { open: "09:00", close: "17:00" },
-      "4": { open: "09:00", close: "17:00" },
-      "5": null,
-      "6": null,
-    } as Record<string, { open: string; close: string } | null>,
-  }
+  const { data: settings, isLoading, isError, refetch } = useSettings()
+  const { mutateAsync: createBulkSlots, isPending } = useCreateBulkSlots()
 
   const [startDate, setStartDate] = useState<Date>(new Date())
   const [endDate, setEndDate] = useState<Date>(
@@ -92,9 +82,10 @@ export default function NewSlotsPage() {
   const [lunchEnabled, setLunchEnabled] = useState(true)
   const [lunchStart, setLunchStart] = useState("12:00")
   const [lunchEnd, setLunchEnd] = useState("13:00")
-  const [submitting, setSubmitting] = useState(false)
 
   const previewCount = useMemo(() => {
+    if (!settings) return 0
+
     const dayCount = Math.max(
       0,
       differenceInCalendarDays(endDate, startDate) + 1
@@ -108,18 +99,23 @@ export default function NewSlotsPage() {
       if (days.includes(d.getDay())) matchingDays++
     }
 
-    const [sh, sm] = parseHM(startTime)
-    const [eh, em] = parseHM(endTime)
-    const totalMinutes = eh * 60 + em - (sh * 60 + sm)
+    const [startTimeHour, startTimeMinute] = parseHM(startTime)
+    const [endTimeHour, endTimeMinute] = parseHM(endTime)
+    const totalMinutes =
+      endTimeHour * 60 + endTimeMinute - (startTimeHour * 60 + startTimeMinute)
+
     let usable = totalMinutes
     if (lunchEnabled) {
-      const [lsh, lsm] = parseHM(lunchStart)
-      const [leh, lem] = parseHM(lunchEnd)
-      usable -= leh * 60 + lem - (lsh * 60 + lsm)
+      const [lucnhStartHour, lunchStartMinute] = parseHM(lunchStart)
+      const [lunchEndHour, lunchEndMinute] = parseHM(lunchEnd)
+      usable -=
+        lunchEndHour * 60 +
+        lunchEndMinute -
+        (lucnhStartHour * 60 + lunchStartMinute)
     }
     const perDay = Math.max(
       0,
-      Math.floor(usable / mockSettings.appointmentDurationMinutes)
+      Math.floor(usable / parseInt(settings?.appointmentDurationMinutes ?? 0))
     )
     return matchingDays * perDay
   }, [
@@ -131,7 +127,7 @@ export default function NewSlotsPage() {
     lunchEnabled,
     lunchStart,
     lunchEnd,
-    mockSettings.appointmentDurationMinutes,
+    settings,
   ])
 
   const toggleDay = (d: number) =>
@@ -139,26 +135,50 @@ export default function NewSlotsPage() {
       prev.includes(d) ? prev.filter((v) => v !== d) : [...prev, d].sort()
     )
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitting(true)
     // POST /api/v1/slots/bulk
     // body: { startDate, endDate, daysOfWeek: days, startTime, endTime, lunchStart, lunchEnd }
-    console.log("create slots", {
-      startDate,
-      endDate,
-      days,
-      startTime,
-      endTime,
-      lunchEnabled,
-      lunchStart,
-      lunchEnd,
-    })
-    setTimeout(() => {
-      setSubmitting(false)
+    try {
+      await createBulkSlots({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        daysOfWeek: days,
+        startTime,
+        endTime,
+        lunchStartTime: lunchEnabled ? lunchStart : undefined,
+        lunchEndTime: lunchEnabled ? lunchEnd : undefined,
+      })
+
+      console.log("create slots", {
+        startDate,
+        endDate,
+        days,
+        startTime,
+        endTime,
+        lunchEnabled,
+        lunchStart,
+        lunchEnd,
+      })
+      toast.success("Slots created successfully")
       router.push("/dashboard/appointments")
-    }, 600)
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to create slots")
+    }
   }
+
+  if (isLoading && !settings)
+    return <FormPageSkeleton sections={3} className="max-w-3xl" />
+  if (isError)
+    return (
+      <ErrorState
+        className="mx-auto max-w-3xl"
+        title="Couldn't load clinic settings"
+        description="Slot generation needs your clinic hours and capacity. Check your connection and try again."
+        onRetry={() => void refetch()}
+      />
+    )
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
@@ -203,7 +223,7 @@ export default function NewSlotsPage() {
             <div className="flex flex-wrap gap-2">
               {WEEKDAYS.map((d) => {
                 const active = days.includes(d.value)
-                const closed = !mockSettings.clinicHours[String(d.value)]
+                const closed = !settings?.clinicHours[String(d.value)]
                 return (
                   <button
                     key={d.value}
@@ -315,8 +335,8 @@ export default function NewSlotsPage() {
                 </span>
               </p>
               <p className="text-xs text-muted-foreground">
-                Using {mockSettings.appointmentDurationMinutes}-min duration and
-                capacity {mockSettings.slotCapacity} per slot (from clinic
+                Using {settings?.appointmentDurationMinutes}-min duration and
+                capacity {settings?.slotCapacity} per slot (from clinic
                 settings).
               </p>
             </div>
@@ -327,9 +347,9 @@ export default function NewSlotsPage() {
           <Button type="button" variant="ghost" asChild>
             <Link href="/dashboard/appointments">Cancel</Link>
           </Button>
-          <Button type="submit" disabled={submitting || previewCount === 0}>
+          <Button type="submit" disabled={isPending || previewCount === 0}>
             <CalendarPlus className="size-4" />
-            {submitting ? "Creating..." : `Create ${previewCount} slots`}
+            {isPending ? "Creating..." : `Create ${previewCount} slots`}
           </Button>
         </div>
 

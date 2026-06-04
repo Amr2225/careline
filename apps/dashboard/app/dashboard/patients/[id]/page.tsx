@@ -28,7 +28,8 @@ import {
 } from "@careline/ui/components/select"
 import { PatientForm, type PatientScope } from "@/components/patient-form"
 import { ConfirmDialog } from "@/components/confirm-dialog"
-import { calculateAge, formatDate } from "@/lib/patients-mock"
+import { calculateAge } from "@/lib/calculateAge"
+import { formatDate } from "@/lib/formatDate"
 import { usePatient } from "@/lib/queries/patient"
 import {
   BloodTypeLabel,

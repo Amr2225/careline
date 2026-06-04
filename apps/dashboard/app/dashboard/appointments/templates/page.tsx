@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   Clock,
   LayoutTemplate,
+  Loader2Icon,
   Pause,
   Plus,
   Sparkles,
@@ -15,18 +16,14 @@ import {
 } from "lucide-react"
 import { Button } from "@careline/ui/components/button"
 import { Switch } from "@careline/ui/components/switch"
-import { Input } from "@careline/ui/components/input"
-import { Label } from "@careline/ui/components/label"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@careline/ui/components/dialog"
 import { cn } from "@careline/ui/lib/utils"
+import { useSlotTemplates, useUpdateSlotTemplate } from "@/lib/queries/slots"
+import { SlotTemplateEntity } from "@careline/shared/types/slot-templates.type"
+import { toast } from "sonner"
+import { extractErrorMessage } from "@/lib/errors"
+import { MaterializeDialog } from "./[id]/_components/MaterializeDialog"
+import { ErrorState } from "../_components/states"
+import { TemplatesSkeleton } from "./_components/TemplatesSkeleton"
 
 const WEEKDAY_LABEL = [
   "Sunday",
@@ -39,69 +36,62 @@ const WEEKDAY_LABEL = [
 ]
 const WEEKDAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
-type MockTemplate = {
-  id: string
-  name: string
-  weekday: number
-  startTime: string
-  endTime: string
-  capacityOverride: number | null
-  isActive: boolean
-  generatedSlotCount: number
-}
-
 export default function TemplatesPage() {
-  // GET /api/v1/slot-templates
-  const initial: MockTemplate[] = [
-    {
-      id: "t_1",
-      name: "Weekday morning clinic",
-      weekday: 1,
-      startTime: "09:00",
-      endTime: "13:00",
-      capacityOverride: null,
-      isActive: true,
-      generatedSlotCount: 32,
-    },
-    {
-      id: "t_2",
-      name: "Wednesday triage",
-      weekday: 3,
-      startTime: "10:00",
-      endTime: "16:00",
-      capacityOverride: 2,
-      isActive: true,
-      generatedSlotCount: 48,
-    },
-    {
-      id: "t_3",
-      name: "Saturday catch-up",
-      weekday: 6,
-      startTime: "11:00",
-      endTime: "15:00",
-      capacityOverride: null,
-      isActive: false,
-      generatedSlotCount: 0,
-    },
-  ]
-  const [templates, setTemplates] = useState(initial)
+  const {
+    data: slotTemplates,
+    isLoading,
+    isError,
+    refetch,
+  } = useSlotTemplates()
+  const { mutateAsync: updateSlotTemplate, isPending } = useUpdateSlotTemplate()
+  console.log("Slot Templates: ", slotTemplates)
 
-  const toggle = (id: string) => {
-    // PATCH /api/v1/slot-templates/:id  { isActive }
-    setTemplates((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, isActive: !t.isActive } : t))
-    )
+  const [currentTemplateId, setCurrentTemplateId] = useState("")
+
+  const toggle = async (id: string) => {
+    const currentActiveState = slotTemplates?.find((t) => t.id === id)?.isActive
+    setCurrentTemplateId(id)
+    console.log(currentActiveState)
+    try {
+      await updateSlotTemplate({
+        template: { isActive: !currentActiveState },
+        templateId: id,
+      })
+
+      toast.success(
+        `Template ${currentActiveState ? "paused" : "activated"} successfully`
+      )
+    } catch (error) {
+      toast.error(
+        `Failed to ${currentActiveState ? "pause" : "activate"} template`,
+        {
+          description: extractErrorMessage(error),
+        }
+      )
+    }
   }
 
   const stats = useMemo(() => {
-    const active = templates.filter((t) => t.isActive).length
-    const paused = templates.length - active
-    const totalSlots = templates.reduce(
-      (acc, t) => acc + t.generatedSlotCount,
+    if (!slotTemplates) return { active: 0, paused: 0, totalSlots: 0, total: 0 }
+
+    const active = slotTemplates.filter((t) => t.isActive).length
+    const paused = slotTemplates.length - active
+    const totalSlots = slotTemplates.reduce(
+      (acc, t) => acc + t.generatedSlots,
       0
     )
-    return { active, paused, totalSlots, total: templates.length }
-  }, [templates])
+    return { active, paused, totalSlots, total: slotTemplates.length }
+  }, [slotTemplates])
+
+  if (isLoading && !slotTemplates) return <TemplatesSkeleton />
+  if (isError)
+    return (
+      <ErrorState
+        title="Couldn't load templates"
+        description="We couldn't fetch your slot templates. Check your connection and try again."
+        onRetry={() => void refetch()}
+      />
+    )
 
   return (
     <div className="space-y-8">
@@ -136,7 +126,7 @@ export default function TemplatesPage() {
         </header>
       </div>
 
-      {templates.length > 0 ? (
+      {slotTemplates && slotTemplates.length > 0 ? (
         <section className="grid gap-3 sm:grid-cols-3">
           <StatPill
             label="Active"
@@ -159,7 +149,7 @@ export default function TemplatesPage() {
         </section>
       ) : null}
 
-      {templates.length === 0 ? (
+      {slotTemplates?.length === 0 ? (
         <section className="shadow-ambient flex flex-col items-center gap-5 rounded-2xl border border-dashed border-border/70 bg-card px-6 py-20 text-center">
           <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <LayoutTemplate className="size-6" />
@@ -180,11 +170,12 @@ export default function TemplatesPage() {
         </section>
       ) : (
         <section className="grid gap-5 md:grid-cols-2">
-          {templates.map((t) => (
+          {slotTemplates?.map((t) => (
             <TemplateCard
               key={t.id}
               template={t}
               onToggle={() => toggle(t.id)}
+              isPending={currentTemplateId === t.id && isPending}
             />
           ))}
         </section>
@@ -195,9 +186,11 @@ export default function TemplatesPage() {
 
 function TemplateCard({
   template,
+  isPending,
   onToggle,
 }: {
-  template: MockTemplate
+  template: SlotTemplateEntity
+  isPending: boolean
   onToggle: () => void
 }) {
   return (
@@ -211,7 +204,7 @@ function TemplateCard({
         className={cn(
           "flex items-start justify-between gap-4 border-b border-border/40 px-6 py-5",
           template.isActive
-            ? "bg-gradient-to-br from-primary/8 to-transparent"
+            ? "bg-linear-to-br from-primary/8 to-transparent"
             : "bg-muted/30"
         )}
       >
@@ -267,7 +260,7 @@ function TemplateCard({
           value={
             <span className="font-mono tabular-nums">
               {template.startTime}
-              <span className="px-0.5 text-muted-foreground">–</span>
+              <span className="px-0.5 text-muted-foreground">-</span>
               {template.endTime}
             </span>
           }
@@ -290,7 +283,7 @@ function TemplateCard({
           label="Generated"
           value={
             <span className="font-mono tabular-nums">
-              {template.generatedSlotCount}
+              {template.generatedSlots}
             </span>
           }
         />
@@ -302,6 +295,7 @@ function TemplateCard({
           <span className="whitespace-nowrap">
             {template.isActive ? "Active" : "Paused"}
           </span>
+          {isPending && <Loader2Icon className="size-3.5 animate-spin" />}
         </label>
 
         <div className="flex items-center gap-2">
@@ -309,6 +303,7 @@ function TemplateCard({
             templateId={template.id}
             templateName={template.name}
             disabled={!template.isActive}
+            versionKey="short"
           />
           <Button variant="outline" size="sm" asChild>
             <Link href={`/dashboard/appointments/templates/${template.id}`}>
@@ -381,67 +376,5 @@ function StatPill({
         {icon}
       </span>
     </div>
-  )
-}
-
-function MaterializeDialog({
-  templateId,
-  templateName,
-  disabled,
-}: {
-  templateId: string
-  templateName: string
-  disabled?: boolean
-}) {
-  const [weeks, setWeeks] = useState(4)
-  const [open, setOpen] = useState(false)
-
-  const handle = () => {
-    // POST /api/v1/slot-templates/:id/materialize  { weeks }
-    console.log("materialize", templateId, "weeks:", weeks)
-    setOpen(false)
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" disabled={disabled}>
-          <Sparkles className="size-3.5" />
-          Materialize
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Materialize "{templateName}"</DialogTitle>
-          <DialogDescription>
-            Generate slots from this template starting next week. Duplicate
-            slots are skipped automatically.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-2 py-2">
-          <Label htmlFor="weeks">Weeks ahead</Label>
-          <Input
-            id="weeks"
-            type="number"
-            min={1}
-            max={26}
-            value={weeks}
-            onChange={(e) => setWeeks(Number(e.target.value))}
-          />
-          <p className="text-xs text-muted-foreground">
-            Up to 26 weeks (≈6 months) at a time.
-          </p>
-        </div>
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handle}>
-            <Sparkles className="size-3.5" />
-            Generate slots
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   )
 }

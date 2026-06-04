@@ -49,7 +49,8 @@ import {
   PatientsFilterPopover,
 } from "@/components/patients-filter-popover"
 
-import { calculateAge, formatDate } from "@/lib/patients-mock"
+import { calculateAge } from "@/lib/calculateAge"
+import { formatDate } from "@/lib/formatDate"
 
 import {
   type Gender,

@@ -2,7 +2,7 @@ import { SlotAndAppointments, WeeklyAppointmentsView } from "@careline/shared/ty
 import { api } from "../api"
 
 export const appointmentsApi = {
-    // ISO String
+    // date: ISO String
     getByDate: async (date: string) => {
         const { data } = await api.get<SlotAndAppointments[]>("appointments/by-date", { params: { from: date } })
         return data

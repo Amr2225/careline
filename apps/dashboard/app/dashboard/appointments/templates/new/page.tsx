@@ -9,6 +9,20 @@ import { Input } from "@careline/ui/components/input"
 import { Label } from "@careline/ui/components/label"
 import { Switch } from "@careline/ui/components/switch"
 import { cn } from "@careline/ui/lib/utils"
+import {
+  createSlotTemplateSchema,
+  CreateSlotTemplateType,
+} from "@/lib/schemas/slotTemplateSchemas"
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@careline/ui/components/field"
+import { useCreateSlotTemplate } from "@/lib/queries/slots"
+import { toast } from "sonner"
 
 const WEEKDAYS = [
   { value: 0, label: "Sunday" },
@@ -22,26 +36,35 @@ const WEEKDAYS = [
 
 export default function NewTemplatePage() {
   const router = useRouter()
-  const [name, setName] = useState("")
-  const [weekday, setWeekday] = useState(1)
-  const [startTime, setStartTime] = useState("09:00")
-  const [endTime, setEndTime] = useState("17:00")
   const [overrideCapacity, setOverrideCapacity] = useState(false)
-  const [capacityOverride, setCapacityOverride] = useState(2)
-  const [isActive, setIsActive] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
-    // POST /api/v1/slot-templates
+  const { mutateAsync: createSlotTemplate, isPending } = useCreateSlotTemplate()
+
+  const form = useForm<CreateSlotTemplateType>({
+    resolver: zodResolver(createSlotTemplateSchema),
+    shouldUnregister: true,
+    defaultValues: {
+      name: "",
+      weekday: 1,
+      startTime: "09:00",
+      endTime: "17:00",
+      capacityOverride: undefined,
+      isActive: true,
+    },
+  })
+
+  const handleSubmit = async (data: CreateSlotTemplateType) => {
     // body: { name, weekday, startTime, endTime, capacityOverride: overrideCapacity ? capacityOverride : null, isActive }
-    console.log("create template", { name, weekday, startTime, endTime, capacityOverride: overrideCapacity ? capacityOverride : null, isActive })
-    setTimeout(() => {
-      setSubmitting(false)
+    try {
+      await createSlotTemplate(data)
       router.push("/dashboard/appointments/templates")
-    }, 500)
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to create template")
+    }
   }
+
+  const errors = form.formState.errors
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
@@ -65,7 +88,7 @@ export default function NewTemplatePage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         <section className="shadow-ambient space-y-6 rounded-2xl border border-border/70 bg-card p-6">
           <header>
             <h2 className="text-lg font-semibold">Schedule</h2>
@@ -73,48 +96,93 @@ export default function NewTemplatePage() {
               When this template runs and how it's identified.
             </p>
           </header>
-          <div className="space-y-2">
-            <Label htmlFor="name">Template name</Label>
-            <Input
-              id="name"
-              placeholder="e.g. Weekday morning clinic"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
+          <FieldGroup>
+            <Controller
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <Field className="space-y-2">
+                  <FieldLabel htmlFor="name">Template name</FieldLabel>
+                  <Input
+                    id="name"
+                    placeholder="e.g. Weekday morning clinic"
+                    aria-invalid={fieldState.invalid}
+                    {...field}
+                  />
+                  {fieldState.invalid && <FieldError errors={[errors.name]} />}
+                </Field>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label>Day of week</Label>
-            <div className="flex flex-wrap gap-2">
-              {WEEKDAYS.map((d) => (
-                <button
-                  key={d.value}
-                  type="button"
-                  onClick={() => setWeekday(d.value)}
-                  className={cn(
-                    "rounded-full border px-4 py-1.5 text-sm font-medium transition-all",
-                    weekday === d.value
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
+            <Controller
+              control={form.control}
+              name="weekday"
+              render={({ field, fieldState }) => (
+                <Field className="space-y-2">
+                  <FieldLabel htmlFor="weekday">Day of week</FieldLabel>
+                  <div className="flex flex-wrap gap-2">
+                    {WEEKDAYS.map((d) => (
+                      <button
+                        key={d.value}
+                        type="button"
+                        onClick={() => field.onChange(d.value)}
+                        className={cn(
+                          "rounded-full border px-4 py-1.5 text-sm font-medium transition-all",
+                          field.value === d.value
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                        )}
+                      >
+                        {d.label}
+                      </button>
+                    ))}
+                  </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[errors.weekday]} />
                   )}
-                >
-                  {d.label}
-                </button>
-              ))}
-            </div>
-          </div>
+                </Field>
+              )}
+            />
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Controller
+                control={form.control}
+                name="startTime"
+                render={({ field, fieldState }) => (
+                  <Field className="space-y-2">
+                    <FieldLabel htmlFor="start-time">Start time</FieldLabel>
+                    <Input
+                      id="start-time"
+                      type="time"
+                      aria-invalid={fieldState.invalid}
+                      {...field}
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[errors.startTime]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="start-time">Start time</Label>
-              <Input id="start-time" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+              <Controller
+                control={form.control}
+                name="endTime"
+                render={({ field, fieldState }) => (
+                  <Field className="space-y-2">
+                    <FieldLabel htmlFor="end-time">End time</FieldLabel>
+                    <Input
+                      id="end-time"
+                      type="time"
+                      aria-invalid={fieldState.invalid}
+                      {...field}
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[errors.endTime]} />
+                    )}
+                  </Field>
+                )}
+              />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="end-time">End time</Label>
-              <Input id="end-time" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
-            </div>
-          </div>
+          </FieldGroup>
         </section>
 
         <section className="shadow-ambient space-y-6 rounded-2xl border border-border/70 bg-card p-6">
@@ -131,7 +199,10 @@ export default function NewTemplatePage() {
                 When off, slots use the global slot capacity from settings.
               </p>
             </div>
-            <Switch checked={overrideCapacity} onCheckedChange={setOverrideCapacity} />
+            <Switch
+              checked={overrideCapacity}
+              onCheckedChange={setOverrideCapacity}
+            />
           </div>
           {overrideCapacity ? (
             <div className="space-y-2">
@@ -141,8 +212,10 @@ export default function NewTemplatePage() {
                 type="number"
                 min={1}
                 max={10}
-                value={capacityOverride}
-                onChange={(e) => setCapacityOverride(Number(e.target.value))}
+                value={form.watch("capacityOverride") ?? 1}
+                onChange={(e) =>
+                  form.setValue("capacityOverride", Number(e.target.value))
+                }
               />
             </div>
           ) : null}
@@ -155,16 +228,24 @@ export default function NewTemplatePage() {
               Paused templates can't be materialized.
             </p>
           </div>
-          <Switch checked={isActive} onCheckedChange={setIsActive} />
+          <Switch
+            checked={form.watch("isActive") ?? true}
+            onCheckedChange={(checked) => form.setValue("isActive", checked)}
+          />
         </section>
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <Button type="button" variant="ghost" asChild>
             <Link href="/dashboard/appointments/templates">Cancel</Link>
           </Button>
-          <Button type="submit" disabled={submitting || !name}>
+          <Button
+            type="submit"
+            disabled={
+              isPending || !form.formState.isValid || !form.formState.isDirty
+            }
+          >
             <Save className="size-4" />
-            {submitting ? "Saving..." : "Create template"}
+            {isPending ? "Saving..." : "Create template"}
           </Button>
         </div>
       </form>

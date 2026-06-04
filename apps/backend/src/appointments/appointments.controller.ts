@@ -5,7 +5,7 @@ import type { UserWithoutPassword } from '@careline/shared/types/user.type';
 import { User } from '@/auth/decorators/user.decorator';
 import { QueryAppointmentsByDateDto } from './dto/query-appointment.dto';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { SlotAndAppointments, WeeklyAppointmentsView } from '@careline/shared/types/appointment.type';
+import { AppointmentDetail, AppointmentWithSlot, SlotAndAppointments, WeeklyAppointmentsView } from '@careline/shared/types/appointment.type';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -25,20 +25,20 @@ export class AppointmentsController {
 
     @Get("/me")
     @Requires(["Appointments:READ"])
-    async getAppointments(@User() callerUser: UserWithoutPassword) {
+    async getAppointments(@User() callerUser: UserWithoutPassword): Promise<AppointmentWithSlot[]> {
         return await this.appointmentsService.getMine(callerUser.id);
     }
 
     @Get(":id")
     @Requires(["Appointments:READ"])
-    async getAppointmentById(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword) {
+    async getAppointmentById(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword): Promise<AppointmentDetail> {
         return await this.appointmentsService.getById(apptId, callerUser.id);
     }
 
     @Post()
     @Requires(["Appointments:WRITE"])
     async createAppointment(@User() callerUser: UserWithoutPassword, @Body() createAppointmentDto: CreateAppointmentDto) {
-        return await this.appointmentsService.book(createAppointmentDto.slotId, createAppointmentDto.patientId ?? callerUser.id);
+        return await this.appointmentsService.book(createAppointmentDto.slotId, callerUser.id);
     }
 
     @Delete(":id")

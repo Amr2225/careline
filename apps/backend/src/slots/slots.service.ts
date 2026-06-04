@@ -1,47 +1,58 @@
 import { DbService } from '@/db/db.service';
 import { SettingsService } from '@/settings/settings.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateBulkSlotsDto, CreateSlotDto } from './dto/create-slot.dto';
 import { combineDateAndTime, eachDayInRange } from '@/common/date.util';
 import { formatInTimeZone, fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { addMinutes } from 'date-fns';
 import { Prisma, AvailableSlot } from '@careline/shared/prisma/client';
-
+import { SlotWithProjectedPosition, SlotWithTemplateName } from '@careline/shared/types/slots.type';
+import { QuerySlotsDto } from './dto/query-slots.dto';
 
 @Injectable()
 export class SlotsService {
-    constructor(private readonly dbService: DbService, private readonly configService: ConfigService, private readonly settingsService: SettingsService) { }
+    constructor(private readonly dbService: DbService,
+        private readonly configService: ConfigService,
+        private readonly settingsService: SettingsService,
+    ) { }
 
-    // TODO: Implement Query
-    async getSlots(): Promise<AvailableSlot[]> {
-        return await this.dbService.availableSlot.findMany();
+    async getSlots(query: QuerySlotsDto): Promise<SlotWithTemplateName[]> {
+        const { from, to } = query;
+
+        return await this.dbService.availableSlot.findMany({
+            where: { startTime: { gte: from, lte: to } },
+            include: { template: { select: { name: true } } }
+        });
     }
 
-    async getAvailableSlots(date?: string): Promise<AvailableSlot[]> {
+    async getAvailableSlots(date?: string): Promise<SlotWithProjectedPosition[]> {
         const timezone = this.configService.getOrThrow<string>('TIMEZONE');
-        const dateFilter = date
-            ? Prisma.sql`WHERE DATE(s."startTime" AT TIME ZONE ${timezone}) = ${date}::date`
-            : Prisma.empty;
+        const baseDate = formatInTimeZone(date ?? new Date(), timezone, "yyyy-MM-dd");
+        const startOfDay = `${baseDate}T00:00:00Z`;
+        const endOfDay = `${baseDate}T23:59:59Z`;
 
-        return await this.dbService.$queryRaw<AvailableSlot[]>(Prisma.sql`
-            SELECT
-                s."id",
-                s."startTime",
-                s."capacity",
-                s."templateId",
-                s."createdAt"
-            FROM "available_slots" s
-            LEFT JOIN "appointments" a ON a."slotId" = s."id"
-            ${dateFilter}
-            GROUP BY s."id", s."startTime", s."capacity", s."templateId", s."createdAt"
-            HAVING COUNT(a."id") < s."capacity"
-            ORDER BY s."startTime" ASC
-        `);
+        const slots = await this.dbService.availableSlot.findMany({
+            where: {
+                startTime: { gte: startOfDay, lte: endOfDay },
+                bookedCount: { lt: this.dbService.availableSlot.fields.capacity }
+            },
+            include: {
+                appointments: true
+            },
+            orderBy: {
+                startTime: 'asc'
+            }
+        })
+
+        return slots.map((slot, index) => ({
+            ...slot,
+            projectedPosition: slots.slice(0, index - slots.length).reduce((acc, curr) => acc + curr.capacity, 0) + 1
+        }))
     }
 
-    async getNextAvailableSlot(): Promise<AvailableSlot | null> {
-        return await this.dbService.availableSlot.findFirst({
+    async getNextAvailableSlot(): Promise<SlotWithProjectedPosition | null> {
+        const slot = await this.dbService.availableSlot.findFirst({
             where: {
                 startTime: { gte: new Date() },
                 bookedCount: { lt: this.dbService.availableSlot.fields.capacity }
@@ -50,6 +61,23 @@ export class SlotsService {
                 startTime: 'asc'
             }
         })
+
+        if (!slot) return null;
+
+        const previousSlots = await this.dbService.availableSlot.findMany({
+            where: {
+                startTime: { lt: slot.startTime, gte: `${formatInTimeZone(slot.startTime, 'UTC', 'yyyy-MM-dd')}T00:00:00Z` },
+                bookedCount: { lt: this.dbService.availableSlot.fields.capacity }
+            },
+            orderBy: { startTime: 'asc' }
+        })
+
+        const projectedPosition = previousSlots.reduce((acc, curr) => acc + curr.capacity, 0) + slot.bookedCount + 1;
+
+        return {
+            ...slot,
+            projectedPosition
+        }
     }
 
     async create(data: CreateSlotDto): Promise<AvailableSlot> {
@@ -71,7 +99,15 @@ export class SlotsService {
     }
 
     async deleteSlot(id: string): Promise<void> {
-        await this.dbService.availableSlot.delete({ where: { id } });
+        try {
+            await this.dbService.availableSlot.delete({ where: { id } });
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+                throw new NotFoundException('Slot not found');
+            }
+
+            throw error;
+        }
     }
 
     async createBulk(dto: CreateBulkSlotsDto): Promise<any> {
@@ -86,7 +122,9 @@ export class SlotsService {
 
         const from = fromZonedTime(dto.startDate, timezone);
         const end = fromZonedTime(dto.endDate, timezone);
-        for (const date of eachDayInRange(from, end, timezone)) {
+        const daysOfWeek = eachDayInRange(from, end, timezone);
+        console.log(daysOfWeek);
+        for (const date of daysOfWeek) {
             if (!dto.daysOfWeek.includes(date.getDay())) continue; // TODO: Assess this
 
             const dayHours = hours[String(date.getDay())] // this is the working hour in that day
@@ -98,12 +136,13 @@ export class SlotsService {
 
             let cursor = dayStart;
             while (addMinutes(cursor, duration) <= dayEnd) { // TODO: Assess this it can be written as (isBefore(addMinutes(cursor, duration), dayEnd) || isEqual(addMinutes(cursor, duration), dayEnd))
+                // console.log("cursor", cursor);
                 if (dto.lunchStartTime && dto.lunchEndTime) {
                     const lunchStartDateTime = combineDateAndTime(dayDate, dto.lunchStartTime, timezone);
                     const lunchEndDateTime = combineDateAndTime(dayDate, dto.lunchEndTime, timezone);
 
                     // Cursor is in the lunch time, skip to the end of the lunch time
-                    if (cursor >= lunchStartDateTime && cursor <= lunchEndDateTime) {
+                    if (cursor >= lunchStartDateTime && cursor < lunchEndDateTime) {
                         cursor = lunchEndDateTime;
                         continue;
                     }

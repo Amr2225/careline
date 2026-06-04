@@ -46,7 +46,6 @@ refreshClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
     return config
 }, (error: AxiosError) => {
-    console.log("ERRORRORORORj");
     return Promise.reject(error);
 })
 

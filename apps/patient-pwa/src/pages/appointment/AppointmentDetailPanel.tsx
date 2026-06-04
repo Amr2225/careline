@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { motion } from "motion/react"
 import {
   ArrowLeft,
@@ -23,14 +22,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@careline/ui/components/alert-dialog"
-
-type Status =
-  | "BOOKED"
-  | "ARRIVED"
-  | "IN_PROGRESS"
-  | "DONE"
-  | "NO_SHOW"
-  | "CANCELLED"
+import {
+  useCancelAppointment,
+  useGetAppointmentById,
+} from "@/lib/queries/appointments"
+import { format } from "date-fns"
+import {
+  AppointmentStatus,
+  AppointmentStatusLabel,
+} from "@careline/shared/types/appointment.type"
+import { toast } from "sonner"
+import { extractErrorMessage } from "@/lib/error"
+import { DetailRow } from "./components/detail-row"
+import { AppointmentDetailSkeleton } from "./components/appointments-detail-skeleton"
+import { ApiError } from "@/components/Api-error"
 
 type Props = {
   appointmentId: string
@@ -43,45 +48,32 @@ export default function AppointmentDetailPanel({
   onBack,
   onCancelled,
 }: Props) {
-  // GET /api/v1/appointments/:id  → returns appointment + computed position
-  const [appointment, setAppointment] = useState({
-    id: appointmentId,
-    date: "Tomorrow, May 25",
-    time: "09:30",
-    status: "BOOKED" as Status,
-    position: 4,
-    clinicName: "CareLine Clinic — Maadi branch",
-    clinicAddress: "12 Road 9, Maadi, Cairo",
-  })
-
-  const [cancelling, setCancelling] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState(new Date())
-
-  useEffect(() => {
-    // 15-second polling of GET /api/v1/appointments/:id for live position
-    const interval = setInterval(() => {
-      setLastUpdated(new Date())
-      setAppointment((prev) => ({
-        ...prev,
-        position:
-          prev.position && prev.position > 1
-            ? prev.position - 1
-            : prev.position,
-      }))
-    }, 15000)
-    return () => clearInterval(interval)
-  }, [])
+  const {
+    data: appointment,
+    isLoading,
+    isError,
+    dataUpdatedAt: lastUpdated,
+  } = useGetAppointmentById(appointmentId)
+  const cancelAppointment = useCancelAppointment(appointmentId)
 
   const handleCancel = () => {
-    setCancelling(true)
-    // DELETE /api/v1/appointments/:id
-    console.log("cancel appointment", appointment.id)
-    setTimeout(() => {
-      setCancelling(false)
-      onCancelled?.()
-      onBack()
-    }, 600)
+    cancelAppointment.mutate(undefined, {
+      onSuccess: () => {
+        onCancelled?.()
+        toast.success("Appointment cancelled")
+        onBack()
+      },
+      onError: (error) => {
+        toast.error("Failed to cancel appointment", {
+          description: extractErrorMessage(error),
+          richColors: true,
+        })
+      },
+    })
   }
+
+  if (isLoading && !appointment) return <AppointmentDetailSkeleton />
+  if (isError && !appointment) return <ApiError />
 
   const isActive = ["BOOKED", "ARRIVED", "IN_PROGRESS"].includes(
     appointment.status
@@ -112,15 +104,10 @@ export default function AppointmentDetailPanel({
             #{appointment.position}
           </p>
           <p className="mt-3 text-xs text-emerald-50/80">
-            Projected position. Confirmed on arrival via QR.
+            Expected position. Confirmed on arrival via QR.
           </p>
           <p className="mt-1 text-[10px] tracking-wider text-emerald-50/50 uppercase">
-            Updated{" "}
-            {lastUpdated.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            })}
+            Updated {format(lastUpdated, "hh:mm:ss a")}
           </p>
         </motion.div>
       ) : (
@@ -129,7 +116,7 @@ export default function AppointmentDetailPanel({
             Status
           </p>
           <p className="mt-2 text-2xl font-bold capitalize">
-            {appointment.status.toLowerCase().replace("_", " ")}
+            {AppointmentStatusLabel[appointment.status]}
           </p>
         </div>
       )}
@@ -138,24 +125,24 @@ export default function AppointmentDetailPanel({
         <DetailRow
           icon={<CalendarDays className="size-4" />}
           label="Date"
-          value={appointment.date}
+          value={format(appointment.slot.startTime, "EEEE, MMM d")}
         />
         <DetailRow
           icon={<Clock className="size-4" />}
           label="Time"
-          value={appointment.time}
+          value={format(appointment.slot.startTime, "p")}
           mono
         />
         <DetailRow
           icon={<MapPin className="size-4" />}
           label="Clinic"
-          value={appointment.clinicName}
-          sub={appointment.clinicAddress}
+          value={"CareLine Clinic — Maadi branch"}
+          sub={"12 Road 9, Maadi, Cairo"}
         />
         <DetailRow
           icon={<Users className="size-4" />}
           label="Status"
-          value={appointment.status.replace("_", " ").toLowerCase()}
+          value={appointment.status.toLowerCase().replace("_", " ")}
           valueClass="capitalize"
         />
       </div>
@@ -202,62 +189,27 @@ export default function AppointmentDetailPanel({
                 <AlertDialogAction
                   onClick={handleCancel}
                   className="bg-rose-600 hover:bg-rose-700"
-                  disabled={cancelling}
+                  disabled={cancelAppointment.isPending}
                 >
-                  {cancelling ? "Cancelling..." : "Yes, cancel"}
+                  {cancelAppointment.isPending
+                    ? "Cancelling..."
+                    : "Yes, cancel"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      ) : appointment.status === "DONE" ? (
+      ) : appointment.status === AppointmentStatus.DONE ? (
         <div className="mt-5 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
           <CheckCircle2 className="size-5" />
           You've been seen for this visit.
         </div>
-      ) : appointment.status === "CANCELLED" ? (
+      ) : appointment.status === AppointmentStatus.CANCELLED ? (
         <div className="mt-5 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
           <Info className="size-5" />
           This appointment was cancelled.
         </div>
       ) : null}
-    </div>
-  )
-}
-
-function DetailRow({
-  icon,
-  label,
-  value,
-  sub,
-  mono,
-  valueClass,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: string
-  sub?: string
-  mono?: boolean
-  valueClass?: string
-}) {
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-slate-100 p-3.5">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800">
-        {icon}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
-          {label}
-        </p>
-        <p
-          className={`text-sm font-semibold ${
-            mono ? "font-mono tabular-nums" : ""
-          } ${valueClass ?? ""}`}
-        >
-          {value}
-        </p>
-        {sub ? <p className="mt-0.5 text-xs text-slate-500">{sub}</p> : null}
-      </div>
     </div>
   )
 }

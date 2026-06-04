@@ -20,21 +20,15 @@ export class SlotTemplatesService {
     ) { }
 
     async list(): Promise<SlotTemplateEntity[]> {
-        return await this.dbService.$queryRaw<SlotTemplateEntity[]>`
-            SELECT
-                st.*,
-                COALESCE(slot_counts."generatedSlots", 0)::int AS "generatedSlots"
-            FROM "slot_templates" st
-            LEFT JOIN (
-                SELECT
-                    "templateId",
-                    COUNT(*)::int AS "generatedSlots"
-                FROM "available_slots"
-                WHERE "templateId" IS NOT NULL
-                GROUP BY "templateId"
-            ) slot_counts ON slot_counts."templateId" = st."id"
-            ORDER BY st."createdAt" DESC
-        `;
+        const templates = await this.dbService.slotTemplate.findMany({
+            include: { _count: { select: { slots: true } } },
+            orderBy: { createdAt: 'desc' }
+        })
+
+        return templates.map(({ _count, ...template }) => ({
+            ...template,
+            generatedSlots: _count.slots,
+        }))
     }
 
     async getById(id: string): Promise<SlotTemplateEntity> {

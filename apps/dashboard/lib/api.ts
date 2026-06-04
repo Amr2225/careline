@@ -16,9 +16,11 @@ const refreshClient = axios.create({
     withCredentials: true,
 });
 
-export const getCsrfToken = (): string => {
+export const getCsrfToken = (cookieHeader?: string): string => {
+    const source =
+        cookieHeader ?? (typeof document !== "undefined" ? document.cookie : "");
     const regex = /csrfToken=([^;]+)/;
-    const csrfToken = regex.exec(document.cookie);
+    const csrfToken = regex.exec(source);
     return csrfToken?.[1] ?? "";
 }
 
@@ -45,7 +47,6 @@ refreshClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
     return config
 }, (error: AxiosError) => {
-    console.log("ERRORRORORORj");
     return Promise.reject(error);
 })
 

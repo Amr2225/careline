@@ -2,7 +2,7 @@ import { eachDayInRange } from '@/common/date.util';
 import { DbService } from '@/db/db.service';
 import { RbacService } from '@/rbac/rbac.service';
 import { Appointment, AvailableSlot, Prisma } from '@careline/shared/prisma/client';
-import { SlotAndAppointments, AppointmentStatus, WeeklyAppointmentsView } from '@careline/shared/types/appointment.type';
+import { SlotAndAppointments, AppointmentStatus, WeeklyAppointmentsView, AppointmentWithSlot, AppointmentDetail } from '@careline/shared/types/appointment.type';
 import { Action } from '@careline/shared/types/rbac.type';
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -35,7 +35,8 @@ export class AppointmentsService {
 
         const slots = await this.dbService.availableSlot.findMany({
             where: { startTime: { gte: startOfDay, lte: endOfDay } },
-            include: { appointments: { include: { patient: { include: { user: { select: { name: true } } } } } } }
+            include: { appointments: { include: { patient: { include: { user: { select: { name: true } } } } } } },
+            orderBy: { startTime: 'asc' }
         })
 
         return slots.map((slot): SlotAndAppointments => this.mapSlotToSlotAndAppointments(slot))
@@ -132,8 +133,9 @@ export class AppointmentsService {
     }
 
     // with Serializable transaction + FOR UPDATE
-    async book(slotId: string, patientId: string): Promise<Appointment> {
-        const patinet = await this.dbService.patient.findUnique({ where: { id: patientId } });
+    async book(slotId: string, userId: string): Promise<Appointment> {
+        console.log("USER ID: ", userId);
+        const patinet = await this.dbService.patient.findUnique({ where: { userId } });
         if (!patinet) throw new NotFoundException('Patient not found');
 
         return await this.dbService.$transaction(async (tx) => {
@@ -147,11 +149,11 @@ export class AppointmentsService {
             const currentAppointments = await tx.appointment.count({ where: { slotId, status: { in: [AppointmentStatus.BOOKED, AppointmentStatus.ARRIVED, AppointmentStatus.IN_PROGRESS] } } });
             if (currentAppointments >= slot[0].capacity) throw new ConflictException('Slot is full');
 
-            const existing = await tx.appointment.findFirst({ where: { slotId, patientId, status: { not: AppointmentStatus.CANCELLED } } })
+            const existing = await tx.appointment.findFirst({ where: { slotId, patientId: patinet.id, status: { not: AppointmentStatus.CANCELLED } } })
             if (existing) throw new ConflictException('Already booked this slot');
 
             await tx.availableSlot.update({ where: { id: slotId }, data: { bookedCount: currentAppointments + 1 } });
-            return tx.appointment.create({ data: { slotId, patientId, status: AppointmentStatus.BOOKED } });
+            return tx.appointment.create({ data: { slotId, patientId: patinet.id, status: AppointmentStatus.BOOKED } });
         }, { isolationLevel: "Serializable" })
 
     }
@@ -177,13 +179,22 @@ export class AppointmentsService {
     }
 
     // Patient Own Appointments
-    async getMine(callerUserId: string) {
-        return await this.dbService.appointment.findMany({ where: { patient: { user: { id: callerUserId } } } })
+    async getMine(callerUserId: string): Promise<AppointmentWithSlot[]> {
+        return await this.dbService.appointment.findMany({
+            where: { patient: { user: { id: callerUserId } } },
+            include: { slot: true }
+        }) as AppointmentWithSlot[];
     }
 
     // with own-or-staff check
-    async getById(appointmentId: string, callerUserId: string) {
-        const appt = await this.dbService.appointment.findUnique({ where: { id: appointmentId }, include: { patient: { include: { user: true } } } })
+    async getById(appointmentId: string, callerUserId: string): Promise<AppointmentDetail> {
+        const appt = await this.dbService.appointment.findUnique({
+            where: { id: appointmentId },
+            include: {
+                patient: { include: { user: true } },
+                slot: true
+            }
+        })
         if (!appt) throw new NotFoundException('Appointment not found');
 
         // This checks if the caller is the patient or a staff member
@@ -193,6 +204,18 @@ export class AppointmentsService {
             if (!hasPermission) throw new ForbiddenException('You are not allowed to cancel this appointment');
         }
 
-        return appt;
+        const patientPosition = await this.getPositionForAppointment(appointmentId);
+
+        return {
+            id: appt.id,
+            patientId: appt.patient.id,
+            slotId: appt.slotId,
+            slot: appt.slot,
+            status: appt.status as AppointmentStatus,
+            bookedAt: appt.bookedAt,
+            position: patientPosition,
+            cancelledAt: appt.cancelledAt,
+            updatedAt: appt.updatedAt,
+        }
     }
 }

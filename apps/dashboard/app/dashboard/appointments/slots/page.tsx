@@ -11,6 +11,8 @@ import {
   ChevronRight,
   Clock,
   LayoutTemplate,
+  MoreHorizontal,
+  Plus,
   Search,
   Sparkles,
   Trash2,
@@ -19,6 +21,13 @@ import {
 import { Button } from "@careline/ui/components/button"
 import { Badge } from "@careline/ui/components/badge"
 import { Input } from "@careline/ui/components/input"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@careline/ui/components/dropdown-menu"
 import {
   Select,
   SelectContent,
@@ -39,16 +48,15 @@ import {
   AlertDialogTrigger,
 } from "@careline/ui/components/alert-dialog"
 import { cn } from "@careline/ui/lib/utils"
+import { addDays, format } from "date-fns"
+import { DateFilter } from "../_components/dateFilter"
+import { ErrorState } from "../_components/states"
+import { SlotsListSkeleton } from "./_components/SlotsListSkeleton"
+import { useSlots } from "@/lib/queries/slots"
+import { SlotWithTemplateName } from "@careline/shared/types/slots.type"
+import { parseAsIsoDate, useQueryState } from "nuqs"
 
 type SlotFill = "empty" | "partial" | "full"
-
-type MockSlot = {
-  id: string
-  startTime: string
-  capacity: number
-  booked: number
-  templateName: string | null
-}
 
 const FILL_TONE: Record<SlotFill, string> = {
   empty: "bg-muted text-muted-foreground border-border",
@@ -71,97 +79,89 @@ const FILTER_OPTIONS = [
 
 type FilterValue = (typeof FILTER_OPTIONS)[number]["value"]
 
-const DAY_FULL = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-]
-const MONTH_SHORT = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-]
-
-function getFill(s: MockSlot): SlotFill {
-  if (s.booked === 0) return "empty"
-  if (s.booked >= s.capacity) return "full"
+function getFill(bookedCount: number, capacity: number): SlotFill {
+  if (bookedCount === 0) return "empty"
+  if (bookedCount >= capacity) return "full"
   return "partial"
-}
-
-function fmtDate(iso: string) {
-  const d = new Date(iso)
-  return `${DAY_FULL[d.getDay()]}, ${MONTH_SHORT[d.getMonth()]} ${d.getDate()}`
-}
-
-function fmtTime(iso: string) {
-  const d = new Date(iso)
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
-}
-
-function dayKey(iso: string) {
-  return iso.slice(0, 10)
 }
 
 export default function SlotsPage() {
   // GET /api/v1/slots?from=YYYY-MM-DD&to=YYYY-MM-DD
-  const mockSlots: MockSlot[] = [
-    { id: "s_1", startTime: "2026-05-25T09:00:00", capacity: 1, booked: 1, templateName: "Weekday morning clinic" },
-    { id: "s_2", startTime: "2026-05-25T09:30:00", capacity: 1, booked: 0, templateName: "Weekday morning clinic" },
-    { id: "s_3", startTime: "2026-05-25T10:00:00", capacity: 2, booked: 2, templateName: "Weekday morning clinic" },
-    { id: "s_4", startTime: "2026-05-25T10:30:00", capacity: 2, booked: 1, templateName: "Weekday morning clinic" },
-    { id: "s_5", startTime: "2026-05-25T11:00:00", capacity: 2, booked: 0, templateName: "Weekday morning clinic" },
-    { id: "s_6", startTime: "2026-05-25T13:00:00", capacity: 1, booked: 0, templateName: null },
-    { id: "s_7", startTime: "2026-05-26T10:00:00", capacity: 2, booked: 1, templateName: "Wednesday triage" },
-    { id: "s_8", startTime: "2026-05-26T10:30:00", capacity: 2, booked: 0, templateName: "Wednesday triage" },
-    { id: "s_9", startTime: "2026-05-26T11:00:00", capacity: 2, booked: 2, templateName: "Wednesday triage" },
-    { id: "s_10", startTime: "2026-05-27T09:00:00", capacity: 1, booked: 1, templateName: "Weekday morning clinic" },
-    { id: "s_11", startTime: "2026-05-27T09:30:00", capacity: 1, booked: 0, templateName: "Weekday morning clinic" },
-  ]
-
+  const [date, setDate] = useQueryState<Date>(
+    "date",
+    parseAsIsoDate.withDefault(new Date())
+  )
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<FilterValue>("all")
 
+  const {
+    data: slots,
+    isLoading,
+    isError,
+    refetch,
+  } = useSlots(date.toISOString(), addDays(date, 6).toISOString())
+
   const filteredSlots = useMemo(() => {
-    return mockSlots.filter((s) => {
-      const fill = getFill(s)
+    if (!slots) return []
+
+    return slots.filter((s) => {
+      const fill = getFill(s.bookedCount, s.capacity)
       if (filter !== "all" && fill !== filter) return false
+
       if (query) {
         const q = query.toLowerCase()
-        const haystack = `${fmtDate(s.startTime)} ${fmtTime(s.startTime)} ${s.templateName ?? ""}`.toLowerCase()
+        const haystack =
+          `${format(s.startTime, "EEEE, MMM dd")} ${format(s.startTime, "p")} ${s.template?.name ?? "manual"}`.toLowerCase()
+
         if (!haystack.includes(q)) return false
       }
       return true
     })
-  }, [query, filter])
+  }, [query, filter, slots])
 
   const grouped = useMemo(() => {
-    const map = new Map<string, MockSlot[]>()
-    for (const s of filteredSlots) {
-      const key = dayKey(s.startTime)
+    const map = new Map<string, SlotWithTemplateName[]>()
+
+    for (const slot of filteredSlots) {
+      const key = format(slot.startTime, "yyyy-MM-dd")
+
       if (!map.has(key)) map.set(key, [])
-      map.get(key)!.push(s)
+      map.get(key)!.push(slot)
     }
-    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b))
+
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b)) // Order the Array ascending by date
   }, [filteredSlots])
 
   const stats = useMemo(() => {
-    const total = mockSlots.length
+    if (!slots)
+      return { total: 0, empty: 0, partial: 0, full: 0, fromTemplate: 0 }
+
+    const total = slots.length
     let empty = 0
     let partial = 0
     let full = 0
     let fromTemplate = 0
-    for (const s of mockSlots) {
-      const f = getFill(s)
-      if (f === "empty") empty++
-      else if (f === "partial") partial++
+
+    for (const slot of slots) {
+      const fill = getFill(slot.bookedCount, slot.capacity)
+      if (fill === "empty") empty++
+      else if (fill === "partial") partial++
       else full++
-      if (s.templateName) fromTemplate++
+
+      if (slot.template?.name) fromTemplate++
     }
     return { total, empty, partial, full, fromTemplate }
-  }, [])
+  }, [slots])
+
+  if (isLoading && !slots) return <SlotsListSkeleton />
+  if (isError)
+    return (
+      <ErrorState
+        title="Couldn't load slots"
+        description="We couldn't fetch your slots. Check your connection and try again."
+        onRetry={() => void refetch()}
+      />
+    )
 
   return (
     <div className="space-y-8">
@@ -185,43 +185,89 @@ export default function SlotsPage() {
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
-              <Link href="/dashboard/appointments/templates">
-                <LayoutTemplate className="size-4" />
-                Templates
-              </Link>
-            </Button>
+          <div className="flex items-center gap-2">
             <Button asChild>
               <Link href="/dashboard/appointments/slots/new">
                 <CalendarPlus className="size-4" />
                 Create slots
               </Link>
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="More slot options"
+                >
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/appointments/templates">
+                    <LayoutTemplate className="size-4" />
+                    Templates
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/appointments/slots/single">
+                    <Plus className="size-4" />
+                    Add single slot
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
       </div>
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total slots" value={stats.total} accent="primary" icon={<Clock className="size-4" />} />
-        <StatCard label="Empty" value={stats.empty} accent="muted" icon={<CalendarDays className="size-4" />} />
-        <StatCard label="Full" value={stats.full} accent="muted" icon={<Users className="size-4" />} />
-        <StatCard label="From templates" value={stats.fromTemplate} accent="muted" icon={<Sparkles className="size-4" />} />
+        <StatCard
+          label="Total slots"
+          value={stats.total}
+          accent="primary"
+          icon={<Clock className="size-4" />}
+        />
+        <StatCard
+          label="Empty"
+          value={stats.empty}
+          accent="muted"
+          icon={<CalendarDays className="size-4" />}
+        />
+        <StatCard
+          label="Full"
+          value={stats.full}
+          accent="muted"
+          icon={<Users className="size-4" />}
+        />
+        <StatCard
+          label="From templates"
+          value={stats.fromTemplate}
+          accent="muted"
+          icon={<Sparkles className="size-4" />}
+        />
       </section>
 
       <section className="shadow-ambient overflow-hidden rounded-2xl border border-border/70 bg-card">
         <div className="flex flex-col gap-3 border-b border-border/60 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search date, time, template..."
-              className="pl-9"
-            />
+          <div className="flex w-full items-center gap-5 sm:max-w-xs md:max-w-3xl">
+            <DateFilter date={date} setDate={setDate} view="week" />
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search date, time, template..."
+                className="pl-9"
+              />
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <Select value={filter} onValueChange={(v) => setFilter(v as FilterValue)}>
+            <Select
+              value={filter}
+              onValueChange={(v) => setFilter(v as FilterValue)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
               </SelectTrigger>
@@ -235,7 +281,7 @@ export default function SlotsPage() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
+            <span className="text-xs whitespace-nowrap text-muted-foreground">
               <span className="font-mono font-medium text-foreground tabular-nums">
                 {filteredSlots.length}
               </span>{" "}
@@ -255,38 +301,65 @@ export default function SlotsPage() {
                 Try clearing the filters or create more slots.
               </p>
             </div>
-            <Button variant="outline" onClick={() => { setQuery(""); setFilter("all") }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setQuery("")
+                setFilter("all")
+              }}
+            >
               Clear filters
             </Button>
           </div>
         ) : (
           <ul className="divide-y divide-border/40">
-            {grouped.map(([key, slots]) => {
-              const filledOnDay = slots.reduce((acc, s) => acc + s.booked, 0)
-              const capacityOnDay = slots.reduce((acc, s) => acc + s.capacity, 0)
+            {grouped.map(([date, slots]) => {
+              const filledOnDay = slots.reduce(
+                (acc, slot) => acc + slot.bookedCount,
+                0
+              )
+
+              const capacityOnDay = slots.reduce(
+                (acc, slot) => acc + slot.capacity,
+                0
+              )
               return (
-                <li key={key} className="space-y-4 p-5">
+                <li key={date} className="space-y-4 p-5">
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <span className="flex size-10 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
                         <span className="text-[10px] font-semibold tracking-wider uppercase opacity-70">
-                          {MONTH_SHORT[new Date(key).getMonth()]}
+                          {format(date, "MMM")}
                         </span>
-                        <span className="font-mono text-sm font-bold leading-none tabular-nums">
-                          {new Date(key).getDate()}
+                        <span className="font-mono text-sm leading-none font-bold tabular-nums">
+                          {format(date, "d")}
                         </span>
                       </span>
                       <div>
-                        <p className="text-sm font-semibold">{fmtDate(key + "T00:00:00")}</p>
+                        <p className="text-sm font-semibold">
+                          {format(date, "EEE, MMM d")}
+                        </p>
                         <p className="text-xs text-muted-foreground">
-                          <span className="font-mono tabular-nums">{slots.length}</span> slots ·{" "}
-                          <span className="font-mono tabular-nums">{filledOnDay}</span>/
-                          <span className="font-mono tabular-nums">{capacityOnDay}</span> booked
+                          <span className="font-mono tabular-nums">
+                            {slots.length}
+                          </span>{" "}
+                          slots ·{" "}
+                          <span className="font-mono tabular-nums">
+                            {filledOnDay}
+                          </span>
+                          /
+                          <span className="font-mono tabular-nums">
+                            {capacityOnDay}
+                          </span>{" "}
+                          booked
                         </p>
                       </div>
                     </div>
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href="/dashboard/appointments">
+                      <Link
+                        replace
+                        href={`/dashboard/appointments?date=${format(date, "yyyy-MM-dd")}`}
+                      >
                         Day view
                         <ChevronRight className="size-3.5" />
                       </Link>
@@ -308,8 +381,8 @@ export default function SlotsPage() {
   )
 }
 
-function SlotChip({ slot }: { slot: MockSlot }) {
-  const fill = getFill(slot)
+function SlotChip({ slot }: { slot: SlotWithTemplateName }) {
+  const fill = getFill(slot.bookedCount, slot.capacity)
   return (
     <div
       className={cn(
@@ -322,35 +395,57 @@ function SlotChip({ slot }: { slot: MockSlot }) {
       <div className="flex items-center gap-3">
         <span className={cn("size-2 shrink-0 rounded-full", FILL_DOT[fill])} />
         <div>
-          <p className="font-mono text-base font-semibold tabular-nums leading-tight">
-            {fmtTime(slot.startTime)}
+          <p className="font-mono text-base leading-tight font-semibold tabular-nums">
+            {format(slot.startTime, "p")}
           </p>
           <div className="mt-1 flex items-center gap-1.5">
-            <Badge variant="outline" className={cn("rounded-full px-1.5 py-0 text-[10px]", FILL_TONE[fill])}>
-              {slot.booked}/{slot.capacity}
+            <Badge
+              variant="outline"
+              className={cn(
+                "rounded-full px-1.5 py-0 text-[10px]",
+                FILL_TONE[fill]
+              )}
+            >
+              {slot.bookedCount}/{slot.capacity}
             </Badge>
-            {slot.templateName ? (
+            {slot.template?.name ? (
               <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
                 <Sparkles className="size-2.5" />
-                {slot.templateName.length > 16 ? slot.templateName.slice(0, 14) + "…" : slot.templateName}
+                {slot.template.name.length > 42
+                  ? slot.template.name.slice(0, 40) + "…"
+                  : slot.template.name}
               </span>
             ) : (
-              <span className="text-[10px] text-muted-foreground italic">manual</span>
+              <span className="text-[10px] text-muted-foreground italic">
+                manual
+              </span>
             )}
           </div>
         </div>
       </div>
 
       {fill === "empty" ? (
-        <DeleteSlotDialog slotId={slot.id} slotTime={fmtTime(slot.startTime)} />
+        <DeleteSlotDialog
+          slotId={slot.id}
+          slotTime={format(slot.startTime, "p")}
+        />
       ) : fill === "full" ? (
-        <CheckCircle2 className="size-4 shrink-0 text-rose-500/70" aria-label="Full" />
+        <CheckCircle2
+          className="size-4 shrink-0 text-rose-500/70"
+          aria-label="Full"
+        />
       ) : null}
     </div>
   )
 }
 
-function DeleteSlotDialog({ slotId, slotTime }: { slotId: string; slotTime: string }) {
+function DeleteSlotDialog({
+  slotId,
+  slotTime,
+}: {
+  slotId: string
+  slotTime: string
+}) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -399,7 +494,9 @@ function StatCard({
     <div
       className={cn(
         "shadow-ambient flex items-start justify-between rounded-2xl border p-5",
-        accent === "primary" ? "border-primary/20 bg-primary/4" : "border-border/60 bg-card"
+        accent === "primary"
+          ? "border-primary/20 bg-primary/4"
+          : "border-border/60 bg-card"
       )}
     >
       <div>
@@ -411,7 +508,9 @@ function StatCard({
       <span
         className={cn(
           "flex size-9 items-center justify-center rounded-full",
-          accent === "primary" ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+          accent === "primary"
+            ? "bg-primary/15 text-primary"
+            : "bg-muted text-muted-foreground"
         )}
       >
         {icon}

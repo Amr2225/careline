@@ -1,51 +1,39 @@
-import { useState } from "react"
 import { motion } from "motion/react"
-import {
-  CalendarDays,
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  Users,
-} from "lucide-react"
+import { CalendarDays, CheckCircle2, Clock, Users } from "lucide-react"
+import { useNextAvailableSlot } from "@/lib/queries/slots"
+import { format, formatDistanceToNow } from "date-fns"
+import { useBookAppointment } from "@/lib/queries/appointments"
+import { toast } from "sonner"
+import { extractErrorMessage } from "@/lib/error"
+import { NextAvailableSkeleton } from "./components/next-available-skeleton"
+import { ApiError } from "@/components/Api-error"
 
 type Props = {
   onSwitchToBrowse?: () => void
 }
-
 export default function NextAvailablePanel({ onSwitchToBrowse }: Props) {
-  const [booking, setBooking] = useState(false)
-  const [booked, setBooked] = useState(false)
-
-  // GET /api/v1/slots/next-available
-  const nextSlot = {
-    id: "s_next_42",
-    date: "Tomorrow, May 25",
-    time: "09:30",
-    remaining: 1,
-    capacity: 1,
-    projectedPosition: 2,
-    inMinutes: 1380,
-  }
+  const { data: nextSlot, isLoading, isError } = useNextAvailableSlot()
+  const bookAppoitment = useBookAppointment(
+    nextSlot ? format(nextSlot.startTime, "yyyy-MM-dd") : undefined
+  )
 
   const handleBook = () => {
-    setBooking(true)
-    // POST /api/v1/appointments  { slotId: nextSlot.id }
-    console.log("book next-available", nextSlot.id)
-    setTimeout(() => {
-      setBooking(false)
-      setBooked(true)
-    }, 700)
+    bookAppoitment.mutate(nextSlot?.id ?? "", {
+      onError: (error) => {
+        toast.error("Failed to book appointment", {
+          description: extractErrorMessage(error),
+          richColors: true,
+        })
+      },
+    })
   }
 
-  const hours = Math.floor(nextSlot.inMinutes / 60)
-  const minutes = nextSlot.inMinutes % 60
+  if (isLoading && !nextSlot) return <NextAvailableSkeleton />
+  if (isError && !nextSlot) return <ApiError />
 
   return (
     <div className="flex flex-1 flex-col">
-      <span className="flex size-14 items-center justify-center rounded-2xl bg-emerald-800 text-white shadow-[0_10px_24px_rgba(6,95,70,0.25)]">
-        <Sparkles className="size-6" />
-      </span>
-      <p className="mt-6 text-sm font-semibold tracking-[0.2em] text-emerald-800/60 uppercase">
+      <p className="text-sm font-semibold tracking-[0.2em] text-emerald-800/60 uppercase">
         Next available
       </p>
       <h2 className="mt-2 text-2xl font-bold">Soonest open slot</h2>
@@ -62,12 +50,14 @@ export default function NextAvailablePanel({ onSwitchToBrowse }: Props) {
         <p className="text-[10px] font-semibold tracking-[0.2em] text-emerald-50/70 uppercase">
           Next open slot
         </p>
-        <p className="mt-2 text-lg font-semibold">{nextSlot.date}</p>
+        <p className="mt-2 text-lg font-semibold">
+          {format(nextSlot.startTime, "EEE, MMM d")}
+        </p>
         <p className="font-mono text-5xl leading-none font-bold tabular-nums">
-          {nextSlot.time}
+          {format(nextSlot.startTime, "p")}
         </p>
         <p className="mt-2 text-xs text-emerald-50/80">
-          In about {hours}h {minutes}m
+          {formatDistanceToNow(nextSlot.startTime, { addSuffix: true })}
         </p>
 
         <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/15 pt-4">
@@ -89,7 +79,8 @@ export default function NextAvailablePanel({ onSwitchToBrowse }: Props) {
                 Capacity
               </p>
               <p className="font-mono text-base font-bold tabular-nums">
-                {nextSlot.remaining}/{nextSlot.capacity}
+                {/* {nextSlot.capacity - nextSlot.bookedCount} of{" "} */}
+                {nextSlot.capacity}
               </p>
             </div>
           </div>
@@ -100,11 +91,15 @@ export default function NextAvailablePanel({ onSwitchToBrowse }: Props) {
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleBook}
-          disabled={booking || booked}
+          disabled={bookAppoitment.isPending || bookAppoitment.isSuccess}
           className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-800 text-sm font-semibold text-white shadow-[0_8px_22px_rgba(6,95,70,0.25)] transition-colors hover:bg-emerald-900 disabled:opacity-70"
         >
           <CheckCircle2 className="size-4" />
-          {booked ? "Booked!" : booking ? "Booking..." : "Book this slot"}
+          {bookAppoitment.isSuccess
+            ? "Booked!"
+            : bookAppoitment.isPending
+              ? "Booking..."
+              : "Book this slot"}
         </motion.button>
         {onSwitchToBrowse ? (
           <button

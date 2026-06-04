@@ -4,10 +4,11 @@ import { SlotsService } from './slots.service';
 import { DbModule } from '@/db/db.module';
 import { RbacModule } from '@/rbac/rbac.module';
 import { SettingsService } from '@/settings/settings.service';
+import { AppointmentsService } from '@/appointments/appointments.service';
 
 @Module({
   imports: [DbModule, RbacModule],
   controllers: [SlotsController],
-  providers: [SlotsService, SettingsService]
+  providers: [SlotsService, SettingsService, AppointmentsService]
 })
 export class SlotsModule { }

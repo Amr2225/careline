@@ -1,23 +1,18 @@
 import { useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { CalendarCheck, ChevronDown, ChevronRight, Clock } from "lucide-react"
-import AppointmentDetailPanel from "./details.js"
+import AppointmentDetailPanel from "./AppointmentDetailPanel"
+import { useGetMyAppointments } from "@/lib/queries/appointments.js"
+import {
+  AppointmentStatus,
+  AppointmentStatusLabel,
+} from "@careline/shared/types/appointment.type"
+import { format, formatRelative } from "date-fns"
+import { enUS } from "date-fns/locale"
+import { AppointmentsSkeleton } from "./components/appointments-skeleton"
+import { ApiError } from "@/components/Api-error"
 
-type Status =
-  | "BOOKED"
-  | "ARRIVED"
-  | "IN_PROGRESS"
-  | "DONE"
-  | "NO_SHOW"
-  | "CANCELLED"
-
-type MockAppointment = {
-  id: string
-  date: string
-  time: string
-  status: Status
-  position: number | null
-}
+type Status = keyof typeof AppointmentStatus
 
 const STATUS_TONE: Record<Status, string> = {
   BOOKED: "bg-sky-50 text-sky-700",
@@ -26,76 +21,78 @@ const STATUS_TONE: Record<Status, string> = {
   DONE: "bg-emerald-50 text-emerald-700",
   NO_SHOW: "bg-rose-50 text-rose-700",
   CANCELLED: "bg-slate-100 text-slate-500",
+  LATE_ARRIVING: "bg-sky-50 text-sky-700",
 }
 
-const STATUS_LABEL: Record<Status, string> = {
-  BOOKED: "Booked",
-  ARRIVED: "Arrived",
-  IN_PROGRESS: "In progress",
-  DONE: "Completed",
-  NO_SHOW: "No-show",
-  CANCELLED: "Cancelled",
+const customLocale = {
+  ...enUS,
+  formatLong: {
+    ...enUS.formatLong,
+    date: () => "EEE, MMM d",
+  },
 }
 
 export default function AppointmentsPage() {
-  // GET /api/v1/appointments/me
-  const appointments: MockAppointment[] = [
-    {
-      id: "a_1",
-      date: "Tomorrow, May 25",
-      time: "09:30",
-      status: "BOOKED",
-      position: 2,
-    },
-    {
-      id: "a_2",
-      date: "Fri, May 29",
-      time: "14:00",
-      status: "BOOKED",
-      position: 4,
-    },
-    {
-      id: "a_3",
-      date: "Mon, May 18",
-      time: "10:00",
-      status: "DONE",
-      position: null,
-    },
-    {
-      id: "a_4",
-      date: "Tue, May 12",
-      time: "11:30",
-      status: "DONE",
-      position: null,
-    },
-    {
-      id: "a_5",
-      date: "Sat, May 02",
-      time: "13:00",
-      status: "CANCELLED",
-      position: null,
-    },
-  ]
-
-  const upcoming = useMemo(
-    () =>
-      appointments.filter((a) =>
-        ["BOOKED", "ARRIVED", "IN_PROGRESS"].includes(a.status)
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
-  const past = useMemo(
-    () =>
-      appointments.filter((a) =>
-        ["DONE", "NO_SHOW", "CANCELLED"].includes(a.status)
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
-
   const [showPast, setShowPast] = useState(false)
   const [openId, setOpenId] = useState<string | null>(null)
+  const { data: appointments, isLoading, isError } = useGetMyAppointments()
+
+  // const appointments: MockAppointment[] = [
+  //   {
+  //     id: "a_1",
+  //     date: "Tomorrow, May 25",
+  //     time: "09:30",
+  //     status: "BOOKED",
+  //     position: 2,
+  //   },
+  //   {
+  //     id: "a_2",
+  //     date: "Fri, May 29",
+  //     time: "14:00",
+  //     status: "BOOKED",
+  //     position: 4,
+  //   },
+  //   {
+  //     id: "a_3",
+  //     date: "Mon, May 18",
+  //     time: "10:00",
+  //     status: "DONE",
+  //     position: null,
+  //   },
+  //   {
+  //     id: "a_4",
+  //     date: "Tue, May 12",
+  //     time: "11:30",
+  //     status: "DONE",
+  //     position: null,
+  //   },
+  //   {
+  //     id: "a_5",
+  //     date: "Sat, May 02",
+  //     time: "13:00",
+  //     status: "CANCELLED",
+  //     position: null,
+  //   },
+  // ]
+
+  const upcoming = useMemo(() => {
+    return (
+      appointments?.filter((a) =>
+        ["BOOKED", "ARRIVED", "IN_PROGRESS"].includes(a.status)
+      ) || []
+    )
+  }, [appointments])
+
+  const past = useMemo(
+    () =>
+      appointments?.filter((a) =>
+        ["DONE", "NO_SHOW", "CANCELLED"].includes(a.status)
+      ) || [],
+    [appointments]
+  )
+
+  if (isLoading && !appointments) return <AppointmentsSkeleton />
+  if (isError) return <ApiError />
 
   return (
     <div className="flex flex-1 flex-col">
@@ -155,45 +152,42 @@ export default function AppointmentsPage() {
                 </div>
               ) : (
                 <ul className="mt-3 space-y-2">
-                  {upcoming.map((a, i) => (
+                  {upcoming.map((appt, i) => (
                     <motion.li
-                      key={a.id}
+                      key={appt.id}
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.04 }}
                     >
                       <motion.button
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => setOpenId(a.id)}
+                        onClick={() => setOpenId(appt.id)}
                         className="flex w-full items-center justify-between rounded-2xl border border-slate-100 bg-white p-3.5 text-left transition-all hover:border-emerald-200 hover:shadow-[0_8px_24px_rgba(6,95,70,0.08)]"
                       >
                         <div className="flex items-center gap-3">
                           <span className="flex size-11 flex-col items-center justify-center rounded-xl bg-emerald-50 text-emerald-800">
                             <span className="text-[9px] font-semibold tracking-wider uppercase opacity-70">
-                              {a.date.split(",")[0].slice(0, 3)}
+                              {format(appt.slot.startTime, "EEE")}
                             </span>
                             <Clock className="size-3" />
                           </span>
                           <div className="min-w-0">
                             <p className="text-xs font-medium text-slate-600">
-                              {a.date}
+                              {formatRelative(appt.slot.startTime, new Date(), {
+                                locale: customLocale,
+                              })}
                             </p>
                             <p className="font-mono text-base leading-tight font-bold tabular-nums">
-                              {a.time}
+                              {format(appt.slot.startTime, "p")}
                             </p>
                             <span
-                              className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_TONE[a.status]}`}
+                              className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_TONE[appt.status]}`}
                             >
-                              {STATUS_LABEL[a.status]}
+                              {AppointmentStatusLabel[appt.status]}
                             </span>
                           </div>
                         </div>
                         <div className="flex flex-col items-end gap-1">
-                          {a.position ? (
-                            <span className="font-mono text-xl font-bold text-emerald-800 tabular-nums">
-                              #{a.position}
-                            </span>
-                          ) : null}
                           <ChevronRight className="size-4 text-slate-400" />
                         </div>
                       </motion.button>
@@ -210,7 +204,7 @@ export default function AppointmentsPage() {
                   className="flex w-full items-center justify-between"
                 >
                   <h3 className="text-[10px] font-bold tracking-[0.15em] text-slate-400 uppercase">
-                    Past · <span className="font-mono">{past.length}</span>
+                    Past &bull; <span className="font-mono">{past.length}</span>
                   </h3>
                   <ChevronDown
                     className={`size-4 text-slate-400 transition-transform ${showPast ? "rotate-180" : ""}`}
@@ -237,17 +231,17 @@ export default function AppointmentsPage() {
                             </span>
                             <div>
                               <p className="text-xs font-medium text-slate-700">
-                                {a.date}
+                                {format(a.slot.startTime, "EEE, MMM p")}
                               </p>
                               <p className="font-mono text-sm text-slate-500 tabular-nums">
-                                {a.time}
+                                {format(a.slot.startTime, "p")}
                               </p>
                             </div>
                           </div>
                           <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_TONE[a.status]}`}
                           >
-                            {STATUS_LABEL[a.status]}
+                            {AppointmentStatusLabel[a.status]}
                           </span>
                         </li>
                       ))}

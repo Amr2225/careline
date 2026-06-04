@@ -8,7 +8,7 @@ export enum AppointmentStatus {
     CANCELLED = 'CANCELLED'
 }
 
-export const AppointmentStatusLabel: Record<AppointmentStatus, string> = {
+export const AppointmentStatusLabel: Record<keyof typeof AppointmentStatus, string> = {
     BOOKED: 'Booked',
     LATE_ARRIVING: 'Late Arriving',
     ARRIVED: 'Arrived',
@@ -37,4 +37,28 @@ export interface SlotAndAppointments {
 export interface WeeklyAppointmentsView {
     date: string;
     slots: SlotAndAppointments[];
+}
+
+export interface Slot {
+    id: string;
+    startTime: Date;
+    capacity: number;
+    bookedCount: number;
+    templateId: string | null;
+    createdAt: Date;
+}
+
+export interface AppointmentWithSlot {
+    id: string;
+    patientId: string;
+    slotId: string
+    status: AppointmentStatus;
+    bookedAt: Date;
+    cancelledAt: Date | null;
+    updatedAt: Date;
+    slot: Slot;
+}
+
+export interface AppointmentDetail extends AppointmentWithSlot {
+    position: number;
 }
