@@ -16,6 +16,8 @@ const envSchema = z.object({
 
     ACCESS_TOKEN_EXPIRES_IN: z.string(),
     REFRESH_TOKEN_EXPIRES_IN: z.string(),
+
+    TIMEZONE: z.string(),
 });
 
 export type envSchemaType = z.infer<typeof envSchema>;

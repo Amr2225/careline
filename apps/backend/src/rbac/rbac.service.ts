@@ -1,5 +1,5 @@
 import { DbService } from '@/db/db.service';
-import { Action, SYSTEM_ROLES, SystemRoleName } from '@careline/shared/types/rbac.type';
+import { Action, ModuleName, SYSTEM_ROLES, SystemRoleName } from '@careline/shared/types/rbac.type';
 import { Role } from '@careline/shared/types/rbac.type';
 import { Injectable } from '@nestjs/common';
 
@@ -165,7 +165,7 @@ export class RbacService {
         return permissions.has(`${module}:${action.toLocaleLowerCase()}`);
     }
 
-    async hasPermission(userId: string, module: string, action: Action) {
+    async hasPermission(userId: string, module: ModuleName, action: Action): Promise<boolean> {
         const foundPermission = await this.dbService.userRole.findFirst({
             where: {
                 userId,

@@ -64,5 +64,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
       // "@careline/ui": path.resolve(__dirname, "../../packages/ui/src"),
     }
-  }
+  },
+  optimizeDeps: {
+    include: ["@careline/shared/types/appointment.type"],
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/, /packages[\\/]shared[\\/]dist/],
+    },
+  },
 })

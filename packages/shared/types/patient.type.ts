@@ -6,6 +6,7 @@ export enum Gender {
     FEMALE = "FEMALE",
 }
 
+// TODO: not needed delete if possible
 export const GenderConst = {
     MALE: "MALE",
     FEMALE: "FEMALE",

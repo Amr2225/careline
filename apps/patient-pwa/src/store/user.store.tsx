@@ -1,6 +1,6 @@
 // TODO: Try to make this a shared store package
 import { create } from "zustand"
-import type { UserWithoutPassword } from "@careline/shared/types/user.type"
+import type { UserEntity } from "@careline/shared/types/user.type"
 import { api } from "@/lib/api"
 import { isAxiosError } from "axios"
 
@@ -10,7 +10,7 @@ type ErrorResponse = {
 }
 
 interface AuthStore {
-  user: UserWithoutPassword | null
+  user: UserEntity | null
   isAuthenticated: "checking" | "authenticated" | "unauthenticated"
   isLoading: boolean
   error: string | null
@@ -20,7 +20,7 @@ interface AuthStore {
   logout: () => Promise<void>
 }
 
-const setLocalStorageUser = (user: UserWithoutPassword) => {
+const setLocalStorageUser = (user: UserEntity) => {
   if (typeof window !== "undefined") {
     window.localStorage.setItem("Careline-user", JSON.stringify(user))
   }
@@ -33,7 +33,7 @@ const getLocalStorageUser = () => {
       return null
     }
 
-    return JSON.parse(user) as UserWithoutPassword | null
+    return JSON.parse(user) as UserEntity | null
   }
   return null
 }
@@ -56,7 +56,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
     set({ isLoading: true })
     try {
-      const { data } = await api.get<UserWithoutPassword>("/user/me")
+      const { data } = await api.get<UserEntity>("/auth/patient/me")
       setLocalStorageUser(data)
       set({ user: data, isAuthenticated: "authenticated" })
     } catch (error) {
@@ -69,7 +69,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   login: async (email: string, password: string) => {
     set({ isLoading: true })
     try {
-      const { data } = await api.post<UserWithoutPassword>("/auth/login", {
+      const { data } = await api.post<UserEntity>("/auth/patient/login", {
         email,
         password,
       })
@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   logout: async () => {
     set({ isLoading: true })
     try {
-      await api.post("/auth/logout")
+      await api.post("/auth/patient/logout")
       window.localStorage.removeItem("Careline-user")
       set({ user: null, isAuthenticated: "unauthenticated" })
     } catch (error) {

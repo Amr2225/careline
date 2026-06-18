@@ -46,7 +46,6 @@ refreshClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
     return config
 }, (error: AxiosError) => {
-    console.log("ERRORRORORORj");
     return Promise.reject(error);
 })
 
@@ -56,7 +55,7 @@ api.interceptors.response.use((response) => response, async (error: AxiosError) 
         originalRequest._retry = true;
 
         try {
-            await refreshClient.post("/auth/refresh");
+            await refreshClient.post("/auth/patient/refresh");
             return api(originalRequest);
         } catch (refreshError) {
             const currentPath = window.location.pathname;

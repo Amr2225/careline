@@ -6,6 +6,8 @@ import "@careline/ui/globals.css"
 import { createBrowserRouter, Navigate } from "react-router"
 import { RouterProvider } from "react-router/dom"
 import LoginPage from "./pages/login/page.tsx"
+import { QueryProvider } from "./providers/QueryProvider.tsx"
+import { Toaster } from "@careline/ui/components/sonner"
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <QueryProvider>
+      <RouterProvider router={router} />
+      <Toaster />
+    </QueryProvider>
   </StrictMode>
 )

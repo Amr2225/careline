@@ -1,7 +1,14 @@
 import type { ComponentType, SVGProps } from "react"
 import { motion } from "motion/react"
 
-export type BottomNavTab = "home" | "history" | "queue" | "data" | "profile"
+export type BottomNavTab =
+  | "home"
+  | "book"
+  | "appointments"
+  | "queue"
+  | "profile"
+  | "history"
+  | "date"
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -18,9 +25,9 @@ type BottomNavBarProps = {
 
 const bottomNavItems: NavItem[] = [
   { value: "home", label: "Home", Icon: HomeIcon },
-  { value: "history", label: "History", Icon: HistoryIcon },
+  { value: "book", label: "Book", Icon: BookIcon },
+  { value: "appointments", label: "Visits", Icon: VisitsIcon },
   { value: "queue", label: "Queue", Icon: QueueIcon },
-  { value: "data", label: "Data", Icon: DataIcon },
   { value: "profile", label: "Profile", Icon: ProfileIcon },
 ]
 
@@ -103,7 +110,7 @@ function HomeIcon(props: IconProps) {
   )
 }
 
-function HistoryIcon(props: IconProps) {
+function BookIcon(props: IconProps) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -111,13 +118,37 @@ function HistoryIcon(props: IconProps) {
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="2.2"
+      strokeWidth="2"
       aria-hidden="true"
       {...props}
     >
-      <path d="M3 12a9 9 0 1 0 3-6.7" />
-      <path d="M3 4.5v5h5" />
-      <path d="M12 7.5V12l3 2" />
+      <rect x="3" y="5" width="18" height="16" rx="2.5" />
+      <path d="M3 10h18" />
+      <path d="M8 3v4" />
+      <path d="M16 3v4" />
+      <path d="M12 14v4" />
+      <path d="M10 16h4" />
+    </svg>
+  )
+}
+
+function VisitsIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      aria-hidden="true"
+      {...props}
+    >
+      <rect x="3" y="5" width="18" height="16" rx="2.5" />
+      <path d="M3 10h18" />
+      <path d="M8 3v4" />
+      <path d="M16 3v4" />
+      <path d="M7.5 14.5l2 2 4.5-4.5" />
     </svg>
   )
 }
@@ -126,14 +157,6 @@ function QueueIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
       <path d="M6.25 4h11.5A2.25 2.25 0 0 1 20 6.25v1A2.25 2.25 0 0 1 17.75 9H6.25A2.25 2.25 0 0 1 4 6.75v-.5A2.25 2.25 0 0 1 6.25 4M6.25 10.5h11.5A2.25 2.25 0 0 1 20 12.75v.5a2.25 2.25 0 0 1-2.25 2.25H6.25A2.25 2.25 0 0 1 4 13.25v-.5a2.25 2.25 0 0 1 2.25-2.25M6.25 17h11.5A2.25 2.25 0 0 1 20 19.25v.5A.25.25 0 0 1 19.75 20H4.25A.25.25 0 0 1 4 19.75v-.5A2.25 2.25 0 0 1 6.25 17" />
-    </svg>
-  )
-}
-
-function DataIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M5.75 3.75h12.5A2.75 2.75 0 0 1 21 6.5v11a2.75 2.75 0 0 1-2.75 2.75H5.75A2.75 2.75 0 0 1 3 17.5v-11a2.75 2.75 0 0 1 2.75-2.75m1.5 11.5a1 1 0 1 0 2 0v-3.5a1 1 0 1 0-2 0zm3.75 0a1 1 0 1 0 2 0v-6.5a1 1 0 1 0-2 0zm3.75 0a1 1 0 1 0 2 0v-4.5a1 1 0 1 0-2 0z" />
     </svg>
   )
 }

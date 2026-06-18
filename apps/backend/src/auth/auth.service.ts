@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { DbService } from '@/db/db.service';
 import { createHash } from 'crypto';
 import { RbacService } from '@/rbac/rbac.service';
+import { Audience } from './auth.constants';
 
 export interface Tokens {
     accessToken: {
@@ -56,10 +57,23 @@ export class AuthService {
         return userEntity;
     }
 
-    async login(user: UserWithoutPassword): Promise<Tokens> {
+    // PWA gate: credentials must belong to a user that also has a Patient record.
+    // Without this, any staff/admin could sign into the patient app.
+    async validatePatientUser(userData: LoginDto): Promise<UserEntity> {
+        const user = await this.validateUser(userData);
+        await this.assertPatient(user.id);
+        return user;
+    }
+
+    async assertPatient(userId: string): Promise<void> {
+        const patient = await this.db.patient.findUnique({ where: { userId } });
+        if (!patient) throw new HttpException("This account is not registered as a patient", HttpStatus.FORBIDDEN);
+    }
+
+    async login(user: UserWithoutPassword, audience: Audience): Promise<Tokens> {
         const { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } = this.generateExpiresIn('ACCESS_TOKEN_EXPIRES_IN', 'REFRESH_TOKEN_EXPIRES_IN');
-        const accessToken = await this.jwtService.signAsync({ userId: user.id }, { subject: user.id, expiresIn: ACCESS_TOKEN_EXPIRES_IN, secret: this.configService.getOrThrow<string>("ACCESS_TOKEN_SECRET") });
-        const refreshToken = await this.jwtService.signAsync({ userId: user.id }, { subject: user.id, expiresIn: REFRESH_TOKEN_EXPIRES_IN, secret: this.configService.getOrThrow<string>("REFRESH_TOKEN_SECRET") });
+        const accessToken = await this.jwtService.signAsync({ userId: user.id, audience }, { subject: user.id, expiresIn: ACCESS_TOKEN_EXPIRES_IN, secret: this.configService.getOrThrow<string>("ACCESS_TOKEN_SECRET") });
+        const refreshToken = await this.jwtService.signAsync({ userId: user.id, audience }, { subject: user.id, expiresIn: REFRESH_TOKEN_EXPIRES_IN, secret: this.configService.getOrThrow<string>("REFRESH_TOKEN_SECRET") });
 
         await this.db.user.update({
             where: { id: user.id },
@@ -121,7 +135,6 @@ export class AuthService {
             }
         })
 
-        console.log("Refresh Token Entity", refreshTokenEntity);
         if (!refreshTokenEntity) throw new HttpException("Invalid refresh token", HttpStatus.UNAUTHORIZED);
 
         // Theft protection some one is using a revoked refresh token

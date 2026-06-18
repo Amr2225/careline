@@ -2,7 +2,11 @@
 
 import { useState, type ReactNode } from "react"
 import { isAxiosError } from "axios"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import {
+  defaultShouldDehydrateQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query"
 
 function makeClient() {
   return new QueryClient({
@@ -20,6 +24,11 @@ function makeClient() {
       },
       mutations: {
         retry: false,
+      },
+      dehydrate: {
+        shouldDehydrateQuery: (query) =>
+          defaultShouldDehydrateQuery(query) ||
+          query.state.status === "pending",
       },
     },
   })

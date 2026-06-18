@@ -30,7 +30,7 @@ export const csrfConfig = (configService: ConfigService): DoubleCsrfConfigOption
         })(),
     },
     getSecret: () => configService.getOrThrow<string>('CSRF_SECRET'),
-    getSessionIdentifier: (req: Request) => req.cookies.refreshToken ?? "anonymous", // Should be a stable value that identifies the user, not the token itself refreshToken/SessionId/UserId
+    getSessionIdentifier: (req: Request) => req.cookies.refreshToken ?? req.cookies.patientRefreshToken ?? "anonymous", // Stable per-session value (staff or patient refresh cookie), not the access token
     getCsrfTokenFromRequest: (req: Request) => req.headers['x-csrf-token'] as string,
     errorConfig: {
         statusCode: 401,

@@ -13,6 +13,13 @@ import { RbacGuard } from './rbac/guards/rbac.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesModule } from './roles/roles.module';
 import { PatientModule } from './patient/patient.module';
+import { SettingsModule } from './settings/settings.module';
+import { SlotsModule } from './slots/slots.module';
+import { SlotTemplatesModule } from './slot-templates/slot-templates.module';
+import { AppointmentsModule } from './appointments/appointments.module';
+import { ArrivalModule } from './arrival/arrival.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 
 @Module({
   imports: [
@@ -21,17 +28,23 @@ import { PatientModule } from './patient/patient.module';
       envFilePath: ".env",
       validate
     }),
+    ScheduleModule.forRoot(),
     DbModule,
     UserModule,
     AuthModule,
     RbacModule,
     RolesModule,
     PatientModule,
+    SettingsModule,
+    SlotsModule,
+    SlotTemplatesModule,
+    AppointmentsModule,
+    ArrivalModule,
   ],
   controllers: [AppController],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
-    { provide: APP_GUARD, useClass: RbacGuard }
+    { provide: APP_GUARD, useClass: RbacGuard },
   ],
 })
 export class AppModule implements NestModule {
@@ -42,6 +55,8 @@ export class AppModule implements NestModule {
       .apply(doubleCsrfProtection)
       .exclude({ path: 'auth/login', method: RequestMethod.POST })
       .exclude({ path: 'auth/refresh', method: RequestMethod.POST })
+      .exclude({ path: 'auth/patient/login', method: RequestMethod.POST })
+      .exclude({ path: 'auth/patient/refresh', method: RequestMethod.POST })
       .forRoutes('*wildcard');
   }
 }

@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { QueryProvider } from "@/providers/QueryProvider"
-import { NuqsAdapter } from "nuqs/adapters/react"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { Toaster } from "@careline/ui/components/sonner"
 import "@careline/ui/globals.css"
 

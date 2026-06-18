@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { BottomNavBar, type BottomNavTab } from "@/components/bottom-nav-bar.js"
 import AuthGuard from "@/providers/AuthGuard.js"
@@ -9,27 +8,42 @@ import {
   QueuePage,
   DataPage,
   ProfilePage,
-} from "./_components/index.js"
+} from "./components/index.js"
 import { useAuthStore } from "@/store/user.store.js"
+import { useNavStore } from "@/store/nav.store.js"
+import AppointmentsPage from "../appointment/appointments.js"
+import BookingPage from "../book/page.js"
 
 const pageCopy: Record<BottomNavTab, React.ReactElement> = {
   home: <HomePage />,
+  book: <BookingPage />,
   history: <HistoryPage />,
+  appointments: <AppointmentsPage />,
   queue: <QueuePage />,
-  data: <DataPage />,
+  date: <DataPage />,
   profile: <ProfilePage />,
 }
 
 function App() {
   const user = useAuthStore((state) => state.user)
 
-  const [activeTab, setActiveTab] = useState<BottomNavTab>("home")
+  const activeTab = useNavStore((state) => state.activeTab)
+  const setActiveTab = useNavStore((state) => state.setActiveTab)
   const activePage = pageCopy[activeTab]
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#f7f3ee] text-slate-950">
-      <main className="mx-auto flex min-h-screen max-w-md flex-col px-8 pt-10 pb-32 md:max-w-lg md:px-0">
-        <div className="mb-8">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-[#fbf8f3] via-[#fdfaf5] to-[#f4efe6] text-slate-950">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-72 bg-linear-to-b from-emerald-100/45 via-emerald-50/20 to-transparent blur-2xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-32 right-[-20%] z-0 size-80 rounded-full bg-emerald-200/30 blur-3xl"
+      />
+
+      <main className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col px-6 pt-10 pb-32 md:max-w-lg md:px-0">
+        <div className="mb-8 px-1">
           <p className="text-sm font-semibold tracking-[0.24em] text-emerald-800/70 uppercase">
             CareLine
           </p>
@@ -41,7 +55,7 @@ function App() {
         <AnimatePresence mode="wait">
           <motion.section
             key={activeTab}
-            className="flex flex-1 flex-col rounded-[2rem] border border-black/5 bg-white p-6 shadow-[0_18px_60px_rgba(15,23,42,0.08)]"
+            className="flex flex-1 flex-col rounded-[2rem] border border-black/4 bg-white p-6 shadow-[0_24px_72px_-12px_rgba(15,23,42,0.12),0_1px_0_rgba(15,23,42,0.02)]"
             initial={{ opacity: 0, x: 34, scale: 0.98 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -34, scale: 0.98 }}

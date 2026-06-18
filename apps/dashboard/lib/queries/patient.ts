@@ -2,8 +2,9 @@ import { CreatePatientPayload, CreatePatientWithUserPayload, ListPatientQuery, U
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { patientApi, } from "@/lib/api/patients"
 import { queryKeys } from "./keys"
+import { slotTemplatesApi } from "../api/slots";
+import { toast } from "sonner";
 
-// TODO: implement pagination for this query.
 export function usePatients(query: ListPatientQuery = { limit: 10, page: 1 }) {
     return useQuery({
         queryKey: queryKeys.patients.list(query),
@@ -78,6 +79,17 @@ export function useRemovePatient() {
         mutationFn: (patientId: string) => patientApi.remove(patientId),
         onSuccess: () => {
             void queryClient.invalidateQueries({ queryKey: queryKeys.patients.all })
+        }
+    })
+}
+
+export function useMaterializeSlots(templateId: string) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ fromDate, weeks }: { fromDate: string, weeks: number }) => slotTemplatesApi.materializeSlots(templateId, fromDate, weeks),
+        onSuccess: (message: string) => {
+            toast.success(message)
+            void queryClient.invalidateQueries({ queryKey: queryKeys.slotTemplates.all })
         }
     })
 }

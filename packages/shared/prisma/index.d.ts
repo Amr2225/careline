@@ -48,6 +48,26 @@ export type RolePermission = $Result.DefaultSelection<Prisma.$RolePermissionPayl
  * 
  */
 export type UserRole = $Result.DefaultSelection<Prisma.$UserRolePayload>
+/**
+ * Model AvailableSlot
+ * 
+ */
+export type AvailableSlot = $Result.DefaultSelection<Prisma.$AvailableSlotPayload>
+/**
+ * Model Appointment
+ * 
+ */
+export type Appointment = $Result.DefaultSelection<Prisma.$AppointmentPayload>
+/**
+ * Model SlotTemplate
+ * 
+ */
+export type SlotTemplate = $Result.DefaultSelection<Prisma.$SlotTemplatePayload>
+/**
+ * Model Setting
+ * 
+ */
+export type Setting = $Result.DefaultSelection<Prisma.$SettingPayload>
 
 /**
  * Enums
@@ -86,6 +106,28 @@ export const Action: {
 
 export type Action = (typeof Action)[keyof typeof Action]
 
+
+export const AppointmentStatus: {
+  BOOKED: 'BOOKED',
+  LATE_ARRIVING: 'LATE_ARRIVING',
+  ARRIVED: 'ARRIVED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+  NO_SHOW: 'NO_SHOW',
+  CANCELLED: 'CANCELLED'
+};
+
+export type AppointmentStatus = (typeof AppointmentStatus)[keyof typeof AppointmentStatus]
+
+
+export const LateArrivalBucket: {
+  ON_TIME: 'ON_TIME',
+  FRONT_INSERT: 'FRONT_INSERT',
+  VERY_LATE: 'VERY_LATE'
+};
+
+export type LateArrivalBucket = (typeof LateArrivalBucket)[keyof typeof LateArrivalBucket]
+
 }
 
 export type Gender = $Enums.Gender
@@ -99,6 +141,14 @@ export const BloodType: typeof $Enums.BloodType
 export type Action = $Enums.Action
 
 export const Action: typeof $Enums.Action
+
+export type AppointmentStatus = $Enums.AppointmentStatus
+
+export const AppointmentStatus: typeof $Enums.AppointmentStatus
+
+export type LateArrivalBucket = $Enums.LateArrivalBucket
+
+export const LateArrivalBucket: typeof $Enums.LateArrivalBucket
 
 /**
  * ##  Prisma Client ʲˢ
@@ -290,6 +340,46 @@ export class PrismaClient<
     * ```
     */
   get userRole(): Prisma.UserRoleDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.availableSlot`: Exposes CRUD operations for the **AvailableSlot** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AvailableSlots
+    * const availableSlots = await prisma.availableSlot.findMany()
+    * ```
+    */
+  get availableSlot(): Prisma.AvailableSlotDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.appointment`: Exposes CRUD operations for the **Appointment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Appointments
+    * const appointments = await prisma.appointment.findMany()
+    * ```
+    */
+  get appointment(): Prisma.AppointmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.slotTemplate`: Exposes CRUD operations for the **SlotTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SlotTemplates
+    * const slotTemplates = await prisma.slotTemplate.findMany()
+    * ```
+    */
+  get slotTemplate(): Prisma.SlotTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.setting`: Exposes CRUD operations for the **Setting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Settings
+    * const settings = await prisma.setting.findMany()
+    * ```
+    */
+  get setting(): Prisma.SettingDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -735,7 +825,11 @@ export namespace Prisma {
     Module: 'Module',
     Role: 'Role',
     RolePermission: 'RolePermission',
-    UserRole: 'UserRole'
+    UserRole: 'UserRole',
+    AvailableSlot: 'AvailableSlot',
+    Appointment: 'Appointment',
+    SlotTemplate: 'SlotTemplate',
+    Setting: 'Setting'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -751,7 +845,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "patient" | "refreshToken" | "module" | "role" | "rolePermission" | "userRole"
+      modelProps: "user" | "patient" | "refreshToken" | "module" | "role" | "rolePermission" | "userRole" | "availableSlot" | "appointment" | "slotTemplate" | "setting"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1273,6 +1367,302 @@ export namespace Prisma {
           }
         }
       }
+      AvailableSlot: {
+        payload: Prisma.$AvailableSlotPayload<ExtArgs>
+        fields: Prisma.AvailableSlotFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AvailableSlotFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AvailableSlotFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>
+          }
+          findFirst: {
+            args: Prisma.AvailableSlotFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AvailableSlotFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>
+          }
+          findMany: {
+            args: Prisma.AvailableSlotFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>[]
+          }
+          create: {
+            args: Prisma.AvailableSlotCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>
+          }
+          createMany: {
+            args: Prisma.AvailableSlotCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AvailableSlotCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>[]
+          }
+          delete: {
+            args: Prisma.AvailableSlotDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>
+          }
+          update: {
+            args: Prisma.AvailableSlotUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>
+          }
+          deleteMany: {
+            args: Prisma.AvailableSlotDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AvailableSlotUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AvailableSlotUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>[]
+          }
+          upsert: {
+            args: Prisma.AvailableSlotUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvailableSlotPayload>
+          }
+          aggregate: {
+            args: Prisma.AvailableSlotAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAvailableSlot>
+          }
+          groupBy: {
+            args: Prisma.AvailableSlotGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AvailableSlotGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AvailableSlotCountArgs<ExtArgs>
+            result: $Utils.Optional<AvailableSlotCountAggregateOutputType> | number
+          }
+        }
+      }
+      Appointment: {
+        payload: Prisma.$AppointmentPayload<ExtArgs>
+        fields: Prisma.AppointmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AppointmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AppointmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          findFirst: {
+            args: Prisma.AppointmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AppointmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          findMany: {
+            args: Prisma.AppointmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>[]
+          }
+          create: {
+            args: Prisma.AppointmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          createMany: {
+            args: Prisma.AppointmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AppointmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>[]
+          }
+          delete: {
+            args: Prisma.AppointmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          update: {
+            args: Prisma.AppointmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.AppointmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AppointmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AppointmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.AppointmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppointmentPayload>
+          }
+          aggregate: {
+            args: Prisma.AppointmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAppointment>
+          }
+          groupBy: {
+            args: Prisma.AppointmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AppointmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AppointmentCountArgs<ExtArgs>
+            result: $Utils.Optional<AppointmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      SlotTemplate: {
+        payload: Prisma.$SlotTemplatePayload<ExtArgs>
+        fields: Prisma.SlotTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SlotTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SlotTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.SlotTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SlotTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.SlotTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.SlotTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.SlotTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SlotTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.SlotTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>
+          }
+          update: {
+            args: Prisma.SlotTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.SlotTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SlotTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SlotTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.SlotTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SlotTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.SlotTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSlotTemplate>
+          }
+          groupBy: {
+            args: Prisma.SlotTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SlotTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SlotTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<SlotTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      Setting: {
+        payload: Prisma.$SettingPayload<ExtArgs>
+        fields: Prisma.SettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          findFirst: {
+            args: Prisma.SettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          findMany: {
+            args: Prisma.SettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>[]
+          }
+          create: {
+            args: Prisma.SettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          createMany: {
+            args: Prisma.SettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>[]
+          }
+          delete: {
+            args: Prisma.SettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          update: {
+            args: Prisma.SettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.SettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.SettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          aggregate: {
+            args: Prisma.SettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSetting>
+          }
+          groupBy: {
+            args: Prisma.SettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SettingCountArgs<ExtArgs>
+            result: $Utils.Optional<SettingCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1388,6 +1778,10 @@ export namespace Prisma {
     role?: RoleOmit
     rolePermission?: RolePermissionOmit
     userRole?: UserRoleOmit
+    availableSlot?: AvailableSlotOmit
+    appointment?: AppointmentOmit
+    slotTemplate?: SlotTemplateOmit
+    setting?: SettingOmit
   }
 
   /* Types for Logging */
@@ -1469,12 +1863,14 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     refreshTokens: number
+    noShowMarkedBy: number
     userRoles: number
     assignedRoles: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
+    noShowMarkedBy?: boolean | UserCountOutputTypeCountNoShowMarkedByArgs
     userRoles?: boolean | UserCountOutputTypeCountUserRolesArgs
     assignedRoles?: boolean | UserCountOutputTypeCountAssignedRolesArgs
   }
@@ -1500,6 +1896,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountNoShowMarkedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput | $Types.Skip
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountUserRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserRoleWhereInput | $Types.Skip
   }
@@ -1509,6 +1912,37 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAssignedRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserRoleWhereInput | $Types.Skip
+  }
+
+
+  /**
+   * Count Type PatientCountOutputType
+   */
+
+  export type PatientCountOutputType = {
+    appointments: number
+  }
+
+  export type PatientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    appointments?: boolean | PatientCountOutputTypeCountAppointmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PatientCountOutputType without action
+   */
+  export type PatientCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PatientCountOutputType
+     */
+    select?: PatientCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PatientCountOutputType without action
+   */
+  export type PatientCountOutputTypeCountAppointmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput | $Types.Skip
   }
 
 
@@ -1580,6 +2014,68 @@ export namespace Prisma {
    */
   export type RoleCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserRoleWhereInput | $Types.Skip
+  }
+
+
+  /**
+   * Count Type AvailableSlotCountOutputType
+   */
+
+  export type AvailableSlotCountOutputType = {
+    appointments: number
+  }
+
+  export type AvailableSlotCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    appointments?: boolean | AvailableSlotCountOutputTypeCountAppointmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AvailableSlotCountOutputType without action
+   */
+  export type AvailableSlotCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlotCountOutputType
+     */
+    select?: AvailableSlotCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AvailableSlotCountOutputType without action
+   */
+  export type AvailableSlotCountOutputTypeCountAppointmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput | $Types.Skip
+  }
+
+
+  /**
+   * Count Type SlotTemplateCountOutputType
+   */
+
+  export type SlotTemplateCountOutputType = {
+    slots: number
+  }
+
+  export type SlotTemplateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    slots?: boolean | SlotTemplateCountOutputTypeCountSlotsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SlotTemplateCountOutputType without action
+   */
+  export type SlotTemplateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplateCountOutputType
+     */
+    select?: SlotTemplateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SlotTemplateCountOutputType without action
+   */
+  export type SlotTemplateCountOutputTypeCountSlotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvailableSlotWhereInput | $Types.Skip
   }
 
 
@@ -1784,6 +2280,7 @@ export namespace Prisma {
     createdAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | User$noShowMarkedByArgs<ExtArgs> | $Types.Skip
     userRoles?: boolean | User$userRolesArgs<ExtArgs> | $Types.Skip
     assignedRoles?: boolean | User$assignedRolesArgs<ExtArgs> | $Types.Skip
     patient?: boolean | User$patientArgs<ExtArgs> | $Types.Skip
@@ -1829,6 +2326,7 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "isActive" | "phoneNumber" | "isBootstrapAdmin" | "createdAt" | "updatedAt", ExtArgs["result"]["user"], $Types.Skip>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | User$noShowMarkedByArgs<ExtArgs> | $Types.Skip
     userRoles?: boolean | User$userRolesArgs<ExtArgs> | $Types.Skip
     assignedRoles?: boolean | User$assignedRolesArgs<ExtArgs> | $Types.Skip
     patient?: boolean | User$patientArgs<ExtArgs> | $Types.Skip
@@ -1841,6 +2339,7 @@ export namespace Prisma {
     name: "User"
     objects: {
       refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+      noShowMarkedBy: Prisma.$AppointmentPayload<ExtArgs>[]
       userRoles: Prisma.$UserRolePayload<ExtArgs>[]
       assignedRoles: Prisma.$UserRolePayload<ExtArgs>[]
       patient: Prisma.$PatientPayload<ExtArgs> | null
@@ -2250,6 +2749,7 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     refreshTokens<T extends User$refreshTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    noShowMarkedBy<T extends User$noShowMarkedByArgs<ExtArgs> = {}>(args?: Subset<T, User$noShowMarkedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     userRoles<T extends User$userRolesArgs<ExtArgs> = {}>(args?: Subset<T, User$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedRoles<T extends User$assignedRolesArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     patient<T extends User$patientArgs<ExtArgs> = {}>(args?: Subset<T, User$patientArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2708,6 +3208,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.noShowMarkedBy
+   */
+  export type User$noShowMarkedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput | $Types.Skip
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
    * User.userRoles
    */
   export type User$userRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3030,6 +3554,8 @@ export namespace Prisma {
     createdAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
     user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    appointments?: boolean | Patient$appointmentsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | PatientCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["patient"]>
 
   export type PatientSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3088,6 +3614,8 @@ export namespace Prisma {
   export type PatientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "dateOfBirth" | "gender" | "address" | "emergencyContactName" | "emergencyContactPhone" | "bloodType" | "allergies" | "chronicConditions" | "currentMedications" | "medicalNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["patient"], $Types.Skip>
   export type PatientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    appointments?: boolean | Patient$appointmentsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | PatientCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type PatientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
@@ -3100,6 +3628,7 @@ export namespace Prisma {
     name: "Patient"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      appointments: Prisma.$AppointmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3511,6 +4040,7 @@ export namespace Prisma {
   export interface Prisma__PatientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    appointments<T extends Patient$appointmentsArgs<ExtArgs> = {}>(args?: Subset<T, Patient$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3952,6 +4482,30 @@ export namespace Prisma {
      * Limit how many Patients to delete.
      */
     limit?: number | $Types.Skip
+  }
+
+  /**
+   * Patient.appointments
+   */
+  export type Patient$appointmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput | $Types.Skip
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -9410,6 +9964,4510 @@ export namespace Prisma {
 
 
   /**
+   * Model AvailableSlot
+   */
+
+  export type AggregateAvailableSlot = {
+    _count: AvailableSlotCountAggregateOutputType | null
+    _avg: AvailableSlotAvgAggregateOutputType | null
+    _sum: AvailableSlotSumAggregateOutputType | null
+    _min: AvailableSlotMinAggregateOutputType | null
+    _max: AvailableSlotMaxAggregateOutputType | null
+  }
+
+  export type AvailableSlotAvgAggregateOutputType = {
+    capacity: number | null
+    bookedCount: number | null
+  }
+
+  export type AvailableSlotSumAggregateOutputType = {
+    capacity: number | null
+    bookedCount: number | null
+  }
+
+  export type AvailableSlotMinAggregateOutputType = {
+    id: string | null
+    startTime: Date | null
+    capacity: number | null
+    bookedCount: number | null
+    templateId: string | null
+    createdAt: Date | null
+  }
+
+  export type AvailableSlotMaxAggregateOutputType = {
+    id: string | null
+    startTime: Date | null
+    capacity: number | null
+    bookedCount: number | null
+    templateId: string | null
+    createdAt: Date | null
+  }
+
+  export type AvailableSlotCountAggregateOutputType = {
+    id: number
+    startTime: number
+    capacity: number
+    bookedCount: number
+    templateId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AvailableSlotAvgAggregateInputType = {
+    capacity?: true | $Types.Skip
+    bookedCount?: true | $Types.Skip
+  }
+
+  export type AvailableSlotSumAggregateInputType = {
+    capacity?: true | $Types.Skip
+    bookedCount?: true | $Types.Skip
+  }
+
+  export type AvailableSlotMinAggregateInputType = {
+    id?: true | $Types.Skip
+    startTime?: true | $Types.Skip
+    capacity?: true | $Types.Skip
+    bookedCount?: true | $Types.Skip
+    templateId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+  }
+
+  export type AvailableSlotMaxAggregateInputType = {
+    id?: true | $Types.Skip
+    startTime?: true | $Types.Skip
+    capacity?: true | $Types.Skip
+    bookedCount?: true | $Types.Skip
+    templateId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+  }
+
+  export type AvailableSlotCountAggregateInputType = {
+    id?: true | $Types.Skip
+    startTime?: true | $Types.Skip
+    capacity?: true | $Types.Skip
+    bookedCount?: true | $Types.Skip
+    templateId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
+  }
+
+  export type AvailableSlotAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AvailableSlot to aggregate.
+     */
+    where?: AvailableSlotWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvailableSlots to fetch.
+     */
+    orderBy?: AvailableSlotOrderByWithRelationInput | AvailableSlotOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AvailableSlotWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvailableSlots from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvailableSlots.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AvailableSlots
+    **/
+    _count?: true | AvailableSlotCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AvailableSlotAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AvailableSlotSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AvailableSlotMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AvailableSlotMaxAggregateInputType
+  }
+
+  export type GetAvailableSlotAggregateType<T extends AvailableSlotAggregateArgs> = {
+        [P in keyof T & keyof AggregateAvailableSlot]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAvailableSlot[P]>
+      : GetScalarType<T[P], AggregateAvailableSlot[P]>
+  }
+
+
+
+
+  export type AvailableSlotGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvailableSlotWhereInput | $Types.Skip
+    orderBy?: AvailableSlotOrderByWithAggregationInput | AvailableSlotOrderByWithAggregationInput[] | $Types.Skip
+    by: AvailableSlotScalarFieldEnum[] | AvailableSlotScalarFieldEnum
+    having?: AvailableSlotScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    _count?: AvailableSlotCountAggregateInputType | true
+    _avg?: AvailableSlotAvgAggregateInputType
+    _sum?: AvailableSlotSumAggregateInputType
+    _min?: AvailableSlotMinAggregateInputType
+    _max?: AvailableSlotMaxAggregateInputType
+  }
+
+  export type AvailableSlotGroupByOutputType = {
+    id: string
+    startTime: Date
+    capacity: number
+    bookedCount: number
+    templateId: string | null
+    createdAt: Date
+    _count: AvailableSlotCountAggregateOutputType | null
+    _avg: AvailableSlotAvgAggregateOutputType | null
+    _sum: AvailableSlotSumAggregateOutputType | null
+    _min: AvailableSlotMinAggregateOutputType | null
+    _max: AvailableSlotMaxAggregateOutputType | null
+  }
+
+  type GetAvailableSlotGroupByPayload<T extends AvailableSlotGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AvailableSlotGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AvailableSlotGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AvailableSlotGroupByOutputType[P]>
+            : GetScalarType<T[P], AvailableSlotGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AvailableSlotSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    capacity?: boolean | $Types.Skip
+    bookedCount?: boolean | $Types.Skip
+    templateId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    template?: boolean | AvailableSlot$templateArgs<ExtArgs> | $Types.Skip
+    appointments?: boolean | AvailableSlot$appointmentsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | AvailableSlotCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["availableSlot"]>
+
+  export type AvailableSlotSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    capacity?: boolean | $Types.Skip
+    bookedCount?: boolean | $Types.Skip
+    templateId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    template?: boolean | AvailableSlot$templateArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["availableSlot"]>
+
+  export type AvailableSlotSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    capacity?: boolean | $Types.Skip
+    bookedCount?: boolean | $Types.Skip
+    templateId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    template?: boolean | AvailableSlot$templateArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["availableSlot"]>
+
+  export type AvailableSlotSelectScalar = {
+    id?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    capacity?: boolean | $Types.Skip
+    bookedCount?: boolean | $Types.Skip
+    templateId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+  }
+
+  export type AvailableSlotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "startTime" | "capacity" | "bookedCount" | "templateId" | "createdAt", ExtArgs["result"]["availableSlot"], $Types.Skip>
+  export type AvailableSlotInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    template?: boolean | AvailableSlot$templateArgs<ExtArgs> | $Types.Skip
+    appointments?: boolean | AvailableSlot$appointmentsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | AvailableSlotCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
+  }
+  export type AvailableSlotIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    template?: boolean | AvailableSlot$templateArgs<ExtArgs> | $Types.Skip
+  }
+  export type AvailableSlotIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    template?: boolean | AvailableSlot$templateArgs<ExtArgs> | $Types.Skip
+  }
+
+  export type $AvailableSlotPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AvailableSlot"
+    objects: {
+      template: Prisma.$SlotTemplatePayload<ExtArgs> | null
+      appointments: Prisma.$AppointmentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      startTime: Date
+      capacity: number
+      bookedCount: number
+      templateId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["availableSlot"]>
+    composites: {}
+  }
+
+  type AvailableSlotGetPayload<S extends boolean | null | undefined | AvailableSlotDefaultArgs> = $Result.GetResult<Prisma.$AvailableSlotPayload, S>
+
+  type AvailableSlotCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AvailableSlotFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AvailableSlotCountAggregateInputType | true
+    }
+
+  export interface AvailableSlotDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AvailableSlot'], meta: { name: 'AvailableSlot' } }
+    /**
+     * Find zero or one AvailableSlot that matches the filter.
+     * @param {AvailableSlotFindUniqueArgs} args - Arguments to find a AvailableSlot
+     * @example
+     * // Get one AvailableSlot
+     * const availableSlot = await prisma.availableSlot.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AvailableSlotFindUniqueArgs>(args: SelectSubset<T, AvailableSlotFindUniqueArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AvailableSlot that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AvailableSlotFindUniqueOrThrowArgs} args - Arguments to find a AvailableSlot
+     * @example
+     * // Get one AvailableSlot
+     * const availableSlot = await prisma.availableSlot.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AvailableSlotFindUniqueOrThrowArgs>(args: SelectSubset<T, AvailableSlotFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AvailableSlot that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvailableSlotFindFirstArgs} args - Arguments to find a AvailableSlot
+     * @example
+     * // Get one AvailableSlot
+     * const availableSlot = await prisma.availableSlot.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AvailableSlotFindFirstArgs>(args?: SelectSubset<T, AvailableSlotFindFirstArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AvailableSlot that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvailableSlotFindFirstOrThrowArgs} args - Arguments to find a AvailableSlot
+     * @example
+     * // Get one AvailableSlot
+     * const availableSlot = await prisma.availableSlot.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AvailableSlotFindFirstOrThrowArgs>(args?: SelectSubset<T, AvailableSlotFindFirstOrThrowArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AvailableSlots that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvailableSlotFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AvailableSlots
+     * const availableSlots = await prisma.availableSlot.findMany()
+     * 
+     * // Get first 10 AvailableSlots
+     * const availableSlots = await prisma.availableSlot.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const availableSlotWithIdOnly = await prisma.availableSlot.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AvailableSlotFindManyArgs>(args?: SelectSubset<T, AvailableSlotFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AvailableSlot.
+     * @param {AvailableSlotCreateArgs} args - Arguments to create a AvailableSlot.
+     * @example
+     * // Create one AvailableSlot
+     * const AvailableSlot = await prisma.availableSlot.create({
+     *   data: {
+     *     // ... data to create a AvailableSlot
+     *   }
+     * })
+     * 
+     */
+    create<T extends AvailableSlotCreateArgs>(args: SelectSubset<T, AvailableSlotCreateArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AvailableSlots.
+     * @param {AvailableSlotCreateManyArgs} args - Arguments to create many AvailableSlots.
+     * @example
+     * // Create many AvailableSlots
+     * const availableSlot = await prisma.availableSlot.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AvailableSlotCreateManyArgs>(args?: SelectSubset<T, AvailableSlotCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AvailableSlots and returns the data saved in the database.
+     * @param {AvailableSlotCreateManyAndReturnArgs} args - Arguments to create many AvailableSlots.
+     * @example
+     * // Create many AvailableSlots
+     * const availableSlot = await prisma.availableSlot.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AvailableSlots and only return the `id`
+     * const availableSlotWithIdOnly = await prisma.availableSlot.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AvailableSlotCreateManyAndReturnArgs>(args?: SelectSubset<T, AvailableSlotCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AvailableSlot.
+     * @param {AvailableSlotDeleteArgs} args - Arguments to delete one AvailableSlot.
+     * @example
+     * // Delete one AvailableSlot
+     * const AvailableSlot = await prisma.availableSlot.delete({
+     *   where: {
+     *     // ... filter to delete one AvailableSlot
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AvailableSlotDeleteArgs>(args: SelectSubset<T, AvailableSlotDeleteArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AvailableSlot.
+     * @param {AvailableSlotUpdateArgs} args - Arguments to update one AvailableSlot.
+     * @example
+     * // Update one AvailableSlot
+     * const availableSlot = await prisma.availableSlot.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AvailableSlotUpdateArgs>(args: SelectSubset<T, AvailableSlotUpdateArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AvailableSlots.
+     * @param {AvailableSlotDeleteManyArgs} args - Arguments to filter AvailableSlots to delete.
+     * @example
+     * // Delete a few AvailableSlots
+     * const { count } = await prisma.availableSlot.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AvailableSlotDeleteManyArgs>(args?: SelectSubset<T, AvailableSlotDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AvailableSlots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvailableSlotUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AvailableSlots
+     * const availableSlot = await prisma.availableSlot.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AvailableSlotUpdateManyArgs>(args: SelectSubset<T, AvailableSlotUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AvailableSlots and returns the data updated in the database.
+     * @param {AvailableSlotUpdateManyAndReturnArgs} args - Arguments to update many AvailableSlots.
+     * @example
+     * // Update many AvailableSlots
+     * const availableSlot = await prisma.availableSlot.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AvailableSlots and only return the `id`
+     * const availableSlotWithIdOnly = await prisma.availableSlot.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AvailableSlotUpdateManyAndReturnArgs>(args: SelectSubset<T, AvailableSlotUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AvailableSlot.
+     * @param {AvailableSlotUpsertArgs} args - Arguments to update or create a AvailableSlot.
+     * @example
+     * // Update or create a AvailableSlot
+     * const availableSlot = await prisma.availableSlot.upsert({
+     *   create: {
+     *     // ... data to create a AvailableSlot
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AvailableSlot we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AvailableSlotUpsertArgs>(args: SelectSubset<T, AvailableSlotUpsertArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AvailableSlots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvailableSlotCountArgs} args - Arguments to filter AvailableSlots to count.
+     * @example
+     * // Count the number of AvailableSlots
+     * const count = await prisma.availableSlot.count({
+     *   where: {
+     *     // ... the filter for the AvailableSlots we want to count
+     *   }
+     * })
+    **/
+    count<T extends AvailableSlotCountArgs>(
+      args?: Subset<T, AvailableSlotCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AvailableSlotCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AvailableSlot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvailableSlotAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AvailableSlotAggregateArgs>(args: Subset<T, AvailableSlotAggregateArgs>): Prisma.PrismaPromise<GetAvailableSlotAggregateType<T>>
+
+    /**
+     * Group by AvailableSlot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvailableSlotGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AvailableSlotGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AvailableSlotGroupByArgs['orderBy'] }
+        : { orderBy?: AvailableSlotGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AvailableSlotGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAvailableSlotGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AvailableSlot model
+   */
+  readonly fields: AvailableSlotFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AvailableSlot.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AvailableSlotClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    template<T extends AvailableSlot$templateArgs<ExtArgs> = {}>(args?: Subset<T, AvailableSlot$templateArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    appointments<T extends AvailableSlot$appointmentsArgs<ExtArgs> = {}>(args?: Subset<T, AvailableSlot$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AvailableSlot model
+   */
+  interface AvailableSlotFieldRefs {
+    readonly id: FieldRef<"AvailableSlot", 'String'>
+    readonly startTime: FieldRef<"AvailableSlot", 'DateTime'>
+    readonly capacity: FieldRef<"AvailableSlot", 'Int'>
+    readonly bookedCount: FieldRef<"AvailableSlot", 'Int'>
+    readonly templateId: FieldRef<"AvailableSlot", 'String'>
+    readonly createdAt: FieldRef<"AvailableSlot", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AvailableSlot findUnique
+   */
+  export type AvailableSlotFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which AvailableSlot to fetch.
+     */
+    where: AvailableSlotWhereUniqueInput
+  }
+
+  /**
+   * AvailableSlot findUniqueOrThrow
+   */
+  export type AvailableSlotFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which AvailableSlot to fetch.
+     */
+    where: AvailableSlotWhereUniqueInput
+  }
+
+  /**
+   * AvailableSlot findFirst
+   */
+  export type AvailableSlotFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which AvailableSlot to fetch.
+     */
+    where?: AvailableSlotWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvailableSlots to fetch.
+     */
+    orderBy?: AvailableSlotOrderByWithRelationInput | AvailableSlotOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AvailableSlots.
+     */
+    cursor?: AvailableSlotWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvailableSlots from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvailableSlots.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AvailableSlots.
+     */
+    distinct?: AvailableSlotScalarFieldEnum | AvailableSlotScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot findFirstOrThrow
+   */
+  export type AvailableSlotFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which AvailableSlot to fetch.
+     */
+    where?: AvailableSlotWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvailableSlots to fetch.
+     */
+    orderBy?: AvailableSlotOrderByWithRelationInput | AvailableSlotOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AvailableSlots.
+     */
+    cursor?: AvailableSlotWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvailableSlots from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvailableSlots.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AvailableSlots.
+     */
+    distinct?: AvailableSlotScalarFieldEnum | AvailableSlotScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot findMany
+   */
+  export type AvailableSlotFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which AvailableSlots to fetch.
+     */
+    where?: AvailableSlotWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AvailableSlots to fetch.
+     */
+    orderBy?: AvailableSlotOrderByWithRelationInput | AvailableSlotOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AvailableSlots.
+     */
+    cursor?: AvailableSlotWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AvailableSlots from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AvailableSlots.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AvailableSlots.
+     */
+    distinct?: AvailableSlotScalarFieldEnum | AvailableSlotScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot create
+   */
+  export type AvailableSlotCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AvailableSlot.
+     */
+    data: XOR<AvailableSlotCreateInput, AvailableSlotUncheckedCreateInput>
+  }
+
+  /**
+   * AvailableSlot createMany
+   */
+  export type AvailableSlotCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AvailableSlots.
+     */
+    data: AvailableSlotCreateManyInput | AvailableSlotCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot createManyAndReturn
+   */
+  export type AvailableSlotCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * The data used to create many AvailableSlots.
+     */
+    data: AvailableSlotCreateManyInput | AvailableSlotCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AvailableSlot update
+   */
+  export type AvailableSlotUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AvailableSlot.
+     */
+    data: XOR<AvailableSlotUpdateInput, AvailableSlotUncheckedUpdateInput>
+    /**
+     * Choose, which AvailableSlot to update.
+     */
+    where: AvailableSlotWhereUniqueInput
+  }
+
+  /**
+   * AvailableSlot updateMany
+   */
+  export type AvailableSlotUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AvailableSlots.
+     */
+    data: XOR<AvailableSlotUpdateManyMutationInput, AvailableSlotUncheckedUpdateManyInput>
+    /**
+     * Filter which AvailableSlots to update
+     */
+    where?: AvailableSlotWhereInput | $Types.Skip
+    /**
+     * Limit how many AvailableSlots to update.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot updateManyAndReturn
+   */
+  export type AvailableSlotUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * The data used to update AvailableSlots.
+     */
+    data: XOR<AvailableSlotUpdateManyMutationInput, AvailableSlotUncheckedUpdateManyInput>
+    /**
+     * Filter which AvailableSlots to update
+     */
+    where?: AvailableSlotWhereInput | $Types.Skip
+    /**
+     * Limit how many AvailableSlots to update.
+     */
+    limit?: number | $Types.Skip
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AvailableSlot upsert
+   */
+  export type AvailableSlotUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AvailableSlot to update in case it exists.
+     */
+    where: AvailableSlotWhereUniqueInput
+    /**
+     * In case the AvailableSlot found by the `where` argument doesn't exist, create a new AvailableSlot with this data.
+     */
+    create: XOR<AvailableSlotCreateInput, AvailableSlotUncheckedCreateInput>
+    /**
+     * In case the AvailableSlot was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AvailableSlotUpdateInput, AvailableSlotUncheckedUpdateInput>
+  }
+
+  /**
+   * AvailableSlot delete
+   */
+  export type AvailableSlotDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    /**
+     * Filter which AvailableSlot to delete.
+     */
+    where: AvailableSlotWhereUniqueInput
+  }
+
+  /**
+   * AvailableSlot deleteMany
+   */
+  export type AvailableSlotDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AvailableSlots to delete
+     */
+    where?: AvailableSlotWhereInput | $Types.Skip
+    /**
+     * Limit how many AvailableSlots to delete.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot.template
+   */
+  export type AvailableSlot$templateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    where?: SlotTemplateWhereInput | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot.appointments
+   */
+  export type AvailableSlot$appointmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput | $Types.Skip
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * AvailableSlot without action
+   */
+  export type AvailableSlotDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Appointment
+   */
+
+  export type AggregateAppointment = {
+    _count: AppointmentCountAggregateOutputType | null
+    _min: AppointmentMinAggregateOutputType | null
+    _max: AppointmentMaxAggregateOutputType | null
+  }
+
+  export type AppointmentMinAggregateOutputType = {
+    id: string | null
+    patientId: string | null
+    slotId: string | null
+    status: $Enums.AppointmentStatus | null
+    bookedAt: Date | null
+    cancelledAt: Date | null
+    updatedAt: Date | null
+    arrivedAt: Date | null
+    lateArrival: $Enums.LateArrivalBucket | null
+    noShowAt: Date | null
+    noShowMarkedById: string | null
+  }
+
+  export type AppointmentMaxAggregateOutputType = {
+    id: string | null
+    patientId: string | null
+    slotId: string | null
+    status: $Enums.AppointmentStatus | null
+    bookedAt: Date | null
+    cancelledAt: Date | null
+    updatedAt: Date | null
+    arrivedAt: Date | null
+    lateArrival: $Enums.LateArrivalBucket | null
+    noShowAt: Date | null
+    noShowMarkedById: string | null
+  }
+
+  export type AppointmentCountAggregateOutputType = {
+    id: number
+    patientId: number
+    slotId: number
+    status: number
+    bookedAt: number
+    cancelledAt: number
+    updatedAt: number
+    arrivedAt: number
+    lateArrival: number
+    noShowAt: number
+    noShowMarkedById: number
+    _all: number
+  }
+
+
+  export type AppointmentMinAggregateInputType = {
+    id?: true | $Types.Skip
+    patientId?: true | $Types.Skip
+    slotId?: true | $Types.Skip
+    status?: true | $Types.Skip
+    bookedAt?: true | $Types.Skip
+    cancelledAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    arrivedAt?: true | $Types.Skip
+    lateArrival?: true | $Types.Skip
+    noShowAt?: true | $Types.Skip
+    noShowMarkedById?: true | $Types.Skip
+  }
+
+  export type AppointmentMaxAggregateInputType = {
+    id?: true | $Types.Skip
+    patientId?: true | $Types.Skip
+    slotId?: true | $Types.Skip
+    status?: true | $Types.Skip
+    bookedAt?: true | $Types.Skip
+    cancelledAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    arrivedAt?: true | $Types.Skip
+    lateArrival?: true | $Types.Skip
+    noShowAt?: true | $Types.Skip
+    noShowMarkedById?: true | $Types.Skip
+  }
+
+  export type AppointmentCountAggregateInputType = {
+    id?: true | $Types.Skip
+    patientId?: true | $Types.Skip
+    slotId?: true | $Types.Skip
+    status?: true | $Types.Skip
+    bookedAt?: true | $Types.Skip
+    cancelledAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    arrivedAt?: true | $Types.Skip
+    lateArrival?: true | $Types.Skip
+    noShowAt?: true | $Types.Skip
+    noShowMarkedById?: true | $Types.Skip
+    _all?: true | $Types.Skip
+  }
+
+  export type AppointmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Appointment to aggregate.
+     */
+    where?: AppointmentWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Appointments
+    **/
+    _count?: true | AppointmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AppointmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AppointmentMaxAggregateInputType
+  }
+
+  export type GetAppointmentAggregateType<T extends AppointmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateAppointment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAppointment[P]>
+      : GetScalarType<T[P], AggregateAppointment[P]>
+  }
+
+
+
+
+  export type AppointmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppointmentWhereInput | $Types.Skip
+    orderBy?: AppointmentOrderByWithAggregationInput | AppointmentOrderByWithAggregationInput[] | $Types.Skip
+    by: AppointmentScalarFieldEnum[] | AppointmentScalarFieldEnum
+    having?: AppointmentScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    _count?: AppointmentCountAggregateInputType | true
+    _min?: AppointmentMinAggregateInputType
+    _max?: AppointmentMaxAggregateInputType
+  }
+
+  export type AppointmentGroupByOutputType = {
+    id: string
+    patientId: string
+    slotId: string
+    status: $Enums.AppointmentStatus
+    bookedAt: Date
+    cancelledAt: Date | null
+    updatedAt: Date
+    arrivedAt: Date | null
+    lateArrival: $Enums.LateArrivalBucket | null
+    noShowAt: Date | null
+    noShowMarkedById: string | null
+    _count: AppointmentCountAggregateOutputType | null
+    _min: AppointmentMinAggregateOutputType | null
+    _max: AppointmentMaxAggregateOutputType | null
+  }
+
+  type GetAppointmentGroupByPayload<T extends AppointmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AppointmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AppointmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AppointmentGroupByOutputType[P]>
+            : GetScalarType<T[P], AppointmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AppointmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    slotId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    bookedAt?: boolean | $Types.Skip
+    cancelledAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["appointment"]>
+
+  export type AppointmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    slotId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    bookedAt?: boolean | $Types.Skip
+    cancelledAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["appointment"]>
+
+  export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    slotId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    bookedAt?: boolean | $Types.Skip
+    cancelledAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["appointment"]>
+
+  export type AppointmentSelectScalar = {
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    slotId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    bookedAt?: boolean | $Types.Skip
+    cancelledAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    arrivedAt?: boolean | $Types.Skip
+    lateArrival?: boolean | $Types.Skip
+    noShowAt?: boolean | $Types.Skip
+    noShowMarkedById?: boolean | $Types.Skip
+  }
+
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "slotId" | "status" | "bookedAt" | "cancelledAt" | "updatedAt" | "arrivedAt" | "lateArrival" | "noShowAt" | "noShowMarkedById", ExtArgs["result"]["appointment"], $Types.Skip>
+  export type AppointmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+  }
+  export type AppointmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+  }
+  export type AppointmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
+    noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+  }
+
+  export type $AppointmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Appointment"
+    objects: {
+      patient: Prisma.$PatientPayload<ExtArgs>
+      slot: Prisma.$AvailableSlotPayload<ExtArgs>
+      noShowMarkedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      patientId: string
+      slotId: string
+      status: $Enums.AppointmentStatus
+      bookedAt: Date
+      cancelledAt: Date | null
+      updatedAt: Date
+      arrivedAt: Date | null
+      lateArrival: $Enums.LateArrivalBucket | null
+      noShowAt: Date | null
+      noShowMarkedById: string | null
+    }, ExtArgs["result"]["appointment"]>
+    composites: {}
+  }
+
+  type AppointmentGetPayload<S extends boolean | null | undefined | AppointmentDefaultArgs> = $Result.GetResult<Prisma.$AppointmentPayload, S>
+
+  type AppointmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AppointmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AppointmentCountAggregateInputType | true
+    }
+
+  export interface AppointmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Appointment'], meta: { name: 'Appointment' } }
+    /**
+     * Find zero or one Appointment that matches the filter.
+     * @param {AppointmentFindUniqueArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AppointmentFindUniqueArgs>(args: SelectSubset<T, AppointmentFindUniqueArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Appointment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AppointmentFindUniqueOrThrowArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AppointmentFindUniqueOrThrowArgs>(args: SelectSubset<T, AppointmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Appointment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentFindFirstArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AppointmentFindFirstArgs>(args?: SelectSubset<T, AppointmentFindFirstArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Appointment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentFindFirstOrThrowArgs} args - Arguments to find a Appointment
+     * @example
+     * // Get one Appointment
+     * const appointment = await prisma.appointment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AppointmentFindFirstOrThrowArgs>(args?: SelectSubset<T, AppointmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Appointments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Appointments
+     * const appointments = await prisma.appointment.findMany()
+     * 
+     * // Get first 10 Appointments
+     * const appointments = await prisma.appointment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const appointmentWithIdOnly = await prisma.appointment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AppointmentFindManyArgs>(args?: SelectSubset<T, AppointmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Appointment.
+     * @param {AppointmentCreateArgs} args - Arguments to create a Appointment.
+     * @example
+     * // Create one Appointment
+     * const Appointment = await prisma.appointment.create({
+     *   data: {
+     *     // ... data to create a Appointment
+     *   }
+     * })
+     * 
+     */
+    create<T extends AppointmentCreateArgs>(args: SelectSubset<T, AppointmentCreateArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Appointments.
+     * @param {AppointmentCreateManyArgs} args - Arguments to create many Appointments.
+     * @example
+     * // Create many Appointments
+     * const appointment = await prisma.appointment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AppointmentCreateManyArgs>(args?: SelectSubset<T, AppointmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Appointments and returns the data saved in the database.
+     * @param {AppointmentCreateManyAndReturnArgs} args - Arguments to create many Appointments.
+     * @example
+     * // Create many Appointments
+     * const appointment = await prisma.appointment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Appointments and only return the `id`
+     * const appointmentWithIdOnly = await prisma.appointment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AppointmentCreateManyAndReturnArgs>(args?: SelectSubset<T, AppointmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Appointment.
+     * @param {AppointmentDeleteArgs} args - Arguments to delete one Appointment.
+     * @example
+     * // Delete one Appointment
+     * const Appointment = await prisma.appointment.delete({
+     *   where: {
+     *     // ... filter to delete one Appointment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AppointmentDeleteArgs>(args: SelectSubset<T, AppointmentDeleteArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Appointment.
+     * @param {AppointmentUpdateArgs} args - Arguments to update one Appointment.
+     * @example
+     * // Update one Appointment
+     * const appointment = await prisma.appointment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AppointmentUpdateArgs>(args: SelectSubset<T, AppointmentUpdateArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Appointments.
+     * @param {AppointmentDeleteManyArgs} args - Arguments to filter Appointments to delete.
+     * @example
+     * // Delete a few Appointments
+     * const { count } = await prisma.appointment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AppointmentDeleteManyArgs>(args?: SelectSubset<T, AppointmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Appointments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Appointments
+     * const appointment = await prisma.appointment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AppointmentUpdateManyArgs>(args: SelectSubset<T, AppointmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Appointments and returns the data updated in the database.
+     * @param {AppointmentUpdateManyAndReturnArgs} args - Arguments to update many Appointments.
+     * @example
+     * // Update many Appointments
+     * const appointment = await prisma.appointment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Appointments and only return the `id`
+     * const appointmentWithIdOnly = await prisma.appointment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AppointmentUpdateManyAndReturnArgs>(args: SelectSubset<T, AppointmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Appointment.
+     * @param {AppointmentUpsertArgs} args - Arguments to update or create a Appointment.
+     * @example
+     * // Update or create a Appointment
+     * const appointment = await prisma.appointment.upsert({
+     *   create: {
+     *     // ... data to create a Appointment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Appointment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AppointmentUpsertArgs>(args: SelectSubset<T, AppointmentUpsertArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Appointments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentCountArgs} args - Arguments to filter Appointments to count.
+     * @example
+     * // Count the number of Appointments
+     * const count = await prisma.appointment.count({
+     *   where: {
+     *     // ... the filter for the Appointments we want to count
+     *   }
+     * })
+    **/
+    count<T extends AppointmentCountArgs>(
+      args?: Subset<T, AppointmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AppointmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Appointment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AppointmentAggregateArgs>(args: Subset<T, AppointmentAggregateArgs>): Prisma.PrismaPromise<GetAppointmentAggregateType<T>>
+
+    /**
+     * Group by Appointment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppointmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AppointmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AppointmentGroupByArgs['orderBy'] }
+        : { orderBy?: AppointmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AppointmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAppointmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Appointment model
+   */
+  readonly fields: AppointmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Appointment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AppointmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    slot<T extends AvailableSlotDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AvailableSlotDefaultArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    noShowMarkedBy<T extends Appointment$noShowMarkedByArgs<ExtArgs> = {}>(args?: Subset<T, Appointment$noShowMarkedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Appointment model
+   */
+  interface AppointmentFieldRefs {
+    readonly id: FieldRef<"Appointment", 'String'>
+    readonly patientId: FieldRef<"Appointment", 'String'>
+    readonly slotId: FieldRef<"Appointment", 'String'>
+    readonly status: FieldRef<"Appointment", 'AppointmentStatus'>
+    readonly bookedAt: FieldRef<"Appointment", 'DateTime'>
+    readonly cancelledAt: FieldRef<"Appointment", 'DateTime'>
+    readonly updatedAt: FieldRef<"Appointment", 'DateTime'>
+    readonly arrivedAt: FieldRef<"Appointment", 'DateTime'>
+    readonly lateArrival: FieldRef<"Appointment", 'LateArrivalBucket'>
+    readonly noShowAt: FieldRef<"Appointment", 'DateTime'>
+    readonly noShowMarkedById: FieldRef<"Appointment", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Appointment findUnique
+   */
+  export type AppointmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment findUniqueOrThrow
+   */
+  export type AppointmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment findFirst
+   */
+  export type AppointmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where?: AppointmentWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Appointments.
+     */
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Appointments.
+     */
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Appointment findFirstOrThrow
+   */
+  export type AppointmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointment to fetch.
+     */
+    where?: AppointmentWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Appointments.
+     */
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Appointments.
+     */
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Appointment findMany
+   */
+  export type AppointmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Appointments to fetch.
+     */
+    where?: AppointmentWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Appointments to fetch.
+     */
+    orderBy?: AppointmentOrderByWithRelationInput | AppointmentOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Appointments.
+     */
+    cursor?: AppointmentWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Appointments from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Appointments.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Appointments.
+     */
+    distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Appointment create
+   */
+  export type AppointmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Appointment.
+     */
+    data: XOR<AppointmentCreateInput, AppointmentUncheckedCreateInput>
+  }
+
+  /**
+   * Appointment createMany
+   */
+  export type AppointmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Appointments.
+     */
+    data: AppointmentCreateManyInput | AppointmentCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  /**
+   * Appointment createManyAndReturn
+   */
+  export type AppointmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many Appointments.
+     */
+    data: AppointmentCreateManyInput | AppointmentCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Appointment update
+   */
+  export type AppointmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Appointment.
+     */
+    data: XOR<AppointmentUpdateInput, AppointmentUncheckedUpdateInput>
+    /**
+     * Choose, which Appointment to update.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment updateMany
+   */
+  export type AppointmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Appointments.
+     */
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyInput>
+    /**
+     * Filter which Appointments to update
+     */
+    where?: AppointmentWhereInput | $Types.Skip
+    /**
+     * Limit how many Appointments to update.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * Appointment updateManyAndReturn
+   */
+  export type AppointmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * The data used to update Appointments.
+     */
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyInput>
+    /**
+     * Filter which Appointments to update
+     */
+    where?: AppointmentWhereInput | $Types.Skip
+    /**
+     * Limit how many Appointments to update.
+     */
+    limit?: number | $Types.Skip
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Appointment upsert
+   */
+  export type AppointmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Appointment to update in case it exists.
+     */
+    where: AppointmentWhereUniqueInput
+    /**
+     * In case the Appointment found by the `where` argument doesn't exist, create a new Appointment with this data.
+     */
+    create: XOR<AppointmentCreateInput, AppointmentUncheckedCreateInput>
+    /**
+     * In case the Appointment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AppointmentUpdateInput, AppointmentUncheckedUpdateInput>
+  }
+
+  /**
+   * Appointment delete
+   */
+  export type AppointmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    /**
+     * Filter which Appointment to delete.
+     */
+    where: AppointmentWhereUniqueInput
+  }
+
+  /**
+   * Appointment deleteMany
+   */
+  export type AppointmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Appointments to delete
+     */
+    where?: AppointmentWhereInput | $Types.Skip
+    /**
+     * Limit how many Appointments to delete.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * Appointment.noShowMarkedBy
+   */
+  export type Appointment$noShowMarkedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput | $Types.Skip
+  }
+
+  /**
+   * Appointment without action
+   */
+  export type AppointmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SlotTemplate
+   */
+
+  export type AggregateSlotTemplate = {
+    _count: SlotTemplateCountAggregateOutputType | null
+    _avg: SlotTemplateAvgAggregateOutputType | null
+    _sum: SlotTemplateSumAggregateOutputType | null
+    _min: SlotTemplateMinAggregateOutputType | null
+    _max: SlotTemplateMaxAggregateOutputType | null
+  }
+
+  export type SlotTemplateAvgAggregateOutputType = {
+    weekday: number | null
+    capacityOverride: number | null
+  }
+
+  export type SlotTemplateSumAggregateOutputType = {
+    weekday: number | null
+    capacityOverride: number | null
+  }
+
+  export type SlotTemplateMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    weekday: number | null
+    startTime: string | null
+    endTime: string | null
+    capacityOverride: number | null
+    isActive: boolean | null
+    lastRunAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SlotTemplateMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    weekday: number | null
+    startTime: string | null
+    endTime: string | null
+    capacityOverride: number | null
+    isActive: boolean | null
+    lastRunAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SlotTemplateCountAggregateOutputType = {
+    id: number
+    name: number
+    weekday: number
+    startTime: number
+    endTime: number
+    capacityOverride: number
+    isActive: number
+    lastRunAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SlotTemplateAvgAggregateInputType = {
+    weekday?: true | $Types.Skip
+    capacityOverride?: true | $Types.Skip
+  }
+
+  export type SlotTemplateSumAggregateInputType = {
+    weekday?: true | $Types.Skip
+    capacityOverride?: true | $Types.Skip
+  }
+
+  export type SlotTemplateMinAggregateInputType = {
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    weekday?: true | $Types.Skip
+    startTime?: true | $Types.Skip
+    endTime?: true | $Types.Skip
+    capacityOverride?: true | $Types.Skip
+    isActive?: true | $Types.Skip
+    lastRunAt?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+  }
+
+  export type SlotTemplateMaxAggregateInputType = {
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    weekday?: true | $Types.Skip
+    startTime?: true | $Types.Skip
+    endTime?: true | $Types.Skip
+    capacityOverride?: true | $Types.Skip
+    isActive?: true | $Types.Skip
+    lastRunAt?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+  }
+
+  export type SlotTemplateCountAggregateInputType = {
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    weekday?: true | $Types.Skip
+    startTime?: true | $Types.Skip
+    endTime?: true | $Types.Skip
+    capacityOverride?: true | $Types.Skip
+    isActive?: true | $Types.Skip
+    lastRunAt?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
+  }
+
+  export type SlotTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SlotTemplate to aggregate.
+     */
+    where?: SlotTemplateWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SlotTemplates to fetch.
+     */
+    orderBy?: SlotTemplateOrderByWithRelationInput | SlotTemplateOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SlotTemplateWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SlotTemplates from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SlotTemplates.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SlotTemplates
+    **/
+    _count?: true | SlotTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SlotTemplateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SlotTemplateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SlotTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SlotTemplateMaxAggregateInputType
+  }
+
+  export type GetSlotTemplateAggregateType<T extends SlotTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateSlotTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSlotTemplate[P]>
+      : GetScalarType<T[P], AggregateSlotTemplate[P]>
+  }
+
+
+
+
+  export type SlotTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SlotTemplateWhereInput | $Types.Skip
+    orderBy?: SlotTemplateOrderByWithAggregationInput | SlotTemplateOrderByWithAggregationInput[] | $Types.Skip
+    by: SlotTemplateScalarFieldEnum[] | SlotTemplateScalarFieldEnum
+    having?: SlotTemplateScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    _count?: SlotTemplateCountAggregateInputType | true
+    _avg?: SlotTemplateAvgAggregateInputType
+    _sum?: SlotTemplateSumAggregateInputType
+    _min?: SlotTemplateMinAggregateInputType
+    _max?: SlotTemplateMaxAggregateInputType
+  }
+
+  export type SlotTemplateGroupByOutputType = {
+    id: string
+    name: string
+    weekday: number
+    startTime: string
+    endTime: string
+    capacityOverride: number | null
+    isActive: boolean
+    lastRunAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SlotTemplateCountAggregateOutputType | null
+    _avg: SlotTemplateAvgAggregateOutputType | null
+    _sum: SlotTemplateSumAggregateOutputType | null
+    _min: SlotTemplateMinAggregateOutputType | null
+    _max: SlotTemplateMaxAggregateOutputType | null
+  }
+
+  type GetSlotTemplateGroupByPayload<T extends SlotTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SlotTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SlotTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SlotTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], SlotTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SlotTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    weekday?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    endTime?: boolean | $Types.Skip
+    capacityOverride?: boolean | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    slots?: boolean | SlotTemplate$slotsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | SlotTemplateCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["slotTemplate"]>
+
+  export type SlotTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    weekday?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    endTime?: boolean | $Types.Skip
+    capacityOverride?: boolean | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+  }, ExtArgs["result"]["slotTemplate"]>
+
+  export type SlotTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    weekday?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    endTime?: boolean | $Types.Skip
+    capacityOverride?: boolean | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+  }, ExtArgs["result"]["slotTemplate"]>
+
+  export type SlotTemplateSelectScalar = {
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    weekday?: boolean | $Types.Skip
+    startTime?: boolean | $Types.Skip
+    endTime?: boolean | $Types.Skip
+    capacityOverride?: boolean | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+  }
+
+  export type SlotTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "weekday" | "startTime" | "endTime" | "capacityOverride" | "isActive" | "lastRunAt" | "createdAt" | "updatedAt", ExtArgs["result"]["slotTemplate"], $Types.Skip>
+  export type SlotTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    slots?: boolean | SlotTemplate$slotsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | SlotTemplateCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
+  }
+  export type SlotTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SlotTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SlotTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SlotTemplate"
+    objects: {
+      slots: Prisma.$AvailableSlotPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      weekday: number
+      startTime: string
+      endTime: string
+      capacityOverride: number | null
+      isActive: boolean
+      lastRunAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["slotTemplate"]>
+    composites: {}
+  }
+
+  type SlotTemplateGetPayload<S extends boolean | null | undefined | SlotTemplateDefaultArgs> = $Result.GetResult<Prisma.$SlotTemplatePayload, S>
+
+  type SlotTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SlotTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SlotTemplateCountAggregateInputType | true
+    }
+
+  export interface SlotTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SlotTemplate'], meta: { name: 'SlotTemplate' } }
+    /**
+     * Find zero or one SlotTemplate that matches the filter.
+     * @param {SlotTemplateFindUniqueArgs} args - Arguments to find a SlotTemplate
+     * @example
+     * // Get one SlotTemplate
+     * const slotTemplate = await prisma.slotTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SlotTemplateFindUniqueArgs>(args: SelectSubset<T, SlotTemplateFindUniqueArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SlotTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SlotTemplateFindUniqueOrThrowArgs} args - Arguments to find a SlotTemplate
+     * @example
+     * // Get one SlotTemplate
+     * const slotTemplate = await prisma.slotTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SlotTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, SlotTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SlotTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SlotTemplateFindFirstArgs} args - Arguments to find a SlotTemplate
+     * @example
+     * // Get one SlotTemplate
+     * const slotTemplate = await prisma.slotTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SlotTemplateFindFirstArgs>(args?: SelectSubset<T, SlotTemplateFindFirstArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SlotTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SlotTemplateFindFirstOrThrowArgs} args - Arguments to find a SlotTemplate
+     * @example
+     * // Get one SlotTemplate
+     * const slotTemplate = await prisma.slotTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SlotTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, SlotTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SlotTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SlotTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SlotTemplates
+     * const slotTemplates = await prisma.slotTemplate.findMany()
+     * 
+     * // Get first 10 SlotTemplates
+     * const slotTemplates = await prisma.slotTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const slotTemplateWithIdOnly = await prisma.slotTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SlotTemplateFindManyArgs>(args?: SelectSubset<T, SlotTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SlotTemplate.
+     * @param {SlotTemplateCreateArgs} args - Arguments to create a SlotTemplate.
+     * @example
+     * // Create one SlotTemplate
+     * const SlotTemplate = await prisma.slotTemplate.create({
+     *   data: {
+     *     // ... data to create a SlotTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends SlotTemplateCreateArgs>(args: SelectSubset<T, SlotTemplateCreateArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SlotTemplates.
+     * @param {SlotTemplateCreateManyArgs} args - Arguments to create many SlotTemplates.
+     * @example
+     * // Create many SlotTemplates
+     * const slotTemplate = await prisma.slotTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SlotTemplateCreateManyArgs>(args?: SelectSubset<T, SlotTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SlotTemplates and returns the data saved in the database.
+     * @param {SlotTemplateCreateManyAndReturnArgs} args - Arguments to create many SlotTemplates.
+     * @example
+     * // Create many SlotTemplates
+     * const slotTemplate = await prisma.slotTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SlotTemplates and only return the `id`
+     * const slotTemplateWithIdOnly = await prisma.slotTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SlotTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, SlotTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SlotTemplate.
+     * @param {SlotTemplateDeleteArgs} args - Arguments to delete one SlotTemplate.
+     * @example
+     * // Delete one SlotTemplate
+     * const SlotTemplate = await prisma.slotTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one SlotTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SlotTemplateDeleteArgs>(args: SelectSubset<T, SlotTemplateDeleteArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SlotTemplate.
+     * @param {SlotTemplateUpdateArgs} args - Arguments to update one SlotTemplate.
+     * @example
+     * // Update one SlotTemplate
+     * const slotTemplate = await prisma.slotTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SlotTemplateUpdateArgs>(args: SelectSubset<T, SlotTemplateUpdateArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SlotTemplates.
+     * @param {SlotTemplateDeleteManyArgs} args - Arguments to filter SlotTemplates to delete.
+     * @example
+     * // Delete a few SlotTemplates
+     * const { count } = await prisma.slotTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SlotTemplateDeleteManyArgs>(args?: SelectSubset<T, SlotTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SlotTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SlotTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SlotTemplates
+     * const slotTemplate = await prisma.slotTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SlotTemplateUpdateManyArgs>(args: SelectSubset<T, SlotTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SlotTemplates and returns the data updated in the database.
+     * @param {SlotTemplateUpdateManyAndReturnArgs} args - Arguments to update many SlotTemplates.
+     * @example
+     * // Update many SlotTemplates
+     * const slotTemplate = await prisma.slotTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SlotTemplates and only return the `id`
+     * const slotTemplateWithIdOnly = await prisma.slotTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SlotTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, SlotTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SlotTemplate.
+     * @param {SlotTemplateUpsertArgs} args - Arguments to update or create a SlotTemplate.
+     * @example
+     * // Update or create a SlotTemplate
+     * const slotTemplate = await prisma.slotTemplate.upsert({
+     *   create: {
+     *     // ... data to create a SlotTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SlotTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SlotTemplateUpsertArgs>(args: SelectSubset<T, SlotTemplateUpsertArgs<ExtArgs>>): Prisma__SlotTemplateClient<$Result.GetResult<Prisma.$SlotTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SlotTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SlotTemplateCountArgs} args - Arguments to filter SlotTemplates to count.
+     * @example
+     * // Count the number of SlotTemplates
+     * const count = await prisma.slotTemplate.count({
+     *   where: {
+     *     // ... the filter for the SlotTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends SlotTemplateCountArgs>(
+      args?: Subset<T, SlotTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SlotTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SlotTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SlotTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SlotTemplateAggregateArgs>(args: Subset<T, SlotTemplateAggregateArgs>): Prisma.PrismaPromise<GetSlotTemplateAggregateType<T>>
+
+    /**
+     * Group by SlotTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SlotTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SlotTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SlotTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: SlotTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SlotTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSlotTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SlotTemplate model
+   */
+  readonly fields: SlotTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SlotTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SlotTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    slots<T extends SlotTemplate$slotsArgs<ExtArgs> = {}>(args?: Subset<T, SlotTemplate$slotsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SlotTemplate model
+   */
+  interface SlotTemplateFieldRefs {
+    readonly id: FieldRef<"SlotTemplate", 'String'>
+    readonly name: FieldRef<"SlotTemplate", 'String'>
+    readonly weekday: FieldRef<"SlotTemplate", 'Int'>
+    readonly startTime: FieldRef<"SlotTemplate", 'String'>
+    readonly endTime: FieldRef<"SlotTemplate", 'String'>
+    readonly capacityOverride: FieldRef<"SlotTemplate", 'Int'>
+    readonly isActive: FieldRef<"SlotTemplate", 'Boolean'>
+    readonly lastRunAt: FieldRef<"SlotTemplate", 'DateTime'>
+    readonly createdAt: FieldRef<"SlotTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"SlotTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SlotTemplate findUnique
+   */
+  export type SlotTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which SlotTemplate to fetch.
+     */
+    where: SlotTemplateWhereUniqueInput
+  }
+
+  /**
+   * SlotTemplate findUniqueOrThrow
+   */
+  export type SlotTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which SlotTemplate to fetch.
+     */
+    where: SlotTemplateWhereUniqueInput
+  }
+
+  /**
+   * SlotTemplate findFirst
+   */
+  export type SlotTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which SlotTemplate to fetch.
+     */
+    where?: SlotTemplateWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SlotTemplates to fetch.
+     */
+    orderBy?: SlotTemplateOrderByWithRelationInput | SlotTemplateOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SlotTemplates.
+     */
+    cursor?: SlotTemplateWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SlotTemplates from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SlotTemplates.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SlotTemplates.
+     */
+    distinct?: SlotTemplateScalarFieldEnum | SlotTemplateScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate findFirstOrThrow
+   */
+  export type SlotTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which SlotTemplate to fetch.
+     */
+    where?: SlotTemplateWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SlotTemplates to fetch.
+     */
+    orderBy?: SlotTemplateOrderByWithRelationInput | SlotTemplateOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SlotTemplates.
+     */
+    cursor?: SlotTemplateWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SlotTemplates from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SlotTemplates.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SlotTemplates.
+     */
+    distinct?: SlotTemplateScalarFieldEnum | SlotTemplateScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate findMany
+   */
+  export type SlotTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which SlotTemplates to fetch.
+     */
+    where?: SlotTemplateWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SlotTemplates to fetch.
+     */
+    orderBy?: SlotTemplateOrderByWithRelationInput | SlotTemplateOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SlotTemplates.
+     */
+    cursor?: SlotTemplateWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SlotTemplates from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SlotTemplates.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SlotTemplates.
+     */
+    distinct?: SlotTemplateScalarFieldEnum | SlotTemplateScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate create
+   */
+  export type SlotTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SlotTemplate.
+     */
+    data: XOR<SlotTemplateCreateInput, SlotTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * SlotTemplate createMany
+   */
+  export type SlotTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SlotTemplates.
+     */
+    data: SlotTemplateCreateManyInput | SlotTemplateCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate createManyAndReturn
+   */
+  export type SlotTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many SlotTemplates.
+     */
+    data: SlotTemplateCreateManyInput | SlotTemplateCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate update
+   */
+  export type SlotTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SlotTemplate.
+     */
+    data: XOR<SlotTemplateUpdateInput, SlotTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which SlotTemplate to update.
+     */
+    where: SlotTemplateWhereUniqueInput
+  }
+
+  /**
+   * SlotTemplate updateMany
+   */
+  export type SlotTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SlotTemplates.
+     */
+    data: XOR<SlotTemplateUpdateManyMutationInput, SlotTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which SlotTemplates to update
+     */
+    where?: SlotTemplateWhereInput | $Types.Skip
+    /**
+     * Limit how many SlotTemplates to update.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate updateManyAndReturn
+   */
+  export type SlotTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update SlotTemplates.
+     */
+    data: XOR<SlotTemplateUpdateManyMutationInput, SlotTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which SlotTemplates to update
+     */
+    where?: SlotTemplateWhereInput | $Types.Skip
+    /**
+     * Limit how many SlotTemplates to update.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate upsert
+   */
+  export type SlotTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SlotTemplate to update in case it exists.
+     */
+    where: SlotTemplateWhereUniqueInput
+    /**
+     * In case the SlotTemplate found by the `where` argument doesn't exist, create a new SlotTemplate with this data.
+     */
+    create: XOR<SlotTemplateCreateInput, SlotTemplateUncheckedCreateInput>
+    /**
+     * In case the SlotTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SlotTemplateUpdateInput, SlotTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * SlotTemplate delete
+   */
+  export type SlotTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which SlotTemplate to delete.
+     */
+    where: SlotTemplateWhereUniqueInput
+  }
+
+  /**
+   * SlotTemplate deleteMany
+   */
+  export type SlotTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SlotTemplates to delete
+     */
+    where?: SlotTemplateWhereInput | $Types.Skip
+    /**
+     * Limit how many SlotTemplates to delete.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate.slots
+   */
+  export type SlotTemplate$slotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AvailableSlot
+     */
+    select?: AvailableSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AvailableSlot
+     */
+    omit?: AvailableSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvailableSlotInclude<ExtArgs> | null
+    where?: AvailableSlotWhereInput | $Types.Skip
+    orderBy?: AvailableSlotOrderByWithRelationInput | AvailableSlotOrderByWithRelationInput[] | $Types.Skip
+    cursor?: AvailableSlotWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: AvailableSlotScalarFieldEnum | AvailableSlotScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * SlotTemplate without action
+   */
+  export type SlotTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SlotTemplate
+     */
+    select?: SlotTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SlotTemplate
+     */
+    omit?: SlotTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SlotTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Setting
+   */
+
+  export type AggregateSetting = {
+    _count: SettingCountAggregateOutputType | null
+    _min: SettingMinAggregateOutputType | null
+    _max: SettingMaxAggregateOutputType | null
+  }
+
+  export type SettingMinAggregateOutputType = {
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+    updatedById: string | null
+  }
+
+  export type SettingMaxAggregateOutputType = {
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+    updatedById: string | null
+  }
+
+  export type SettingCountAggregateOutputType = {
+    key: number
+    value: number
+    updatedAt: number
+    updatedById: number
+    _all: number
+  }
+
+
+  export type SettingMinAggregateInputType = {
+    key?: true | $Types.Skip
+    value?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    updatedById?: true | $Types.Skip
+  }
+
+  export type SettingMaxAggregateInputType = {
+    key?: true | $Types.Skip
+    value?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    updatedById?: true | $Types.Skip
+  }
+
+  export type SettingCountAggregateInputType = {
+    key?: true | $Types.Skip
+    value?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    updatedById?: true | $Types.Skip
+    _all?: true | $Types.Skip
+  }
+
+  export type SettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Setting to aggregate.
+     */
+    where?: SettingWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SettingWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Settings
+    **/
+    _count?: true | SettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SettingMaxAggregateInputType
+  }
+
+  export type GetSettingAggregateType<T extends SettingAggregateArgs> = {
+        [P in keyof T & keyof AggregateSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSetting[P]>
+      : GetScalarType<T[P], AggregateSetting[P]>
+  }
+
+
+
+
+  export type SettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SettingWhereInput | $Types.Skip
+    orderBy?: SettingOrderByWithAggregationInput | SettingOrderByWithAggregationInput[] | $Types.Skip
+    by: SettingScalarFieldEnum[] | SettingScalarFieldEnum
+    having?: SettingScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    _count?: SettingCountAggregateInputType | true
+    _min?: SettingMinAggregateInputType
+    _max?: SettingMaxAggregateInputType
+  }
+
+  export type SettingGroupByOutputType = {
+    key: string
+    value: string
+    updatedAt: Date
+    updatedById: string | null
+    _count: SettingCountAggregateOutputType | null
+    _min: SettingMinAggregateOutputType | null
+    _max: SettingMaxAggregateOutputType | null
+  }
+
+  type GetSettingGroupByPayload<T extends SettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SettingGroupByOutputType[P]>
+            : GetScalarType<T[P], SettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean | $Types.Skip
+    value?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    updatedById?: boolean | $Types.Skip
+  }, ExtArgs["result"]["setting"]>
+
+  export type SettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean | $Types.Skip
+    value?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    updatedById?: boolean | $Types.Skip
+  }, ExtArgs["result"]["setting"]>
+
+  export type SettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean | $Types.Skip
+    value?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    updatedById?: boolean | $Types.Skip
+  }, ExtArgs["result"]["setting"]>
+
+  export type SettingSelectScalar = {
+    key?: boolean | $Types.Skip
+    value?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    updatedById?: boolean | $Types.Skip
+  }
+
+  export type SettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "value" | "updatedAt" | "updatedById", ExtArgs["result"]["setting"], $Types.Skip>
+
+  export type $SettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Setting"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      key: string
+      value: string
+      updatedAt: Date
+      updatedById: string | null
+    }, ExtArgs["result"]["setting"]>
+    composites: {}
+  }
+
+  type SettingGetPayload<S extends boolean | null | undefined | SettingDefaultArgs> = $Result.GetResult<Prisma.$SettingPayload, S>
+
+  type SettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SettingCountAggregateInputType | true
+    }
+
+  export interface SettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Setting'], meta: { name: 'Setting' } }
+    /**
+     * Find zero or one Setting that matches the filter.
+     * @param {SettingFindUniqueArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SettingFindUniqueArgs>(args: SelectSubset<T, SettingFindUniqueArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Setting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SettingFindUniqueOrThrowArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SettingFindUniqueOrThrowArgs>(args: SelectSubset<T, SettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Setting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingFindFirstArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SettingFindFirstArgs>(args?: SelectSubset<T, SettingFindFirstArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Setting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingFindFirstOrThrowArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SettingFindFirstOrThrowArgs>(args?: SelectSubset<T, SettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Settings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Settings
+     * const settings = await prisma.setting.findMany()
+     * 
+     * // Get first 10 Settings
+     * const settings = await prisma.setting.findMany({ take: 10 })
+     * 
+     * // Only select the `key`
+     * const settingWithKeyOnly = await prisma.setting.findMany({ select: { key: true } })
+     * 
+     */
+    findMany<T extends SettingFindManyArgs>(args?: SelectSubset<T, SettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Setting.
+     * @param {SettingCreateArgs} args - Arguments to create a Setting.
+     * @example
+     * // Create one Setting
+     * const Setting = await prisma.setting.create({
+     *   data: {
+     *     // ... data to create a Setting
+     *   }
+     * })
+     * 
+     */
+    create<T extends SettingCreateArgs>(args: SelectSubset<T, SettingCreateArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Settings.
+     * @param {SettingCreateManyArgs} args - Arguments to create many Settings.
+     * @example
+     * // Create many Settings
+     * const setting = await prisma.setting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SettingCreateManyArgs>(args?: SelectSubset<T, SettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Settings and returns the data saved in the database.
+     * @param {SettingCreateManyAndReturnArgs} args - Arguments to create many Settings.
+     * @example
+     * // Create many Settings
+     * const setting = await prisma.setting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Settings and only return the `key`
+     * const settingWithKeyOnly = await prisma.setting.createManyAndReturn({
+     *   select: { key: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SettingCreateManyAndReturnArgs>(args?: SelectSubset<T, SettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Setting.
+     * @param {SettingDeleteArgs} args - Arguments to delete one Setting.
+     * @example
+     * // Delete one Setting
+     * const Setting = await prisma.setting.delete({
+     *   where: {
+     *     // ... filter to delete one Setting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SettingDeleteArgs>(args: SelectSubset<T, SettingDeleteArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Setting.
+     * @param {SettingUpdateArgs} args - Arguments to update one Setting.
+     * @example
+     * // Update one Setting
+     * const setting = await prisma.setting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SettingUpdateArgs>(args: SelectSubset<T, SettingUpdateArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Settings.
+     * @param {SettingDeleteManyArgs} args - Arguments to filter Settings to delete.
+     * @example
+     * // Delete a few Settings
+     * const { count } = await prisma.setting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SettingDeleteManyArgs>(args?: SelectSubset<T, SettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Settings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Settings
+     * const setting = await prisma.setting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SettingUpdateManyArgs>(args: SelectSubset<T, SettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Settings and returns the data updated in the database.
+     * @param {SettingUpdateManyAndReturnArgs} args - Arguments to update many Settings.
+     * @example
+     * // Update many Settings
+     * const setting = await prisma.setting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Settings and only return the `key`
+     * const settingWithKeyOnly = await prisma.setting.updateManyAndReturn({
+     *   select: { key: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SettingUpdateManyAndReturnArgs>(args: SelectSubset<T, SettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Setting.
+     * @param {SettingUpsertArgs} args - Arguments to update or create a Setting.
+     * @example
+     * // Update or create a Setting
+     * const setting = await prisma.setting.upsert({
+     *   create: {
+     *     // ... data to create a Setting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Setting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SettingUpsertArgs>(args: SelectSubset<T, SettingUpsertArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Settings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingCountArgs} args - Arguments to filter Settings to count.
+     * @example
+     * // Count the number of Settings
+     * const count = await prisma.setting.count({
+     *   where: {
+     *     // ... the filter for the Settings we want to count
+     *   }
+     * })
+    **/
+    count<T extends SettingCountArgs>(
+      args?: Subset<T, SettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Setting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SettingAggregateArgs>(args: Subset<T, SettingAggregateArgs>): Prisma.PrismaPromise<GetSettingAggregateType<T>>
+
+    /**
+     * Group by Setting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SettingGroupByArgs['orderBy'] }
+        : { orderBy?: SettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Setting model
+   */
+  readonly fields: SettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Setting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Setting model
+   */
+  interface SettingFieldRefs {
+    readonly key: FieldRef<"Setting", 'String'>
+    readonly value: FieldRef<"Setting", 'String'>
+    readonly updatedAt: FieldRef<"Setting", 'DateTime'>
+    readonly updatedById: FieldRef<"Setting", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Setting findUnique
+   */
+  export type SettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting findUniqueOrThrow
+   */
+  export type SettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting findFirst
+   */
+  export type SettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where?: SettingWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Settings.
+     */
+    cursor?: SettingWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settings.
+     */
+    distinct?: SettingScalarFieldEnum | SettingScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Setting findFirstOrThrow
+   */
+  export type SettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where?: SettingWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Settings.
+     */
+    cursor?: SettingWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settings.
+     */
+    distinct?: SettingScalarFieldEnum | SettingScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Setting findMany
+   */
+  export type SettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Filter, which Settings to fetch.
+     */
+    where?: SettingWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Settings.
+     */
+    cursor?: SettingWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settings.
+     */
+    distinct?: SettingScalarFieldEnum | SettingScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Setting create
+   */
+  export type SettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Setting.
+     */
+    data: XOR<SettingCreateInput, SettingUncheckedCreateInput>
+  }
+
+  /**
+   * Setting createMany
+   */
+  export type SettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Settings.
+     */
+    data: SettingCreateManyInput | SettingCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  /**
+   * Setting createManyAndReturn
+   */
+  export type SettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many Settings.
+     */
+    data: SettingCreateManyInput | SettingCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  /**
+   * Setting update
+   */
+  export type SettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Setting.
+     */
+    data: XOR<SettingUpdateInput, SettingUncheckedUpdateInput>
+    /**
+     * Choose, which Setting to update.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting updateMany
+   */
+  export type SettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Settings.
+     */
+    data: XOR<SettingUpdateManyMutationInput, SettingUncheckedUpdateManyInput>
+    /**
+     * Filter which Settings to update
+     */
+    where?: SettingWhereInput | $Types.Skip
+    /**
+     * Limit how many Settings to update.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * Setting updateManyAndReturn
+   */
+  export type SettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * The data used to update Settings.
+     */
+    data: XOR<SettingUpdateManyMutationInput, SettingUncheckedUpdateManyInput>
+    /**
+     * Filter which Settings to update
+     */
+    where?: SettingWhereInput | $Types.Skip
+    /**
+     * Limit how many Settings to update.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * Setting upsert
+   */
+  export type SettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Setting to update in case it exists.
+     */
+    where: SettingWhereUniqueInput
+    /**
+     * In case the Setting found by the `where` argument doesn't exist, create a new Setting with this data.
+     */
+    create: XOR<SettingCreateInput, SettingUncheckedCreateInput>
+    /**
+     * In case the Setting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SettingUpdateInput, SettingUncheckedUpdateInput>
+  }
+
+  /**
+   * Setting delete
+   */
+  export type SettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Filter which Setting to delete.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting deleteMany
+   */
+  export type SettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Settings to delete
+     */
+    where?: SettingWhereInput | $Types.Skip
+    /**
+     * Limit how many Settings to delete.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * Setting without action
+   */
+  export type SettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9513,6 +14571,61 @@ export namespace Prisma {
   };
 
   export type UserRoleScalarFieldEnum = (typeof UserRoleScalarFieldEnum)[keyof typeof UserRoleScalarFieldEnum]
+
+
+  export const AvailableSlotScalarFieldEnum: {
+    id: 'id',
+    startTime: 'startTime',
+    capacity: 'capacity',
+    bookedCount: 'bookedCount',
+    templateId: 'templateId',
+    createdAt: 'createdAt'
+  };
+
+  export type AvailableSlotScalarFieldEnum = (typeof AvailableSlotScalarFieldEnum)[keyof typeof AvailableSlotScalarFieldEnum]
+
+
+  export const AppointmentScalarFieldEnum: {
+    id: 'id',
+    patientId: 'patientId',
+    slotId: 'slotId',
+    status: 'status',
+    bookedAt: 'bookedAt',
+    cancelledAt: 'cancelledAt',
+    updatedAt: 'updatedAt',
+    arrivedAt: 'arrivedAt',
+    lateArrival: 'lateArrival',
+    noShowAt: 'noShowAt',
+    noShowMarkedById: 'noShowMarkedById'
+  };
+
+  export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
+
+
+  export const SlotTemplateScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    weekday: 'weekday',
+    startTime: 'startTime',
+    endTime: 'endTime',
+    capacityOverride: 'capacityOverride',
+    isActive: 'isActive',
+    lastRunAt: 'lastRunAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SlotTemplateScalarFieldEnum = (typeof SlotTemplateScalarFieldEnum)[keyof typeof SlotTemplateScalarFieldEnum]
+
+
+  export const SettingScalarFieldEnum: {
+    key: 'key',
+    value: 'value',
+    updatedAt: 'updatedAt',
+    updatedById: 'updatedById'
+  };
+
+  export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9633,6 +14746,48 @@ export namespace Prisma {
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
+
+
+  /**
+   * Reference to a field of type 'AppointmentStatus'
+   */
+  export type EnumAppointmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AppointmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AppointmentStatus[]'
+   */
+  export type ListEnumAppointmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AppointmentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'LateArrivalBucket'
+   */
+  export type EnumLateArrivalBucketFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LateArrivalBucket'>
+    
+
+
+  /**
+   * Reference to a field of type 'LateArrivalBucket[]'
+   */
+  export type ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LateArrivalBucket[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
@@ -9652,6 +14807,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     updatedAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenListRelationFilter | $Types.Skip
+    noShowMarkedBy?: AppointmentListRelationFilter | $Types.Skip
     userRoles?: UserRoleListRelationFilter | $Types.Skip
     assignedRoles?: UserRoleListRelationFilter | $Types.Skip
     patient?: XOR<PatientNullableScalarRelationFilter, PatientWhereInput> | null | $Types.Skip
@@ -9668,6 +14824,7 @@ export namespace Prisma {
     createdAt?: SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
     refreshTokens?: RefreshTokenOrderByRelationAggregateInput | $Types.Skip
+    noShowMarkedBy?: AppointmentOrderByRelationAggregateInput | $Types.Skip
     userRoles?: UserRoleOrderByRelationAggregateInput | $Types.Skip
     assignedRoles?: UserRoleOrderByRelationAggregateInput | $Types.Skip
     patient?: PatientOrderByWithRelationInput | $Types.Skip
@@ -9687,6 +14844,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     updatedAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenListRelationFilter | $Types.Skip
+    noShowMarkedBy?: AppointmentListRelationFilter | $Types.Skip
     userRoles?: UserRoleListRelationFilter | $Types.Skip
     assignedRoles?: UserRoleListRelationFilter | $Types.Skip
     patient?: XOR<PatientNullableScalarRelationFilter, PatientWhereInput> | null | $Types.Skip
@@ -9741,6 +14899,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Patient"> | Date | string | $Types.Skip
     updatedAt?: DateTimeFilter<"Patient"> | Date | string | $Types.Skip
     user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    appointments?: AppointmentListRelationFilter | $Types.Skip
   }
 
   export type PatientOrderByWithRelationInput = {
@@ -9759,6 +14918,7 @@ export namespace Prisma {
     createdAt?: SortOrder | $Types.Skip
     updatedAt?: SortOrder | $Types.Skip
     user?: UserOrderByWithRelationInput | $Types.Skip
+    appointments?: AppointmentOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type PatientWhereUniqueInput = Prisma.AtLeast<{
@@ -9780,6 +14940,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Patient"> | Date | string | $Types.Skip
     updatedAt?: DateTimeFilter<"Patient"> | Date | string | $Types.Skip
     user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    appointments?: AppointmentListRelationFilter | $Types.Skip
   }, "id" | "userId">
 
   export type PatientOrderByWithAggregationInput = {
@@ -10121,6 +15282,291 @@ export namespace Prisma {
     assignedById?: StringNullableWithAggregatesFilter<"UserRole"> | string | null | $Types.Skip
   }
 
+  export type AvailableSlotWhereInput = {
+    AND?: AvailableSlotWhereInput | AvailableSlotWhereInput[] | $Types.Skip
+    OR?: AvailableSlotWhereInput[] | $Types.Skip
+    NOT?: AvailableSlotWhereInput | AvailableSlotWhereInput[] | $Types.Skip
+    id?: StringFilter<"AvailableSlot"> | string | $Types.Skip
+    startTime?: DateTimeFilter<"AvailableSlot"> | Date | string | $Types.Skip
+    capacity?: IntFilter<"AvailableSlot"> | number | $Types.Skip
+    bookedCount?: IntFilter<"AvailableSlot"> | number | $Types.Skip
+    templateId?: StringNullableFilter<"AvailableSlot"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"AvailableSlot"> | Date | string | $Types.Skip
+    template?: XOR<SlotTemplateNullableScalarRelationFilter, SlotTemplateWhereInput> | null | $Types.Skip
+    appointments?: AppointmentListRelationFilter | $Types.Skip
+  }
+
+  export type AvailableSlotOrderByWithRelationInput = {
+    id?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    capacity?: SortOrder | $Types.Skip
+    bookedCount?: SortOrder | $Types.Skip
+    templateId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    template?: SlotTemplateOrderByWithRelationInput | $Types.Skip
+    appointments?: AppointmentOrderByRelationAggregateInput | $Types.Skip
+  }
+
+  export type AvailableSlotWhereUniqueInput = Prisma.AtLeast<{
+    id?: string | $Types.Skip
+    startTime?: Date | string | $Types.Skip
+    AND?: AvailableSlotWhereInput | AvailableSlotWhereInput[] | $Types.Skip
+    OR?: AvailableSlotWhereInput[] | $Types.Skip
+    NOT?: AvailableSlotWhereInput | AvailableSlotWhereInput[] | $Types.Skip
+    capacity?: IntFilter<"AvailableSlot"> | number | $Types.Skip
+    bookedCount?: IntFilter<"AvailableSlot"> | number | $Types.Skip
+    templateId?: StringNullableFilter<"AvailableSlot"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"AvailableSlot"> | Date | string | $Types.Skip
+    template?: XOR<SlotTemplateNullableScalarRelationFilter, SlotTemplateWhereInput> | null | $Types.Skip
+    appointments?: AppointmentListRelationFilter | $Types.Skip
+  }, "id" | "startTime">
+
+  export type AvailableSlotOrderByWithAggregationInput = {
+    id?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    capacity?: SortOrder | $Types.Skip
+    bookedCount?: SortOrder | $Types.Skip
+    templateId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    _count?: AvailableSlotCountOrderByAggregateInput | $Types.Skip
+    _avg?: AvailableSlotAvgOrderByAggregateInput | $Types.Skip
+    _max?: AvailableSlotMaxOrderByAggregateInput | $Types.Skip
+    _min?: AvailableSlotMinOrderByAggregateInput | $Types.Skip
+    _sum?: AvailableSlotSumOrderByAggregateInput | $Types.Skip
+  }
+
+  export type AvailableSlotScalarWhereWithAggregatesInput = {
+    AND?: AvailableSlotScalarWhereWithAggregatesInput | AvailableSlotScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: AvailableSlotScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: AvailableSlotScalarWhereWithAggregatesInput | AvailableSlotScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"AvailableSlot"> | string | $Types.Skip
+    startTime?: DateTimeWithAggregatesFilter<"AvailableSlot"> | Date | string | $Types.Skip
+    capacity?: IntWithAggregatesFilter<"AvailableSlot"> | number | $Types.Skip
+    bookedCount?: IntWithAggregatesFilter<"AvailableSlot"> | number | $Types.Skip
+    templateId?: StringNullableWithAggregatesFilter<"AvailableSlot"> | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"AvailableSlot"> | Date | string | $Types.Skip
+  }
+
+  export type AppointmentWhereInput = {
+    AND?: AppointmentWhereInput | AppointmentWhereInput[] | $Types.Skip
+    OR?: AppointmentWhereInput[] | $Types.Skip
+    NOT?: AppointmentWhereInput | AppointmentWhereInput[] | $Types.Skip
+    id?: StringFilter<"Appointment"> | string | $Types.Skip
+    patientId?: StringFilter<"Appointment"> | string | $Types.Skip
+    slotId?: StringFilter<"Appointment"> | string | $Types.Skip
+    status?: EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    cancelledAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableFilter<"Appointment"> | string | null | $Types.Skip
+    patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
+    slot?: XOR<AvailableSlotScalarRelationFilter, AvailableSlotWhereInput> | $Types.Skip
+    noShowMarkedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
+  }
+
+  export type AppointmentOrderByWithRelationInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    slotId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    bookedAt?: SortOrder | $Types.Skip
+    cancelledAt?: SortOrderInput | SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrderInput | SortOrder | $Types.Skip
+    lateArrival?: SortOrderInput | SortOrder | $Types.Skip
+    noShowAt?: SortOrderInput | SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrderInput | SortOrder | $Types.Skip
+    patient?: PatientOrderByWithRelationInput | $Types.Skip
+    slot?: AvailableSlotOrderByWithRelationInput | $Types.Skip
+    noShowMarkedBy?: UserOrderByWithRelationInput | $Types.Skip
+  }
+
+  export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string | $Types.Skip
+    AND?: AppointmentWhereInput | AppointmentWhereInput[] | $Types.Skip
+    OR?: AppointmentWhereInput[] | $Types.Skip
+    NOT?: AppointmentWhereInput | AppointmentWhereInput[] | $Types.Skip
+    patientId?: StringFilter<"Appointment"> | string | $Types.Skip
+    slotId?: StringFilter<"Appointment"> | string | $Types.Skip
+    status?: EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    cancelledAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableFilter<"Appointment"> | string | null | $Types.Skip
+    patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
+    slot?: XOR<AvailableSlotScalarRelationFilter, AvailableSlotWhereInput> | $Types.Skip
+    noShowMarkedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
+  }, "id">
+
+  export type AppointmentOrderByWithAggregationInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    slotId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    bookedAt?: SortOrder | $Types.Skip
+    cancelledAt?: SortOrderInput | SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrderInput | SortOrder | $Types.Skip
+    lateArrival?: SortOrderInput | SortOrder | $Types.Skip
+    noShowAt?: SortOrderInput | SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrderInput | SortOrder | $Types.Skip
+    _count?: AppointmentCountOrderByAggregateInput | $Types.Skip
+    _max?: AppointmentMaxOrderByAggregateInput | $Types.Skip
+    _min?: AppointmentMinOrderByAggregateInput | $Types.Skip
+  }
+
+  export type AppointmentScalarWhereWithAggregatesInput = {
+    AND?: AppointmentScalarWhereWithAggregatesInput | AppointmentScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: AppointmentScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: AppointmentScalarWhereWithAggregatesInput | AppointmentScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Appointment"> | string | $Types.Skip
+    patientId?: StringWithAggregatesFilter<"Appointment"> | string | $Types.Skip
+    slotId?: StringWithAggregatesFilter<"Appointment"> | string | $Types.Skip
+    status?: EnumAppointmentStatusWithAggregatesFilter<"Appointment"> | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string | $Types.Skip
+    cancelledAt?: DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableWithAggregatesFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableWithAggregatesFilter<"Appointment"> | string | null | $Types.Skip
+  }
+
+  export type SlotTemplateWhereInput = {
+    AND?: SlotTemplateWhereInput | SlotTemplateWhereInput[] | $Types.Skip
+    OR?: SlotTemplateWhereInput[] | $Types.Skip
+    NOT?: SlotTemplateWhereInput | SlotTemplateWhereInput[] | $Types.Skip
+    id?: StringFilter<"SlotTemplate"> | string | $Types.Skip
+    name?: StringFilter<"SlotTemplate"> | string | $Types.Skip
+    weekday?: IntFilter<"SlotTemplate"> | number | $Types.Skip
+    startTime?: StringFilter<"SlotTemplate"> | string | $Types.Skip
+    endTime?: StringFilter<"SlotTemplate"> | string | $Types.Skip
+    capacityOverride?: IntNullableFilter<"SlotTemplate"> | number | null | $Types.Skip
+    isActive?: BoolFilter<"SlotTemplate"> | boolean | $Types.Skip
+    lastRunAt?: DateTimeNullableFilter<"SlotTemplate"> | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"SlotTemplate"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"SlotTemplate"> | Date | string | $Types.Skip
+    slots?: AvailableSlotListRelationFilter | $Types.Skip
+  }
+
+  export type SlotTemplateOrderByWithRelationInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    weekday?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    endTime?: SortOrder | $Types.Skip
+    capacityOverride?: SortOrderInput | SortOrder | $Types.Skip
+    isActive?: SortOrder | $Types.Skip
+    lastRunAt?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    slots?: AvailableSlotOrderByRelationAggregateInput | $Types.Skip
+  }
+
+  export type SlotTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string | $Types.Skip
+    AND?: SlotTemplateWhereInput | SlotTemplateWhereInput[] | $Types.Skip
+    OR?: SlotTemplateWhereInput[] | $Types.Skip
+    NOT?: SlotTemplateWhereInput | SlotTemplateWhereInput[] | $Types.Skip
+    name?: StringFilter<"SlotTemplate"> | string | $Types.Skip
+    weekday?: IntFilter<"SlotTemplate"> | number | $Types.Skip
+    startTime?: StringFilter<"SlotTemplate"> | string | $Types.Skip
+    endTime?: StringFilter<"SlotTemplate"> | string | $Types.Skip
+    capacityOverride?: IntNullableFilter<"SlotTemplate"> | number | null | $Types.Skip
+    isActive?: BoolFilter<"SlotTemplate"> | boolean | $Types.Skip
+    lastRunAt?: DateTimeNullableFilter<"SlotTemplate"> | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"SlotTemplate"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"SlotTemplate"> | Date | string | $Types.Skip
+    slots?: AvailableSlotListRelationFilter | $Types.Skip
+  }, "id">
+
+  export type SlotTemplateOrderByWithAggregationInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    weekday?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    endTime?: SortOrder | $Types.Skip
+    capacityOverride?: SortOrderInput | SortOrder | $Types.Skip
+    isActive?: SortOrder | $Types.Skip
+    lastRunAt?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: SlotTemplateCountOrderByAggregateInput | $Types.Skip
+    _avg?: SlotTemplateAvgOrderByAggregateInput | $Types.Skip
+    _max?: SlotTemplateMaxOrderByAggregateInput | $Types.Skip
+    _min?: SlotTemplateMinOrderByAggregateInput | $Types.Skip
+    _sum?: SlotTemplateSumOrderByAggregateInput | $Types.Skip
+  }
+
+  export type SlotTemplateScalarWhereWithAggregatesInput = {
+    AND?: SlotTemplateScalarWhereWithAggregatesInput | SlotTemplateScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: SlotTemplateScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: SlotTemplateScalarWhereWithAggregatesInput | SlotTemplateScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"SlotTemplate"> | string | $Types.Skip
+    name?: StringWithAggregatesFilter<"SlotTemplate"> | string | $Types.Skip
+    weekday?: IntWithAggregatesFilter<"SlotTemplate"> | number | $Types.Skip
+    startTime?: StringWithAggregatesFilter<"SlotTemplate"> | string | $Types.Skip
+    endTime?: StringWithAggregatesFilter<"SlotTemplate"> | string | $Types.Skip
+    capacityOverride?: IntNullableWithAggregatesFilter<"SlotTemplate"> | number | null | $Types.Skip
+    isActive?: BoolWithAggregatesFilter<"SlotTemplate"> | boolean | $Types.Skip
+    lastRunAt?: DateTimeNullableWithAggregatesFilter<"SlotTemplate"> | Date | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"SlotTemplate"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"SlotTemplate"> | Date | string | $Types.Skip
+  }
+
+  export type SettingWhereInput = {
+    AND?: SettingWhereInput | SettingWhereInput[] | $Types.Skip
+    OR?: SettingWhereInput[] | $Types.Skip
+    NOT?: SettingWhereInput | SettingWhereInput[] | $Types.Skip
+    key?: StringFilter<"Setting"> | string | $Types.Skip
+    value?: StringFilter<"Setting"> | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Setting"> | Date | string | $Types.Skip
+    updatedById?: StringNullableFilter<"Setting"> | string | null | $Types.Skip
+  }
+
+  export type SettingOrderByWithRelationInput = {
+    key?: SortOrder | $Types.Skip
+    value?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    updatedById?: SortOrderInput | SortOrder | $Types.Skip
+  }
+
+  export type SettingWhereUniqueInput = Prisma.AtLeast<{
+    key?: string | $Types.Skip
+    AND?: SettingWhereInput | SettingWhereInput[] | $Types.Skip
+    OR?: SettingWhereInput[] | $Types.Skip
+    NOT?: SettingWhereInput | SettingWhereInput[] | $Types.Skip
+    value?: StringFilter<"Setting"> | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Setting"> | Date | string | $Types.Skip
+    updatedById?: StringNullableFilter<"Setting"> | string | null | $Types.Skip
+  }, "key">
+
+  export type SettingOrderByWithAggregationInput = {
+    key?: SortOrder | $Types.Skip
+    value?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    updatedById?: SortOrderInput | SortOrder | $Types.Skip
+    _count?: SettingCountOrderByAggregateInput | $Types.Skip
+    _max?: SettingMaxOrderByAggregateInput | $Types.Skip
+    _min?: SettingMinOrderByAggregateInput | $Types.Skip
+  }
+
+  export type SettingScalarWhereWithAggregatesInput = {
+    AND?: SettingScalarWhereWithAggregatesInput | SettingScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: SettingScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: SettingScalarWhereWithAggregatesInput | SettingScalarWhereWithAggregatesInput[] | $Types.Skip
+    key?: StringWithAggregatesFilter<"Setting"> | string | $Types.Skip
+    value?: StringWithAggregatesFilter<"Setting"> | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Setting"> | Date | string | $Types.Skip
+    updatedById?: StringNullableWithAggregatesFilter<"Setting"> | string | null | $Types.Skip
+  }
+
   export type UserCreateInput = {
     id?: string | $Types.Skip
     email: string
@@ -10132,6 +15578,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
@@ -10148,6 +15595,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
@@ -10164,6 +15612,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -10180,6 +15629,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -10236,6 +15686,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     user: UserCreateNestedOneWithoutPatientInput
+    appointments?: AppointmentCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientUncheckedCreateInput = {
@@ -10253,6 +15704,7 @@ export namespace Prisma {
     medicalNotes?: string | null | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientUpdateInput = {
@@ -10270,6 +15722,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     user?: UserUpdateOneRequiredWithoutPatientNestedInput | $Types.Skip
+    appointments?: AppointmentUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type PatientUncheckedUpdateInput = {
@@ -10287,6 +15740,7 @@ export namespace Prisma {
     medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type PatientCreateManyInput = {
@@ -10639,6 +16093,311 @@ export namespace Prisma {
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
+  export type AvailableSlotCreateInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    template?: SlotTemplateCreateNestedOneWithoutSlotsInput | $Types.Skip
+    appointments?: AppointmentCreateNestedManyWithoutSlotInput | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedCreateInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    templateId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutSlotInput | $Types.Skip
+  }
+
+  export type AvailableSlotUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    template?: SlotTemplateUpdateOneWithoutSlotsNestedInput | $Types.Skip
+    appointments?: AppointmentUpdateManyWithoutSlotNestedInput | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    templateId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedUpdateManyWithoutSlotNestedInput | $Types.Skip
+  }
+
+  export type AvailableSlotCreateManyInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    templateId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+  }
+
+  export type AvailableSlotUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    templateId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type AppointmentCreateInput = {
+    id?: string | $Types.Skip
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    patient: PatientCreateNestedOneWithoutAppointmentsInput
+    slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+    noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
+  }
+
+  export type AppointmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateManyInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
+  }
+
+  export type AppointmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type SlotTemplateCreateInput = {
+    id?: string | $Types.Skip
+    name: string
+    weekday: number
+    startTime: string
+    endTime: string
+    capacityOverride?: number | null | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    slots?: AvailableSlotCreateNestedManyWithoutTemplateInput | $Types.Skip
+  }
+
+  export type SlotTemplateUncheckedCreateInput = {
+    id?: string | $Types.Skip
+    name: string
+    weekday: number
+    startTime: string
+    endTime: string
+    capacityOverride?: number | null | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    slots?: AvailableSlotUncheckedCreateNestedManyWithoutTemplateInput | $Types.Skip
+  }
+
+  export type SlotTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    weekday?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    startTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    endTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    capacityOverride?: NullableIntFieldUpdateOperationsInput | number | null | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    slots?: AvailableSlotUpdateManyWithoutTemplateNestedInput | $Types.Skip
+  }
+
+  export type SlotTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    weekday?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    startTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    endTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    capacityOverride?: NullableIntFieldUpdateOperationsInput | number | null | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    slots?: AvailableSlotUncheckedUpdateManyWithoutTemplateNestedInput | $Types.Skip
+  }
+
+  export type SlotTemplateCreateManyInput = {
+    id?: string | $Types.Skip
+    name: string
+    weekday: number
+    startTime: string
+    endTime: string
+    capacityOverride?: number | null | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type SlotTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    weekday?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    startTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    endTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    capacityOverride?: NullableIntFieldUpdateOperationsInput | number | null | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type SlotTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    weekday?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    startTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    endTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    capacityOverride?: NullableIntFieldUpdateOperationsInput | number | null | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type SettingCreateInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string | $Types.Skip
+    updatedById?: string | null | $Types.Skip
+  }
+
+  export type SettingUncheckedCreateInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string | $Types.Skip
+    updatedById?: string | null | $Types.Skip
+  }
+
+  export type SettingUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    value?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type SettingUncheckedUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    value?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type SettingCreateManyInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string | $Types.Skip
+    updatedById?: string | null | $Types.Skip
+  }
+
+  export type SettingUpdateManyMutationInput = {
+    key?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    value?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type SettingUncheckedUpdateManyInput = {
+    key?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    value?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
@@ -10691,6 +16450,12 @@ export namespace Prisma {
     none?: RefreshTokenWhereInput | $Types.Skip
   }
 
+  export type AppointmentListRelationFilter = {
+    every?: AppointmentWhereInput | $Types.Skip
+    some?: AppointmentWhereInput | $Types.Skip
+    none?: AppointmentWhereInput | $Types.Skip
+  }
+
   export type UserRoleListRelationFilter = {
     every?: UserRoleWhereInput | $Types.Skip
     some?: UserRoleWhereInput | $Types.Skip
@@ -10708,6 +16473,10 @@ export namespace Prisma {
   }
 
   export type RefreshTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder | $Types.Skip
+  }
+
+  export type AppointmentOrderByRelationAggregateInput = {
     _count?: SortOrder | $Types.Skip
   }
 
@@ -11103,11 +16872,280 @@ export namespace Prisma {
     assignedById?: SortOrder | $Types.Skip
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntFilter<$PrismaModel> | number | $Types.Skip
+  }
+
+  export type SlotTemplateNullableScalarRelationFilter = {
+    is?: SlotTemplateWhereInput | null | $Types.Skip
+    isNot?: SlotTemplateWhereInput | null | $Types.Skip
+  }
+
+  export type AvailableSlotCountOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    capacity?: SortOrder | $Types.Skip
+    bookedCount?: SortOrder | $Types.Skip
+    templateId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+  }
+
+  export type AvailableSlotAvgOrderByAggregateInput = {
+    capacity?: SortOrder | $Types.Skip
+    bookedCount?: SortOrder | $Types.Skip
+  }
+
+  export type AvailableSlotMaxOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    capacity?: SortOrder | $Types.Skip
+    bookedCount?: SortOrder | $Types.Skip
+    templateId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+  }
+
+  export type AvailableSlotMinOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    capacity?: SortOrder | $Types.Skip
+    bookedCount?: SortOrder | $Types.Skip
+    templateId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+  }
+
+  export type AvailableSlotSumOrderByAggregateInput = {
+    capacity?: SortOrder | $Types.Skip
+    bookedCount?: SortOrder | $Types.Skip
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _avg?: NestedFloatFilter<$PrismaModel> | $Types.Skip
+    _sum?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedIntFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type EnumAppointmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AppointmentStatus | EnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Enums.AppointmentStatus | $Types.Skip
+  }
+
+  export type EnumLateArrivalBucketNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+  }
+
+  export type PatientScalarRelationFilter = {
+    is?: PatientWhereInput | $Types.Skip
+    isNot?: PatientWhereInput | $Types.Skip
+  }
+
+  export type AvailableSlotScalarRelationFilter = {
+    is?: AvailableSlotWhereInput | $Types.Skip
+    isNot?: AvailableSlotWhereInput | $Types.Skip
+  }
+
+  export type AppointmentCountOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    slotId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    bookedAt?: SortOrder | $Types.Skip
+    cancelledAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrder | $Types.Skip
+    lateArrival?: SortOrder | $Types.Skip
+    noShowAt?: SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrder | $Types.Skip
+  }
+
+  export type AppointmentMaxOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    slotId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    bookedAt?: SortOrder | $Types.Skip
+    cancelledAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrder | $Types.Skip
+    lateArrival?: SortOrder | $Types.Skip
+    noShowAt?: SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrder | $Types.Skip
+  }
+
+  export type AppointmentMinOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    slotId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    bookedAt?: SortOrder | $Types.Skip
+    cancelledAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    arrivedAt?: SortOrder | $Types.Skip
+    lateArrival?: SortOrder | $Types.Skip
+    noShowAt?: SortOrder | $Types.Skip
+    noShowMarkedById?: SortOrder | $Types.Skip
+  }
+
+  export type EnumAppointmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AppointmentStatus | EnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAppointmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.AppointmentStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type EnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null | $Types.Skip
+  }
+
+  export type AvailableSlotListRelationFilter = {
+    every?: AvailableSlotWhereInput | $Types.Skip
+    some?: AvailableSlotWhereInput | $Types.Skip
+    none?: AvailableSlotWhereInput | $Types.Skip
+  }
+
+  export type AvailableSlotOrderByRelationAggregateInput = {
+    _count?: SortOrder | $Types.Skip
+  }
+
+  export type SlotTemplateCountOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    weekday?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    endTime?: SortOrder | $Types.Skip
+    capacityOverride?: SortOrder | $Types.Skip
+    isActive?: SortOrder | $Types.Skip
+    lastRunAt?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type SlotTemplateAvgOrderByAggregateInput = {
+    weekday?: SortOrder | $Types.Skip
+    capacityOverride?: SortOrder | $Types.Skip
+  }
+
+  export type SlotTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    weekday?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    endTime?: SortOrder | $Types.Skip
+    capacityOverride?: SortOrder | $Types.Skip
+    isActive?: SortOrder | $Types.Skip
+    lastRunAt?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type SlotTemplateMinOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    weekday?: SortOrder | $Types.Skip
+    startTime?: SortOrder | $Types.Skip
+    endTime?: SortOrder | $Types.Skip
+    capacityOverride?: SortOrder | $Types.Skip
+    isActive?: SortOrder | $Types.Skip
+    lastRunAt?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type SlotTemplateSumOrderByAggregateInput = {
+    weekday?: SortOrder | $Types.Skip
+    capacityOverride?: SortOrder | $Types.Skip
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _avg?: NestedFloatNullableFilter<$PrismaModel> | $Types.Skip
+    _sum?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type SettingCountOrderByAggregateInput = {
+    key?: SortOrder | $Types.Skip
+    value?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    updatedById?: SortOrder | $Types.Skip
+  }
+
+  export type SettingMaxOrderByAggregateInput = {
+    key?: SortOrder | $Types.Skip
+    value?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    updatedById?: SortOrder | $Types.Skip
+  }
+
+  export type SettingMinOrderByAggregateInput = {
+    key?: SortOrder | $Types.Skip
+    value?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    updatedById?: SortOrder | $Types.Skip
+  }
+
   export type RefreshTokenCreateNestedManyWithoutUserInput = {
     create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[] | $Types.Skip
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[] | $Types.Skip
     createMany?: RefreshTokenCreateManyUserInputEnvelope | $Types.Skip
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type AppointmentCreateNestedManyWithoutNoShowMarkedByInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
   }
 
   export type UserRoleCreateNestedManyWithoutUserInput = {
@@ -11135,6 +17173,13 @@ export namespace Prisma {
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[] | $Types.Skip
     createMany?: RefreshTokenCreateManyUserInputEnvelope | $Types.Skip
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
   }
 
   export type UserRoleUncheckedCreateNestedManyWithoutUserInput = {
@@ -11185,6 +17230,20 @@ export namespace Prisma {
     update?: RefreshTokenUpdateWithWhereUniqueWithoutUserInput | RefreshTokenUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
     updateMany?: RefreshTokenUpdateManyWithWhereWithoutUserInput | RefreshTokenUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[] | $Types.Skip
+  }
+
+  export type AppointmentUpdateManyWithoutNoShowMarkedByNestedInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput | AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
   }
 
   export type UserRoleUpdateManyWithoutUserNestedInput = {
@@ -11239,6 +17298,20 @@ export namespace Prisma {
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[] | $Types.Skip
   }
 
+  export type AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput = {
+    create?: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput> | AppointmentCreateWithoutNoShowMarkedByInput[] | AppointmentUncheckedCreateWithoutNoShowMarkedByInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutNoShowMarkedByInput | AppointmentCreateOrConnectWithoutNoShowMarkedByInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyNoShowMarkedByInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput | AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput | AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+  }
+
   export type UserRoleUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[] | $Types.Skip
     connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[] | $Types.Skip
@@ -11283,6 +17356,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | $Types.Skip
   }
 
+  export type AppointmentCreateNestedManyWithoutPatientInput = {
+    create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyPatientInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateNestedManyWithoutPatientInput = {
+    create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyPatientInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+  }
+
   export type EnumGenderFieldUpdateOperationsInput = {
     set?: $Enums.Gender | $Types.Skip
   }
@@ -11297,6 +17384,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutPatientInput | $Types.Skip
     connect?: UserWhereUniqueInput | $Types.Skip
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPatientInput, UserUpdateWithoutPatientInput>, UserUncheckedUpdateWithoutPatientInput> | $Types.Skip
+  }
+
+  export type AppointmentUpdateManyWithoutPatientNestedInput = {
+    create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutPatientInput | AppointmentUpsertWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyPatientInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutPatientInput | AppointmentUpdateWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutPatientInput | AppointmentUpdateManyWithWhereWithoutPatientInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutPatientNestedInput = {
+    create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutPatientInput | AppointmentUpsertWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    createMany?: AppointmentCreateManyPatientInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutPatientInput | AppointmentUpdateWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutPatientInput | AppointmentUpdateManyWithWhereWithoutPatientInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutRefreshTokensInput = {
@@ -11519,6 +17634,174 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAssignedRolesInput, UserUpdateWithoutAssignedRolesInput>, UserUncheckedUpdateWithoutAssignedRolesInput> | $Types.Skip
   }
 
+  export type SlotTemplateCreateNestedOneWithoutSlotsInput = {
+    create?: XOR<SlotTemplateCreateWithoutSlotsInput, SlotTemplateUncheckedCreateWithoutSlotsInput> | $Types.Skip
+    connectOrCreate?: SlotTemplateCreateOrConnectWithoutSlotsInput | $Types.Skip
+    connect?: SlotTemplateWhereUniqueInput | $Types.Skip
+  }
+
+  export type AppointmentCreateNestedManyWithoutSlotInput = {
+    create?: XOR<AppointmentCreateWithoutSlotInput, AppointmentUncheckedCreateWithoutSlotInput> | AppointmentCreateWithoutSlotInput[] | AppointmentUncheckedCreateWithoutSlotInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutSlotInput | AppointmentCreateOrConnectWithoutSlotInput[] | $Types.Skip
+    createMany?: AppointmentCreateManySlotInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateNestedManyWithoutSlotInput = {
+    create?: XOR<AppointmentCreateWithoutSlotInput, AppointmentUncheckedCreateWithoutSlotInput> | AppointmentCreateWithoutSlotInput[] | AppointmentUncheckedCreateWithoutSlotInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutSlotInput | AppointmentCreateOrConnectWithoutSlotInput[] | $Types.Skip
+    createMany?: AppointmentCreateManySlotInputEnvelope | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number | $Types.Skip
+    increment?: number | $Types.Skip
+    decrement?: number | $Types.Skip
+    multiply?: number | $Types.Skip
+    divide?: number | $Types.Skip
+  }
+
+  export type SlotTemplateUpdateOneWithoutSlotsNestedInput = {
+    create?: XOR<SlotTemplateCreateWithoutSlotsInput, SlotTemplateUncheckedCreateWithoutSlotsInput> | $Types.Skip
+    connectOrCreate?: SlotTemplateCreateOrConnectWithoutSlotsInput | $Types.Skip
+    upsert?: SlotTemplateUpsertWithoutSlotsInput | $Types.Skip
+    disconnect?: SlotTemplateWhereInput | boolean | $Types.Skip
+    delete?: SlotTemplateWhereInput | boolean | $Types.Skip
+    connect?: SlotTemplateWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<SlotTemplateUpdateToOneWithWhereWithoutSlotsInput, SlotTemplateUpdateWithoutSlotsInput>, SlotTemplateUncheckedUpdateWithoutSlotsInput> | $Types.Skip
+  }
+
+  export type AppointmentUpdateManyWithoutSlotNestedInput = {
+    create?: XOR<AppointmentCreateWithoutSlotInput, AppointmentUncheckedCreateWithoutSlotInput> | AppointmentCreateWithoutSlotInput[] | AppointmentUncheckedCreateWithoutSlotInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutSlotInput | AppointmentCreateOrConnectWithoutSlotInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutSlotInput | AppointmentUpsertWithWhereUniqueWithoutSlotInput[] | $Types.Skip
+    createMany?: AppointmentCreateManySlotInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutSlotInput | AppointmentUpdateWithWhereUniqueWithoutSlotInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutSlotInput | AppointmentUpdateManyWithWhereWithoutSlotInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutSlotNestedInput = {
+    create?: XOR<AppointmentCreateWithoutSlotInput, AppointmentUncheckedCreateWithoutSlotInput> | AppointmentCreateWithoutSlotInput[] | AppointmentUncheckedCreateWithoutSlotInput[] | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutSlotInput | AppointmentCreateOrConnectWithoutSlotInput[] | $Types.Skip
+    upsert?: AppointmentUpsertWithWhereUniqueWithoutSlotInput | AppointmentUpsertWithWhereUniqueWithoutSlotInput[] | $Types.Skip
+    createMany?: AppointmentCreateManySlotInputEnvelope | $Types.Skip
+    set?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    disconnect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    delete?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+    update?: AppointmentUpdateWithWhereUniqueWithoutSlotInput | AppointmentUpdateWithWhereUniqueWithoutSlotInput[] | $Types.Skip
+    updateMany?: AppointmentUpdateManyWithWhereWithoutSlotInput | AppointmentUpdateManyWithWhereWithoutSlotInput[] | $Types.Skip
+    deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+  }
+
+  export type PatientCreateNestedOneWithoutAppointmentsInput = {
+    create?: XOR<PatientCreateWithoutAppointmentsInput, PatientUncheckedCreateWithoutAppointmentsInput> | $Types.Skip
+    connectOrCreate?: PatientCreateOrConnectWithoutAppointmentsInput | $Types.Skip
+    connect?: PatientWhereUniqueInput | $Types.Skip
+  }
+
+  export type AvailableSlotCreateNestedOneWithoutAppointmentsInput = {
+    create?: XOR<AvailableSlotCreateWithoutAppointmentsInput, AvailableSlotUncheckedCreateWithoutAppointmentsInput> | $Types.Skip
+    connectOrCreate?: AvailableSlotCreateOrConnectWithoutAppointmentsInput | $Types.Skip
+    connect?: AvailableSlotWhereUniqueInput | $Types.Skip
+  }
+
+  export type UserCreateNestedOneWithoutNoShowMarkedByInput = {
+    create?: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutNoShowMarkedByInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+  }
+
+  export type EnumAppointmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AppointmentStatus | $Types.Skip
+  }
+
+  export type NullableEnumLateArrivalBucketFieldUpdateOperationsInput = {
+    set?: $Enums.LateArrivalBucket | null | $Types.Skip
+  }
+
+  export type PatientUpdateOneRequiredWithoutAppointmentsNestedInput = {
+    create?: XOR<PatientCreateWithoutAppointmentsInput, PatientUncheckedCreateWithoutAppointmentsInput> | $Types.Skip
+    connectOrCreate?: PatientCreateOrConnectWithoutAppointmentsInput | $Types.Skip
+    upsert?: PatientUpsertWithoutAppointmentsInput | $Types.Skip
+    connect?: PatientWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<PatientUpdateToOneWithWhereWithoutAppointmentsInput, PatientUpdateWithoutAppointmentsInput>, PatientUncheckedUpdateWithoutAppointmentsInput> | $Types.Skip
+  }
+
+  export type AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput = {
+    create?: XOR<AvailableSlotCreateWithoutAppointmentsInput, AvailableSlotUncheckedCreateWithoutAppointmentsInput> | $Types.Skip
+    connectOrCreate?: AvailableSlotCreateOrConnectWithoutAppointmentsInput | $Types.Skip
+    upsert?: AvailableSlotUpsertWithoutAppointmentsInput | $Types.Skip
+    connect?: AvailableSlotWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<AvailableSlotUpdateToOneWithWhereWithoutAppointmentsInput, AvailableSlotUpdateWithoutAppointmentsInput>, AvailableSlotUncheckedUpdateWithoutAppointmentsInput> | $Types.Skip
+  }
+
+  export type UserUpdateOneWithoutNoShowMarkedByNestedInput = {
+    create?: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutNoShowMarkedByInput | $Types.Skip
+    upsert?: UserUpsertWithoutNoShowMarkedByInput | $Types.Skip
+    disconnect?: UserWhereInput | boolean | $Types.Skip
+    delete?: UserWhereInput | boolean | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNoShowMarkedByInput, UserUpdateWithoutNoShowMarkedByInput>, UserUncheckedUpdateWithoutNoShowMarkedByInput> | $Types.Skip
+  }
+
+  export type AvailableSlotCreateNestedManyWithoutTemplateInput = {
+    create?: XOR<AvailableSlotCreateWithoutTemplateInput, AvailableSlotUncheckedCreateWithoutTemplateInput> | AvailableSlotCreateWithoutTemplateInput[] | AvailableSlotUncheckedCreateWithoutTemplateInput[] | $Types.Skip
+    connectOrCreate?: AvailableSlotCreateOrConnectWithoutTemplateInput | AvailableSlotCreateOrConnectWithoutTemplateInput[] | $Types.Skip
+    createMany?: AvailableSlotCreateManyTemplateInputEnvelope | $Types.Skip
+    connect?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedCreateNestedManyWithoutTemplateInput = {
+    create?: XOR<AvailableSlotCreateWithoutTemplateInput, AvailableSlotUncheckedCreateWithoutTemplateInput> | AvailableSlotCreateWithoutTemplateInput[] | AvailableSlotUncheckedCreateWithoutTemplateInput[] | $Types.Skip
+    connectOrCreate?: AvailableSlotCreateOrConnectWithoutTemplateInput | AvailableSlotCreateOrConnectWithoutTemplateInput[] | $Types.Skip
+    createMany?: AvailableSlotCreateManyTemplateInputEnvelope | $Types.Skip
+    connect?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null | $Types.Skip
+    increment?: number | $Types.Skip
+    decrement?: number | $Types.Skip
+    multiply?: number | $Types.Skip
+    divide?: number | $Types.Skip
+  }
+
+  export type AvailableSlotUpdateManyWithoutTemplateNestedInput = {
+    create?: XOR<AvailableSlotCreateWithoutTemplateInput, AvailableSlotUncheckedCreateWithoutTemplateInput> | AvailableSlotCreateWithoutTemplateInput[] | AvailableSlotUncheckedCreateWithoutTemplateInput[] | $Types.Skip
+    connectOrCreate?: AvailableSlotCreateOrConnectWithoutTemplateInput | AvailableSlotCreateOrConnectWithoutTemplateInput[] | $Types.Skip
+    upsert?: AvailableSlotUpsertWithWhereUniqueWithoutTemplateInput | AvailableSlotUpsertWithWhereUniqueWithoutTemplateInput[] | $Types.Skip
+    createMany?: AvailableSlotCreateManyTemplateInputEnvelope | $Types.Skip
+    set?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    disconnect?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    delete?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    connect?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    update?: AvailableSlotUpdateWithWhereUniqueWithoutTemplateInput | AvailableSlotUpdateWithWhereUniqueWithoutTemplateInput[] | $Types.Skip
+    updateMany?: AvailableSlotUpdateManyWithWhereWithoutTemplateInput | AvailableSlotUpdateManyWithWhereWithoutTemplateInput[] | $Types.Skip
+    deleteMany?: AvailableSlotScalarWhereInput | AvailableSlotScalarWhereInput[] | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedUpdateManyWithoutTemplateNestedInput = {
+    create?: XOR<AvailableSlotCreateWithoutTemplateInput, AvailableSlotUncheckedCreateWithoutTemplateInput> | AvailableSlotCreateWithoutTemplateInput[] | AvailableSlotUncheckedCreateWithoutTemplateInput[] | $Types.Skip
+    connectOrCreate?: AvailableSlotCreateOrConnectWithoutTemplateInput | AvailableSlotCreateOrConnectWithoutTemplateInput[] | $Types.Skip
+    upsert?: AvailableSlotUpsertWithWhereUniqueWithoutTemplateInput | AvailableSlotUpsertWithWhereUniqueWithoutTemplateInput[] | $Types.Skip
+    createMany?: AvailableSlotCreateManyTemplateInputEnvelope | $Types.Skip
+    set?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    disconnect?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    delete?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    connect?: AvailableSlotWhereUniqueInput | AvailableSlotWhereUniqueInput[] | $Types.Skip
+    update?: AvailableSlotUpdateWithWhereUniqueWithoutTemplateInput | AvailableSlotUpdateWithWhereUniqueWithoutTemplateInput[] | $Types.Skip
+    updateMany?: AvailableSlotUpdateManyWithWhereWithoutTemplateInput | AvailableSlotUpdateManyWithWhereWithoutTemplateInput[] | $Types.Skip
+    deleteMany?: AvailableSlotScalarWhereInput | AvailableSlotScalarWhereInput[] | $Types.Skip
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
@@ -11717,6 +18000,94 @@ export namespace Prisma {
     _max?: NestedEnumActionFilter<$PrismaModel> | $Types.Skip
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _avg?: NestedFloatFilter<$PrismaModel> | $Types.Skip
+    _sum?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedIntFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedFloatFilter<$PrismaModel> | number | $Types.Skip
+  }
+
+  export type NestedEnumAppointmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AppointmentStatus | EnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Enums.AppointmentStatus | $Types.Skip
+  }
+
+  export type NestedEnumLateArrivalBucketNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+  }
+
+  export type NestedEnumAppointmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AppointmentStatus | EnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AppointmentStatus[] | ListEnumAppointmentStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAppointmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.AppointmentStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumAppointmentStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type NestedEnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LateArrivalBucket | EnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: $Enums.LateArrivalBucket[] | ListEnumLateArrivalBucketFieldRefInput<$PrismaModel> | null | $Types.Skip
+    not?: NestedEnumLateArrivalBucketNullableWithAggregatesFilter<$PrismaModel> | $Enums.LateArrivalBucket | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumLateArrivalBucketNullableFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _avg?: NestedFloatNullableFilter<$PrismaModel> | $Types.Skip
+    _sum?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null | $Types.Skip
+  }
+
   export type RefreshTokenCreateWithoutUserInput = {
     id?: string | $Types.Skip
     tokenHash: string
@@ -11744,6 +18115,42 @@ export namespace Prisma {
 
   export type RefreshTokenCreateManyUserInputEnvelope = {
     data: RefreshTokenCreateManyUserInput | RefreshTokenCreateManyUserInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  export type AppointmentCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    patient: PatientCreateNestedOneWithoutAppointmentsInput
+    slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+  }
+
+  export type AppointmentUncheckedCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateOrConnectWithoutNoShowMarkedByInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentCreateManyNoShowMarkedByInputEnvelope = {
+    data: AppointmentCreateManyNoShowMarkedByInput | AppointmentCreateManyNoShowMarkedByInput[]
     skipDuplicates?: boolean | $Types.Skip
   }
 
@@ -11809,6 +18216,7 @@ export namespace Prisma {
     medicalNotes?: string | null | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    appointments?: AppointmentCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientUncheckedCreateWithoutUserInput = {
@@ -11825,6 +18233,7 @@ export namespace Prisma {
     medicalNotes?: string | null | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientCreateOrConnectWithoutUserInput = {
@@ -11860,6 +18269,39 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string | $Types.Skip
     userAgent?: StringNullableFilter<"RefreshToken"> | string | null | $Types.Skip
     ipAddress?: StringNullableFilter<"RefreshToken"> | string | null | $Types.Skip
+  }
+
+  export type AppointmentUpsertWithWhereUniqueWithoutNoShowMarkedByInput = {
+    where: AppointmentWhereUniqueInput
+    update: XOR<AppointmentUpdateWithoutNoShowMarkedByInput, AppointmentUncheckedUpdateWithoutNoShowMarkedByInput>
+    create: XOR<AppointmentCreateWithoutNoShowMarkedByInput, AppointmentUncheckedCreateWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentUpdateWithWhereUniqueWithoutNoShowMarkedByInput = {
+    where: AppointmentWhereUniqueInput
+    data: XOR<AppointmentUpdateWithoutNoShowMarkedByInput, AppointmentUncheckedUpdateWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentUpdateManyWithWhereWithoutNoShowMarkedByInput = {
+    where: AppointmentScalarWhereInput
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutNoShowMarkedByInput>
+  }
+
+  export type AppointmentScalarWhereInput = {
+    AND?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+    OR?: AppointmentScalarWhereInput[] | $Types.Skip
+    NOT?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Appointment"> | string | $Types.Skip
+    patientId?: StringFilter<"Appointment"> | string | $Types.Skip
+    slotId?: StringFilter<"Appointment"> | string | $Types.Skip
+    status?: EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    cancelledAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFilter<"Appointment"> | Date | string | $Types.Skip
+    arrivedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    lateArrival?: EnumLateArrivalBucketNullableFilter<"Appointment"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null | $Types.Skip
+    noShowMarkedById?: StringNullableFilter<"Appointment"> | string | null | $Types.Skip
   }
 
   export type UserRoleUpsertWithWhereUniqueWithoutUserInput = {
@@ -11930,6 +18372,7 @@ export namespace Prisma {
     medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointments?: AppointmentUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type PatientUncheckedUpdateWithoutUserInput = {
@@ -11946,6 +18389,7 @@ export namespace Prisma {
     medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type UserCreateWithoutPatientInput = {
@@ -11959,6 +18403,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
   }
@@ -11974,6 +18419,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
   }
@@ -11981,6 +18427,42 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutPatientInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutPatientInput, UserUncheckedCreateWithoutPatientInput>
+  }
+
+  export type AppointmentCreateWithoutPatientInput = {
+    id?: string | $Types.Skip
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+    noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateWithoutPatientInput = {
+    id?: string | $Types.Skip
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateOrConnectWithoutPatientInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput>
+  }
+
+  export type AppointmentCreateManyPatientInputEnvelope = {
+    data: AppointmentCreateManyPatientInput | AppointmentCreateManyPatientInput[]
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type UserUpsertWithoutPatientInput = {
@@ -12005,6 +18487,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
   }
@@ -12020,8 +18503,25 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUpsertWithWhereUniqueWithoutPatientInput = {
+    where: AppointmentWhereUniqueInput
+    update: XOR<AppointmentUpdateWithoutPatientInput, AppointmentUncheckedUpdateWithoutPatientInput>
+    create: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput>
+  }
+
+  export type AppointmentUpdateWithWhereUniqueWithoutPatientInput = {
+    where: AppointmentWhereUniqueInput
+    data: XOR<AppointmentUpdateWithoutPatientInput, AppointmentUncheckedUpdateWithoutPatientInput>
+  }
+
+  export type AppointmentUpdateManyWithWhereWithoutPatientInput = {
+    where: AppointmentScalarWhereInput
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutPatientInput>
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
@@ -12034,6 +18534,7 @@ export namespace Prisma {
     isBootstrapAdmin?: boolean | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
@@ -12049,6 +18550,7 @@ export namespace Prisma {
     isBootstrapAdmin?: boolean | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
@@ -12080,6 +18582,7 @@ export namespace Prisma {
     isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -12095,6 +18598,7 @@ export namespace Prisma {
     isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
@@ -12337,6 +18841,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -12352,6 +18857,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -12397,6 +18903,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -12412,6 +18919,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
   }
@@ -12443,6 +18951,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
   }
@@ -12458,6 +18967,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
   }
@@ -12515,6 +19025,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
   }
@@ -12530,8 +19041,401 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+  }
+
+  export type SlotTemplateCreateWithoutSlotsInput = {
+    id?: string | $Types.Skip
+    name: string
+    weekday: number
+    startTime: string
+    endTime: string
+    capacityOverride?: number | null | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type SlotTemplateUncheckedCreateWithoutSlotsInput = {
+    id?: string | $Types.Skip
+    name: string
+    weekday: number
+    startTime: string
+    endTime: string
+    capacityOverride?: number | null | $Types.Skip
+    isActive?: boolean | $Types.Skip
+    lastRunAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type SlotTemplateCreateOrConnectWithoutSlotsInput = {
+    where: SlotTemplateWhereUniqueInput
+    create: XOR<SlotTemplateCreateWithoutSlotsInput, SlotTemplateUncheckedCreateWithoutSlotsInput>
+  }
+
+  export type AppointmentCreateWithoutSlotInput = {
+    id?: string | $Types.Skip
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    patient: PatientCreateNestedOneWithoutAppointmentsInput
+    noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateWithoutSlotInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateOrConnectWithoutSlotInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutSlotInput, AppointmentUncheckedCreateWithoutSlotInput>
+  }
+
+  export type AppointmentCreateManySlotInputEnvelope = {
+    data: AppointmentCreateManySlotInput | AppointmentCreateManySlotInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  export type SlotTemplateUpsertWithoutSlotsInput = {
+    update: XOR<SlotTemplateUpdateWithoutSlotsInput, SlotTemplateUncheckedUpdateWithoutSlotsInput>
+    create: XOR<SlotTemplateCreateWithoutSlotsInput, SlotTemplateUncheckedCreateWithoutSlotsInput>
+    where?: SlotTemplateWhereInput | $Types.Skip
+  }
+
+  export type SlotTemplateUpdateToOneWithWhereWithoutSlotsInput = {
+    where?: SlotTemplateWhereInput | $Types.Skip
+    data: XOR<SlotTemplateUpdateWithoutSlotsInput, SlotTemplateUncheckedUpdateWithoutSlotsInput>
+  }
+
+  export type SlotTemplateUpdateWithoutSlotsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    weekday?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    startTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    endTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    capacityOverride?: NullableIntFieldUpdateOperationsInput | number | null | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type SlotTemplateUncheckedUpdateWithoutSlotsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    weekday?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    startTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    endTime?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    capacityOverride?: NullableIntFieldUpdateOperationsInput | number | null | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type AppointmentUpsertWithWhereUniqueWithoutSlotInput = {
+    where: AppointmentWhereUniqueInput
+    update: XOR<AppointmentUpdateWithoutSlotInput, AppointmentUncheckedUpdateWithoutSlotInput>
+    create: XOR<AppointmentCreateWithoutSlotInput, AppointmentUncheckedCreateWithoutSlotInput>
+  }
+
+  export type AppointmentUpdateWithWhereUniqueWithoutSlotInput = {
+    where: AppointmentWhereUniqueInput
+    data: XOR<AppointmentUpdateWithoutSlotInput, AppointmentUncheckedUpdateWithoutSlotInput>
+  }
+
+  export type AppointmentUpdateManyWithWhereWithoutSlotInput = {
+    where: AppointmentScalarWhereInput
+    data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutSlotInput>
+  }
+
+  export type PatientCreateWithoutAppointmentsInput = {
+    id?: string | $Types.Skip
+    dateOfBirth: Date | string
+    gender: $Enums.Gender
+    address?: string | null | $Types.Skip
+    emergencyContactName?: string | null | $Types.Skip
+    emergencyContactPhone?: string | null | $Types.Skip
+    bloodType?: $Enums.BloodType | null | $Types.Skip
+    allergies?: string | null | $Types.Skip
+    chronicConditions?: string | null | $Types.Skip
+    currentMedications?: string | null | $Types.Skip
+    medicalNotes?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    user: UserCreateNestedOneWithoutPatientInput
+  }
+
+  export type PatientUncheckedCreateWithoutAppointmentsInput = {
+    id?: string | $Types.Skip
+    userId: string
+    dateOfBirth: Date | string
+    gender: $Enums.Gender
+    address?: string | null | $Types.Skip
+    emergencyContactName?: string | null | $Types.Skip
+    emergencyContactPhone?: string | null | $Types.Skip
+    bloodType?: $Enums.BloodType | null | $Types.Skip
+    allergies?: string | null | $Types.Skip
+    chronicConditions?: string | null | $Types.Skip
+    currentMedications?: string | null | $Types.Skip
+    medicalNotes?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type PatientCreateOrConnectWithoutAppointmentsInput = {
+    where: PatientWhereUniqueInput
+    create: XOR<PatientCreateWithoutAppointmentsInput, PatientUncheckedCreateWithoutAppointmentsInput>
+  }
+
+  export type AvailableSlotCreateWithoutAppointmentsInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    template?: SlotTemplateCreateNestedOneWithoutSlotsInput | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedCreateWithoutAppointmentsInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    templateId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+  }
+
+  export type AvailableSlotCreateOrConnectWithoutAppointmentsInput = {
+    where: AvailableSlotWhereUniqueInput
+    create: XOR<AvailableSlotCreateWithoutAppointmentsInput, AvailableSlotUncheckedCreateWithoutAppointmentsInput>
+  }
+
+  export type UserCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    email: string
+    passwordHash: string
+    name: string
+    isActive?: boolean | $Types.Skip
+    phoneNumber?: string | null | $Types.Skip
+    isBootstrapAdmin?: boolean | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
+    assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+  }
+
+  export type UserUncheckedCreateWithoutNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    email: string
+    passwordHash: string
+    name: string
+    isActive?: boolean | $Types.Skip
+    phoneNumber?: string | null | $Types.Skip
+    isBootstrapAdmin?: boolean | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+  }
+
+  export type UserCreateOrConnectWithoutNoShowMarkedByInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput>
+  }
+
+  export type PatientUpsertWithoutAppointmentsInput = {
+    update: XOR<PatientUpdateWithoutAppointmentsInput, PatientUncheckedUpdateWithoutAppointmentsInput>
+    create: XOR<PatientCreateWithoutAppointmentsInput, PatientUncheckedCreateWithoutAppointmentsInput>
+    where?: PatientWhereInput | $Types.Skip
+  }
+
+  export type PatientUpdateToOneWithWhereWithoutAppointmentsInput = {
+    where?: PatientWhereInput | $Types.Skip
+    data: XOR<PatientUpdateWithoutAppointmentsInput, PatientUncheckedUpdateWithoutAppointmentsInput>
+  }
+
+  export type PatientUpdateWithoutAppointmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender | $Types.Skip
+    address?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    bloodType?: NullableEnumBloodTypeFieldUpdateOperationsInput | $Enums.BloodType | null | $Types.Skip
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    chronicConditions?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    currentMedications?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutPatientNestedInput | $Types.Skip
+  }
+
+  export type PatientUncheckedUpdateWithoutAppointmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender | $Types.Skip
+    address?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    bloodType?: NullableEnumBloodTypeFieldUpdateOperationsInput | $Enums.BloodType | null | $Types.Skip
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    chronicConditions?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    currentMedications?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type AvailableSlotUpsertWithoutAppointmentsInput = {
+    update: XOR<AvailableSlotUpdateWithoutAppointmentsInput, AvailableSlotUncheckedUpdateWithoutAppointmentsInput>
+    create: XOR<AvailableSlotCreateWithoutAppointmentsInput, AvailableSlotUncheckedCreateWithoutAppointmentsInput>
+    where?: AvailableSlotWhereInput | $Types.Skip
+  }
+
+  export type AvailableSlotUpdateToOneWithWhereWithoutAppointmentsInput = {
+    where?: AvailableSlotWhereInput | $Types.Skip
+    data: XOR<AvailableSlotUpdateWithoutAppointmentsInput, AvailableSlotUncheckedUpdateWithoutAppointmentsInput>
+  }
+
+  export type AvailableSlotUpdateWithoutAppointmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    template?: SlotTemplateUpdateOneWithoutSlotsNestedInput | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedUpdateWithoutAppointmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    templateId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type UserUpsertWithoutNoShowMarkedByInput = {
+    update: XOR<UserUpdateWithoutNoShowMarkedByInput, UserUncheckedUpdateWithoutNoShowMarkedByInput>
+    create: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput>
+    where?: UserWhereInput | $Types.Skip
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNoShowMarkedByInput = {
+    where?: UserWhereInput | $Types.Skip
+    data: XOR<UserUpdateWithoutNoShowMarkedByInput, UserUncheckedUpdateWithoutNoShowMarkedByInput>
+  }
+
+  export type UserUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    passwordHash?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
+    assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+  }
+
+  export type UserUncheckedUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    passwordHash?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+  }
+
+  export type AvailableSlotCreateWithoutTemplateInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    appointments?: AppointmentCreateNestedManyWithoutSlotInput | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedCreateWithoutTemplateInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutSlotInput | $Types.Skip
+  }
+
+  export type AvailableSlotCreateOrConnectWithoutTemplateInput = {
+    where: AvailableSlotWhereUniqueInput
+    create: XOR<AvailableSlotCreateWithoutTemplateInput, AvailableSlotUncheckedCreateWithoutTemplateInput>
+  }
+
+  export type AvailableSlotCreateManyTemplateInputEnvelope = {
+    data: AvailableSlotCreateManyTemplateInput | AvailableSlotCreateManyTemplateInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  export type AvailableSlotUpsertWithWhereUniqueWithoutTemplateInput = {
+    where: AvailableSlotWhereUniqueInput
+    update: XOR<AvailableSlotUpdateWithoutTemplateInput, AvailableSlotUncheckedUpdateWithoutTemplateInput>
+    create: XOR<AvailableSlotCreateWithoutTemplateInput, AvailableSlotUncheckedCreateWithoutTemplateInput>
+  }
+
+  export type AvailableSlotUpdateWithWhereUniqueWithoutTemplateInput = {
+    where: AvailableSlotWhereUniqueInput
+    data: XOR<AvailableSlotUpdateWithoutTemplateInput, AvailableSlotUncheckedUpdateWithoutTemplateInput>
+  }
+
+  export type AvailableSlotUpdateManyWithWhereWithoutTemplateInput = {
+    where: AvailableSlotScalarWhereInput
+    data: XOR<AvailableSlotUpdateManyMutationInput, AvailableSlotUncheckedUpdateManyWithoutTemplateInput>
+  }
+
+  export type AvailableSlotScalarWhereInput = {
+    AND?: AvailableSlotScalarWhereInput | AvailableSlotScalarWhereInput[] | $Types.Skip
+    OR?: AvailableSlotScalarWhereInput[] | $Types.Skip
+    NOT?: AvailableSlotScalarWhereInput | AvailableSlotScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"AvailableSlot"> | string | $Types.Skip
+    startTime?: DateTimeFilter<"AvailableSlot"> | Date | string | $Types.Skip
+    capacity?: IntFilter<"AvailableSlot"> | number | $Types.Skip
+    bookedCount?: IntFilter<"AvailableSlot"> | number | $Types.Skip
+    templateId?: StringNullableFilter<"AvailableSlot"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"AvailableSlot"> | Date | string | $Types.Skip
   }
 
   export type RefreshTokenCreateManyUserInput = {
@@ -12542,6 +19446,19 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     userAgent?: string | null | $Types.Skip
     ipAddress?: string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateManyNoShowMarkedByInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
   }
 
   export type UserRoleCreateManyUserInput = {
@@ -12588,6 +19505,45 @@ export namespace Prisma {
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
+  export type AppointmentUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutNoShowMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+  }
+
   export type UserRoleUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string | $Types.Skip
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -12628,6 +19584,58 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     roleId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type AppointmentCreateManyPatientInput = {
+    id?: string | $Types.Skip
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
+  }
+
+  export type AppointmentUpdateWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
   export type RolePermissionCreateManyModuleInput = {
@@ -12704,6 +19712,92 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateManySlotInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
+  }
+
+  export type AppointmentUpdateWithoutSlotInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateWithoutSlotInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateManyWithoutSlotInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type AvailableSlotCreateManyTemplateInput = {
+    id?: string | $Types.Skip
+    startTime: Date | string
+    capacity: number
+    bookedCount?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+  }
+
+  export type AvailableSlotUpdateWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointments?: AppointmentUpdateManyWithoutSlotNestedInput | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedUpdateWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedUpdateManyWithoutSlotNestedInput | $Types.Skip
+  }
+
+  export type AvailableSlotUncheckedUpdateManyWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    capacity?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    bookedCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
 

@@ -46,10 +46,11 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  refreshTokens RefreshToken[]
-  userRoles     UserRole[]     @relation("UserRoles")
-  assignedRoles UserRole[]     @relation("AssignedRoles")
-  patient       Patient?
+  refreshTokens  RefreshToken[]
+  noShowMarkedBy Appointment[]
+  userRoles      UserRole[]     @relation("UserRoles")
+  assignedRoles  UserRole[]     @relation("AssignedRoles")
+  patient        Patient?
 
   @@map("users") // Name of the table
 }
@@ -73,7 +74,8 @@ model Patient {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
 
   @@index([userId])
   @@map("patients")
@@ -149,4 +151,84 @@ model UserRole {
   @@unique([userId, roleId])
   @@index([userId])
   @@map("user_roles")
+}
+
+model AvailableSlot {
+  id           String        @id @default(cuid())
+  startTime    DateTime      @unique
+  capacity     Int
+  bookedCount  Int           @default(0)
+  templateId   String?
+  template     SlotTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+
+  @@index([startTime])
+  @@index([templateId])
+  @@map("available_slots")
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  patientId   String
+  slotId      String
+  status      AppointmentStatus @default(BOOKED)
+  bookedAt    DateTime          @default(now())
+  cancelledAt DateTime?
+  updatedAt   DateTime          @updatedAt
+
+  arrivedAt        DateTime?
+  lateArrival      LateArrivalBucket? // set when status → ARRIVED
+  noShowAt         DateTime?
+  noShowMarkedById String?
+
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Restrict)
+  slot           AvailableSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  noShowMarkedBy User?         @relation(fields: [noShowMarkedById], references: [id], onDelete: SetNull)
+
+  @@index([patientId, status])
+  @@index([slotId, status])
+  @@map("appointments")
+}
+
+enum AppointmentStatus {
+  BOOKED
+  LATE_ARRIVING // auto-flipped at slotTime - 5min if no scan yet
+  ARRIVED
+  IN_PROGRESS
+  DONE
+  NO_SHOW
+  CANCELLED
+}
+
+enum LateArrivalBucket {
+  ON_TIME // scan before slotTime-5min OR within slotTime-5min..slotTime+5min window (i.e., not late or barely late, no front-skip)
+  FRONT_INSERT // scan in slotTime-5min..slotTime+15min after they were marked LATE_ARRIVING
+  VERY_LATE // scan after slotTime+15min
+}
+
+model SlotTemplate {
+  id               String    @id @default(cuid())
+  name             String
+  weekday          Int
+  startTime        String
+  endTime          String
+  capacityOverride Int?
+  isActive         Boolean   @default(true)
+  lastRunAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  slots AvailableSlot[]
+
+  @@map("slot_templates")
+}
+
+model Setting {
+  key         String   @id
+  value       String
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+
+  @@map("settings")
 }

@@ -193,6 +193,49 @@ exports.Prisma.UserRoleScalarFieldEnum = {
   assignedById: 'assignedById'
 };
 
+exports.Prisma.AvailableSlotScalarFieldEnum = {
+  id: 'id',
+  startTime: 'startTime',
+  capacity: 'capacity',
+  bookedCount: 'bookedCount',
+  templateId: 'templateId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AppointmentScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  slotId: 'slotId',
+  status: 'status',
+  bookedAt: 'bookedAt',
+  cancelledAt: 'cancelledAt',
+  updatedAt: 'updatedAt',
+  arrivedAt: 'arrivedAt',
+  lateArrival: 'lateArrival',
+  noShowAt: 'noShowAt',
+  noShowMarkedById: 'noShowMarkedById'
+};
+
+exports.Prisma.SlotTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  weekday: 'weekday',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  capacityOverride: 'capacityOverride',
+  isActive: 'isActive',
+  lastRunAt: 'lastRunAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SettingScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt',
+  updatedById: 'updatedById'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -232,6 +275,22 @@ exports.Action = exports.$Enums.Action = {
   UPDATE_MEDICAL: 'UPDATE_MEDICAL'
 };
 
+exports.AppointmentStatus = exports.$Enums.AppointmentStatus = {
+  BOOKED: 'BOOKED',
+  LATE_ARRIVING: 'LATE_ARRIVING',
+  ARRIVED: 'ARRIVED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+  NO_SHOW: 'NO_SHOW',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.LateArrivalBucket = exports.$Enums.LateArrivalBucket = {
+  ON_TIME: 'ON_TIME',
+  FRONT_INSERT: 'FRONT_INSERT',
+  VERY_LATE: 'VERY_LATE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Patient: 'Patient',
@@ -239,7 +298,11 @@ exports.Prisma.ModelName = {
   Module: 'Module',
   Role: 'Role',
   RolePermission: 'RolePermission',
-  UserRole: 'UserRole'
+  UserRole: 'UserRole',
+  AvailableSlot: 'AvailableSlot',
+  Appointment: 'Appointment',
+  SlotTemplate: 'SlotTemplate',
+  Setting: 'Setting'
 };
 
 /**
