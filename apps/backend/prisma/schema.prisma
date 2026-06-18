@@ -46,11 +46,12 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  refreshTokens  RefreshToken[]
-  noShowMarkedBy Appointment[]
-  userRoles      UserRole[]     @relation("UserRoles")
-  assignedRoles  UserRole[]     @relation("AssignedRoles")
-  patient        Patient?
+  refreshTokens   RefreshToken[]
+  noShowMarkedBy  Appointment[]
+  userRoles       UserRole[]     @relation("UserRoles")
+  assignedRoles   UserRole[]     @relation("AssignedRoles")
+  patient         Patient?
+  assignedTickets Ticket[]       @relation("DoctorTickets")
 
   @@map("users") // Name of the table
 }
@@ -76,6 +77,7 @@ model Patient {
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
+  tickets      Ticket[]
 
   @@index([userId])
   @@map("patients")
@@ -185,6 +187,7 @@ model Appointment {
   patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Restrict)
   slot           AvailableSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
   noShowMarkedBy User?         @relation(fields: [noShowMarkedById], references: [id], onDelete: SetNull)
+  ticket         Ticket?
 
   @@index([patientId, status])
   @@index([slotId, status])
@@ -231,4 +234,53 @@ model Setting {
   updatedById String?
 
   @@map("settings")
+}
+
+enum TicketStatus {
+  WAITING
+  CALLED
+  IN_PROGRESS
+  DONE
+  SKIPPED
+  NO_SHOW
+}
+
+enum TicketSourceType {
+  WALK_IN
+  APPOINTMENT
+}
+
+model Ticket {
+  id            String           @id @default(cuid())
+  patientId     String
+  sourceType    TicketSourceType
+  appointmentId String?          @unique
+  status        TicketStatus     @default(WAITING)
+  priority      Boolean          @default(false)
+
+  // Ordering inputs denormalized at creation so the live-queue sort never joins
+  // through Appointment -> Slot. null for WALK_IN; set for APPOINTMENT.
+  lateArrivalBucket LateArrivalBucket?
+  scheduledSlotTime DateTime?
+  joinedQueueAt     DateTime           @default(now()) // within-bucket tiebreak (scan/arrival order)
+
+  assignedDoctorId String?
+  skipCount        Int     @default(0)
+
+  calledAt     DateTime?
+  inProgressAt DateTime?
+  doneAt       DateTime?
+  skippedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patient        Patient      @relation(fields: [patientId], references: [id], onDelete: Restrict)
+  appointment    Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  assignedDoctor User?        @relation("DoctorTickets", fields: [assignedDoctorId], references: [id], onDelete: SetNull)
+
+  @@index([status, joinedQueueAt])
+  @@index([patientId, status])
+  @@index([assignedDoctorId, status])
+  @@map("tickets")
 }

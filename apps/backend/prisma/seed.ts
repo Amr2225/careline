@@ -149,6 +149,14 @@ const settings = [
             5: null,
             6: null
         })
+    },
+    {
+        key: "walkInEnabled",
+        value: "true"
+    },
+    {
+        key: "walkInMaxQueueLength",
+        value: "20"
     }
 ]
 

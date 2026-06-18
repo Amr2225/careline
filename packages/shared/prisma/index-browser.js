@@ -236,6 +236,26 @@ exports.Prisma.SettingScalarFieldEnum = {
   updatedById: 'updatedById'
 };
 
+exports.Prisma.TicketScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  sourceType: 'sourceType',
+  appointmentId: 'appointmentId',
+  status: 'status',
+  priority: 'priority',
+  lateArrivalBucket: 'lateArrivalBucket',
+  scheduledSlotTime: 'scheduledSlotTime',
+  joinedQueueAt: 'joinedQueueAt',
+  assignedDoctorId: 'assignedDoctorId',
+  skipCount: 'skipCount',
+  calledAt: 'calledAt',
+  inProgressAt: 'inProgressAt',
+  doneAt: 'doneAt',
+  skippedAt: 'skippedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -291,6 +311,20 @@ exports.LateArrivalBucket = exports.$Enums.LateArrivalBucket = {
   VERY_LATE: 'VERY_LATE'
 };
 
+exports.TicketSourceType = exports.$Enums.TicketSourceType = {
+  WALK_IN: 'WALK_IN',
+  APPOINTMENT: 'APPOINTMENT'
+};
+
+exports.TicketStatus = exports.$Enums.TicketStatus = {
+  WAITING: 'WAITING',
+  CALLED: 'CALLED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+  SKIPPED: 'SKIPPED',
+  NO_SHOW: 'NO_SHOW'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Patient: 'Patient',
@@ -302,7 +336,8 @@ exports.Prisma.ModelName = {
   AvailableSlot: 'AvailableSlot',
   Appointment: 'Appointment',
   SlotTemplate: 'SlotTemplate',
-  Setting: 'Setting'
+  Setting: 'Setting',
+  Ticket: 'Ticket'
 };
 
 /**

@@ -18,6 +18,7 @@ import { SlotsModule } from './slots/slots.module';
 import { SlotTemplatesModule } from './slot-templates/slot-templates.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { ArrivalModule } from './arrival/arrival.module';
+import { QueueModule } from './queue/queue.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 
@@ -40,6 +41,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     SlotTemplatesModule,
     AppointmentsModule,
     ArrivalModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [

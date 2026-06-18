@@ -5,10 +5,15 @@ import { AppointmentWithSlot } from '@careline/shared/types/appointment.type';
 import { Action } from '@careline/shared/types/rbac.type';
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { FRONT_INSERT_GRACE_MINUTES } from './arrival.constants';
+import { TicketService } from '@/queue/ticket.service';
 
 @Injectable()
 export class ArrivalService {
-    constructor(private readonly dbService: DbService, private readonly rbacService: RbacService) { }
+    constructor(
+        private readonly dbService: DbService,
+        private readonly rbacService: RbacService,
+        private readonly ticketService: TicketService,
+    ) { }
 
     async recordArrival(appointmentId: string, callerUserId: string): Promise<AppointmentWithSlot> {
         const appt = await this.dbService.appointment.findUnique({
@@ -58,8 +63,8 @@ export class ArrivalService {
                 include: { slot: true }
             })
 
-            // Phase 6:  Create Ticket based on bucket
-            // await this.ticketService.createFromAppointment(tx, updated);
+            // Materialize the queue ticket for this arrival (Phase 6).
+            await this.ticketService.createFromAppointment(tx, updated);
             return updated;
         }) as AppointmentWithSlot
     }

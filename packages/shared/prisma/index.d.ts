@@ -68,6 +68,11 @@ export type SlotTemplate = $Result.DefaultSelection<Prisma.$SlotTemplatePayload>
  * 
  */
 export type Setting = $Result.DefaultSelection<Prisma.$SettingPayload>
+/**
+ * Model Ticket
+ * 
+ */
+export type Ticket = $Result.DefaultSelection<Prisma.$TicketPayload>
 
 /**
  * Enums
@@ -128,6 +133,26 @@ export const LateArrivalBucket: {
 
 export type LateArrivalBucket = (typeof LateArrivalBucket)[keyof typeof LateArrivalBucket]
 
+
+export const TicketStatus: {
+  WAITING: 'WAITING',
+  CALLED: 'CALLED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+  SKIPPED: 'SKIPPED',
+  NO_SHOW: 'NO_SHOW'
+};
+
+export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketSourceType: {
+  WALK_IN: 'WALK_IN',
+  APPOINTMENT: 'APPOINTMENT'
+};
+
+export type TicketSourceType = (typeof TicketSourceType)[keyof typeof TicketSourceType]
+
 }
 
 export type Gender = $Enums.Gender
@@ -149,6 +174,14 @@ export const AppointmentStatus: typeof $Enums.AppointmentStatus
 export type LateArrivalBucket = $Enums.LateArrivalBucket
 
 export const LateArrivalBucket: typeof $Enums.LateArrivalBucket
+
+export type TicketStatus = $Enums.TicketStatus
+
+export const TicketStatus: typeof $Enums.TicketStatus
+
+export type TicketSourceType = $Enums.TicketSourceType
+
+export const TicketSourceType: typeof $Enums.TicketSourceType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -380,6 +413,16 @@ export class PrismaClient<
     * ```
     */
   get setting(): Prisma.SettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ticket`: Exposes CRUD operations for the **Ticket** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tickets
+    * const tickets = await prisma.ticket.findMany()
+    * ```
+    */
+  get ticket(): Prisma.TicketDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -829,7 +872,8 @@ export namespace Prisma {
     AvailableSlot: 'AvailableSlot',
     Appointment: 'Appointment',
     SlotTemplate: 'SlotTemplate',
-    Setting: 'Setting'
+    Setting: 'Setting',
+    Ticket: 'Ticket'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -845,7 +889,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "patient" | "refreshToken" | "module" | "role" | "rolePermission" | "userRole" | "availableSlot" | "appointment" | "slotTemplate" | "setting"
+      modelProps: "user" | "patient" | "refreshToken" | "module" | "role" | "rolePermission" | "userRole" | "availableSlot" | "appointment" | "slotTemplate" | "setting" | "ticket"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1663,6 +1707,80 @@ export namespace Prisma {
           }
         }
       }
+      Ticket: {
+        payload: Prisma.$TicketPayload<ExtArgs>
+        fields: Prisma.TicketFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TicketFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TicketFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>
+          }
+          findFirst: {
+            args: Prisma.TicketFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TicketFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>
+          }
+          findMany: {
+            args: Prisma.TicketFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>[]
+          }
+          create: {
+            args: Prisma.TicketCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>
+          }
+          createMany: {
+            args: Prisma.TicketCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TicketCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>[]
+          }
+          delete: {
+            args: Prisma.TicketDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>
+          }
+          update: {
+            args: Prisma.TicketUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>
+          }
+          deleteMany: {
+            args: Prisma.TicketDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TicketUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TicketUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>[]
+          }
+          upsert: {
+            args: Prisma.TicketUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TicketPayload>
+          }
+          aggregate: {
+            args: Prisma.TicketAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTicket>
+          }
+          groupBy: {
+            args: Prisma.TicketGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TicketGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TicketCountArgs<ExtArgs>
+            result: $Utils.Optional<TicketCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1782,6 +1900,7 @@ export namespace Prisma {
     appointment?: AppointmentOmit
     slotTemplate?: SlotTemplateOmit
     setting?: SettingOmit
+    ticket?: TicketOmit
   }
 
   /* Types for Logging */
@@ -1866,6 +1985,7 @@ export namespace Prisma {
     noShowMarkedBy: number
     userRoles: number
     assignedRoles: number
+    assignedTickets: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1873,6 +1993,7 @@ export namespace Prisma {
     noShowMarkedBy?: boolean | UserCountOutputTypeCountNoShowMarkedByArgs
     userRoles?: boolean | UserCountOutputTypeCountUserRolesArgs
     assignedRoles?: boolean | UserCountOutputTypeCountAssignedRolesArgs
+    assignedTickets?: boolean | UserCountOutputTypeCountAssignedTicketsArgs
   }
 
   // Custom InputTypes
@@ -1914,6 +2035,13 @@ export namespace Prisma {
     where?: UserRoleWhereInput | $Types.Skip
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAssignedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketWhereInput | $Types.Skip
+  }
+
 
   /**
    * Count Type PatientCountOutputType
@@ -1921,10 +2049,12 @@ export namespace Prisma {
 
   export type PatientCountOutputType = {
     appointments: number
+    tickets: number
   }
 
   export type PatientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     appointments?: boolean | PatientCountOutputTypeCountAppointmentsArgs
+    tickets?: boolean | PatientCountOutputTypeCountTicketsArgs
   }
 
   // Custom InputTypes
@@ -1943,6 +2073,13 @@ export namespace Prisma {
    */
   export type PatientCountOutputTypeCountAppointmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AppointmentWhereInput | $Types.Skip
+  }
+
+  /**
+   * PatientCountOutputType without action
+   */
+  export type PatientCountOutputTypeCountTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketWhereInput | $Types.Skip
   }
 
 
@@ -2284,6 +2421,7 @@ export namespace Prisma {
     userRoles?: boolean | User$userRolesArgs<ExtArgs> | $Types.Skip
     assignedRoles?: boolean | User$assignedRolesArgs<ExtArgs> | $Types.Skip
     patient?: boolean | User$patientArgs<ExtArgs> | $Types.Skip
+    assignedTickets?: boolean | User$assignedTicketsArgs<ExtArgs> | $Types.Skip
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["user"]>
 
@@ -2330,6 +2468,7 @@ export namespace Prisma {
     userRoles?: boolean | User$userRolesArgs<ExtArgs> | $Types.Skip
     assignedRoles?: boolean | User$assignedRolesArgs<ExtArgs> | $Types.Skip
     patient?: boolean | User$patientArgs<ExtArgs> | $Types.Skip
+    assignedTickets?: boolean | User$assignedTicketsArgs<ExtArgs> | $Types.Skip
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2343,6 +2482,7 @@ export namespace Prisma {
       userRoles: Prisma.$UserRolePayload<ExtArgs>[]
       assignedRoles: Prisma.$UserRolePayload<ExtArgs>[]
       patient: Prisma.$PatientPayload<ExtArgs> | null
+      assignedTickets: Prisma.$TicketPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2753,6 +2893,7 @@ export namespace Prisma {
     userRoles<T extends User$userRolesArgs<ExtArgs> = {}>(args?: Subset<T, User$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedRoles<T extends User$assignedRolesArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     patient<T extends User$patientArgs<ExtArgs> = {}>(args?: Subset<T, User$patientArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    assignedTickets<T extends User$assignedTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3299,6 +3440,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.assignedTickets
+   */
+  export type User$assignedTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    where?: TicketWhereInput | $Types.Skip
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[] | $Types.Skip
+    cursor?: TicketWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3555,6 +3720,7 @@ export namespace Prisma {
     updatedAt?: boolean | $Types.Skip
     user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
     appointments?: boolean | Patient$appointmentsArgs<ExtArgs> | $Types.Skip
+    tickets?: boolean | Patient$ticketsArgs<ExtArgs> | $Types.Skip
     _count?: boolean | PatientCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["patient"]>
 
@@ -3615,6 +3781,7 @@ export namespace Prisma {
   export type PatientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
     appointments?: boolean | Patient$appointmentsArgs<ExtArgs> | $Types.Skip
+    tickets?: boolean | Patient$ticketsArgs<ExtArgs> | $Types.Skip
     _count?: boolean | PatientCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type PatientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3629,6 +3796,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       appointments: Prisma.$AppointmentPayload<ExtArgs>[]
+      tickets: Prisma.$TicketPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4041,6 +4209,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     appointments<T extends Patient$appointmentsArgs<ExtArgs> = {}>(args?: Subset<T, Patient$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tickets<T extends Patient$ticketsArgs<ExtArgs> = {}>(args?: Subset<T, Patient$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4506,6 +4675,30 @@ export namespace Prisma {
     take?: number | $Types.Skip
     skip?: number | $Types.Skip
     distinct?: AppointmentScalarFieldEnum | AppointmentScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Patient.tickets
+   */
+  export type Patient$ticketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    where?: TicketWhereInput | $Types.Skip
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[] | $Types.Skip
+    cursor?: TicketWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11341,6 +11534,7 @@ export namespace Prisma {
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
     noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+    ticket?: boolean | Appointment$ticketArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["appointment"]>
 
   export type AppointmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11396,6 +11590,7 @@ export namespace Prisma {
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
     slot?: boolean | AvailableSlotDefaultArgs<ExtArgs> | $Types.Skip
     noShowMarkedBy?: boolean | Appointment$noShowMarkedByArgs<ExtArgs> | $Types.Skip
+    ticket?: boolean | Appointment$ticketArgs<ExtArgs> | $Types.Skip
   }
   export type AppointmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
@@ -11414,6 +11609,7 @@ export namespace Prisma {
       patient: Prisma.$PatientPayload<ExtArgs>
       slot: Prisma.$AvailableSlotPayload<ExtArgs>
       noShowMarkedBy: Prisma.$UserPayload<ExtArgs> | null
+      ticket: Prisma.$TicketPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11824,6 +12020,7 @@ export namespace Prisma {
     patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     slot<T extends AvailableSlotDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AvailableSlotDefaultArgs<ExtArgs>>): Prisma__AvailableSlotClient<$Result.GetResult<Prisma.$AvailableSlotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     noShowMarkedBy<T extends Appointment$noShowMarkedByArgs<ExtArgs> = {}>(args?: Subset<T, Appointment$noShowMarkedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    ticket<T extends Appointment$ticketArgs<ExtArgs> = {}>(args?: Subset<T, Appointment$ticketArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12281,6 +12478,25 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput | $Types.Skip
+  }
+
+  /**
+   * Appointment.ticket
+   */
+  export type Appointment$ticketArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    where?: TicketWhereInput | $Types.Skip
   }
 
   /**
@@ -14468,6 +14684,1313 @@ export namespace Prisma {
 
 
   /**
+   * Model Ticket
+   */
+
+  export type AggregateTicket = {
+    _count: TicketCountAggregateOutputType | null
+    _avg: TicketAvgAggregateOutputType | null
+    _sum: TicketSumAggregateOutputType | null
+    _min: TicketMinAggregateOutputType | null
+    _max: TicketMaxAggregateOutputType | null
+  }
+
+  export type TicketAvgAggregateOutputType = {
+    skipCount: number | null
+  }
+
+  export type TicketSumAggregateOutputType = {
+    skipCount: number | null
+  }
+
+  export type TicketMinAggregateOutputType = {
+    id: string | null
+    patientId: string | null
+    sourceType: $Enums.TicketSourceType | null
+    appointmentId: string | null
+    status: $Enums.TicketStatus | null
+    priority: boolean | null
+    lateArrivalBucket: $Enums.LateArrivalBucket | null
+    scheduledSlotTime: Date | null
+    joinedQueueAt: Date | null
+    assignedDoctorId: string | null
+    skipCount: number | null
+    calledAt: Date | null
+    inProgressAt: Date | null
+    doneAt: Date | null
+    skippedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TicketMaxAggregateOutputType = {
+    id: string | null
+    patientId: string | null
+    sourceType: $Enums.TicketSourceType | null
+    appointmentId: string | null
+    status: $Enums.TicketStatus | null
+    priority: boolean | null
+    lateArrivalBucket: $Enums.LateArrivalBucket | null
+    scheduledSlotTime: Date | null
+    joinedQueueAt: Date | null
+    assignedDoctorId: string | null
+    skipCount: number | null
+    calledAt: Date | null
+    inProgressAt: Date | null
+    doneAt: Date | null
+    skippedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TicketCountAggregateOutputType = {
+    id: number
+    patientId: number
+    sourceType: number
+    appointmentId: number
+    status: number
+    priority: number
+    lateArrivalBucket: number
+    scheduledSlotTime: number
+    joinedQueueAt: number
+    assignedDoctorId: number
+    skipCount: number
+    calledAt: number
+    inProgressAt: number
+    doneAt: number
+    skippedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TicketAvgAggregateInputType = {
+    skipCount?: true | $Types.Skip
+  }
+
+  export type TicketSumAggregateInputType = {
+    skipCount?: true | $Types.Skip
+  }
+
+  export type TicketMinAggregateInputType = {
+    id?: true | $Types.Skip
+    patientId?: true | $Types.Skip
+    sourceType?: true | $Types.Skip
+    appointmentId?: true | $Types.Skip
+    status?: true | $Types.Skip
+    priority?: true | $Types.Skip
+    lateArrivalBucket?: true | $Types.Skip
+    scheduledSlotTime?: true | $Types.Skip
+    joinedQueueAt?: true | $Types.Skip
+    assignedDoctorId?: true | $Types.Skip
+    skipCount?: true | $Types.Skip
+    calledAt?: true | $Types.Skip
+    inProgressAt?: true | $Types.Skip
+    doneAt?: true | $Types.Skip
+    skippedAt?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+  }
+
+  export type TicketMaxAggregateInputType = {
+    id?: true | $Types.Skip
+    patientId?: true | $Types.Skip
+    sourceType?: true | $Types.Skip
+    appointmentId?: true | $Types.Skip
+    status?: true | $Types.Skip
+    priority?: true | $Types.Skip
+    lateArrivalBucket?: true | $Types.Skip
+    scheduledSlotTime?: true | $Types.Skip
+    joinedQueueAt?: true | $Types.Skip
+    assignedDoctorId?: true | $Types.Skip
+    skipCount?: true | $Types.Skip
+    calledAt?: true | $Types.Skip
+    inProgressAt?: true | $Types.Skip
+    doneAt?: true | $Types.Skip
+    skippedAt?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+  }
+
+  export type TicketCountAggregateInputType = {
+    id?: true | $Types.Skip
+    patientId?: true | $Types.Skip
+    sourceType?: true | $Types.Skip
+    appointmentId?: true | $Types.Skip
+    status?: true | $Types.Skip
+    priority?: true | $Types.Skip
+    lateArrivalBucket?: true | $Types.Skip
+    scheduledSlotTime?: true | $Types.Skip
+    joinedQueueAt?: true | $Types.Skip
+    assignedDoctorId?: true | $Types.Skip
+    skipCount?: true | $Types.Skip
+    calledAt?: true | $Types.Skip
+    inProgressAt?: true | $Types.Skip
+    doneAt?: true | $Types.Skip
+    skippedAt?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
+  }
+
+  export type TicketAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Ticket to aggregate.
+     */
+    where?: TicketWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tickets to fetch.
+     */
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TicketWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tickets from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tickets.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Tickets
+    **/
+    _count?: true | TicketCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TicketAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TicketSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TicketMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TicketMaxAggregateInputType
+  }
+
+  export type GetTicketAggregateType<T extends TicketAggregateArgs> = {
+        [P in keyof T & keyof AggregateTicket]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTicket[P]>
+      : GetScalarType<T[P], AggregateTicket[P]>
+  }
+
+
+
+
+  export type TicketGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TicketWhereInput | $Types.Skip
+    orderBy?: TicketOrderByWithAggregationInput | TicketOrderByWithAggregationInput[] | $Types.Skip
+    by: TicketScalarFieldEnum[] | TicketScalarFieldEnum
+    having?: TicketScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    _count?: TicketCountAggregateInputType | true
+    _avg?: TicketAvgAggregateInputType
+    _sum?: TicketSumAggregateInputType
+    _min?: TicketMinAggregateInputType
+    _max?: TicketMaxAggregateInputType
+  }
+
+  export type TicketGroupByOutputType = {
+    id: string
+    patientId: string
+    sourceType: $Enums.TicketSourceType
+    appointmentId: string | null
+    status: $Enums.TicketStatus
+    priority: boolean
+    lateArrivalBucket: $Enums.LateArrivalBucket | null
+    scheduledSlotTime: Date | null
+    joinedQueueAt: Date
+    assignedDoctorId: string | null
+    skipCount: number
+    calledAt: Date | null
+    inProgressAt: Date | null
+    doneAt: Date | null
+    skippedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TicketCountAggregateOutputType | null
+    _avg: TicketAvgAggregateOutputType | null
+    _sum: TicketSumAggregateOutputType | null
+    _min: TicketMinAggregateOutputType | null
+    _max: TicketMaxAggregateOutputType | null
+  }
+
+  type GetTicketGroupByPayload<T extends TicketGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TicketGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TicketGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TicketGroupByOutputType[P]>
+            : GetScalarType<T[P], TicketGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TicketSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    sourceType?: boolean | $Types.Skip
+    appointmentId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: boolean | $Types.Skip
+    scheduledSlotTime?: boolean | $Types.Skip
+    joinedQueueAt?: boolean | $Types.Skip
+    assignedDoctorId?: boolean | $Types.Skip
+    skipCount?: boolean | $Types.Skip
+    calledAt?: boolean | $Types.Skip
+    inProgressAt?: boolean | $Types.Skip
+    doneAt?: boolean | $Types.Skip
+    skippedAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    appointment?: boolean | Ticket$appointmentArgs<ExtArgs> | $Types.Skip
+    assignedDoctor?: boolean | Ticket$assignedDoctorArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["ticket"]>
+
+  export type TicketSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    sourceType?: boolean | $Types.Skip
+    appointmentId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: boolean | $Types.Skip
+    scheduledSlotTime?: boolean | $Types.Skip
+    joinedQueueAt?: boolean | $Types.Skip
+    assignedDoctorId?: boolean | $Types.Skip
+    skipCount?: boolean | $Types.Skip
+    calledAt?: boolean | $Types.Skip
+    inProgressAt?: boolean | $Types.Skip
+    doneAt?: boolean | $Types.Skip
+    skippedAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    appointment?: boolean | Ticket$appointmentArgs<ExtArgs> | $Types.Skip
+    assignedDoctor?: boolean | Ticket$assignedDoctorArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["ticket"]>
+
+  export type TicketSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    sourceType?: boolean | $Types.Skip
+    appointmentId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: boolean | $Types.Skip
+    scheduledSlotTime?: boolean | $Types.Skip
+    joinedQueueAt?: boolean | $Types.Skip
+    assignedDoctorId?: boolean | $Types.Skip
+    skipCount?: boolean | $Types.Skip
+    calledAt?: boolean | $Types.Skip
+    inProgressAt?: boolean | $Types.Skip
+    doneAt?: boolean | $Types.Skip
+    skippedAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    appointment?: boolean | Ticket$appointmentArgs<ExtArgs> | $Types.Skip
+    assignedDoctor?: boolean | Ticket$assignedDoctorArgs<ExtArgs> | $Types.Skip
+  }, ExtArgs["result"]["ticket"]>
+
+  export type TicketSelectScalar = {
+    id?: boolean | $Types.Skip
+    patientId?: boolean | $Types.Skip
+    sourceType?: boolean | $Types.Skip
+    appointmentId?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: boolean | $Types.Skip
+    scheduledSlotTime?: boolean | $Types.Skip
+    joinedQueueAt?: boolean | $Types.Skip
+    assignedDoctorId?: boolean | $Types.Skip
+    skipCount?: boolean | $Types.Skip
+    calledAt?: boolean | $Types.Skip
+    inProgressAt?: boolean | $Types.Skip
+    doneAt?: boolean | $Types.Skip
+    skippedAt?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+  }
+
+  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "sourceType" | "appointmentId" | "status" | "priority" | "lateArrivalBucket" | "scheduledSlotTime" | "joinedQueueAt" | "assignedDoctorId" | "skipCount" | "calledAt" | "inProgressAt" | "doneAt" | "skippedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"], $Types.Skip>
+  export type TicketInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    appointment?: boolean | Ticket$appointmentArgs<ExtArgs> | $Types.Skip
+    assignedDoctor?: boolean | Ticket$assignedDoctorArgs<ExtArgs> | $Types.Skip
+  }
+  export type TicketIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    appointment?: boolean | Ticket$appointmentArgs<ExtArgs> | $Types.Skip
+    assignedDoctor?: boolean | Ticket$assignedDoctorArgs<ExtArgs> | $Types.Skip
+  }
+  export type TicketIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientDefaultArgs<ExtArgs> | $Types.Skip
+    appointment?: boolean | Ticket$appointmentArgs<ExtArgs> | $Types.Skip
+    assignedDoctor?: boolean | Ticket$assignedDoctorArgs<ExtArgs> | $Types.Skip
+  }
+
+  export type $TicketPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Ticket"
+    objects: {
+      patient: Prisma.$PatientPayload<ExtArgs>
+      appointment: Prisma.$AppointmentPayload<ExtArgs> | null
+      assignedDoctor: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      patientId: string
+      sourceType: $Enums.TicketSourceType
+      appointmentId: string | null
+      status: $Enums.TicketStatus
+      priority: boolean
+      lateArrivalBucket: $Enums.LateArrivalBucket | null
+      scheduledSlotTime: Date | null
+      joinedQueueAt: Date
+      assignedDoctorId: string | null
+      skipCount: number
+      calledAt: Date | null
+      inProgressAt: Date | null
+      doneAt: Date | null
+      skippedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["ticket"]>
+    composites: {}
+  }
+
+  type TicketGetPayload<S extends boolean | null | undefined | TicketDefaultArgs> = $Result.GetResult<Prisma.$TicketPayload, S>
+
+  type TicketCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TicketFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TicketCountAggregateInputType | true
+    }
+
+  export interface TicketDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Ticket'], meta: { name: 'Ticket' } }
+    /**
+     * Find zero or one Ticket that matches the filter.
+     * @param {TicketFindUniqueArgs} args - Arguments to find a Ticket
+     * @example
+     * // Get one Ticket
+     * const ticket = await prisma.ticket.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TicketFindUniqueArgs>(args: SelectSubset<T, TicketFindUniqueArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Ticket that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TicketFindUniqueOrThrowArgs} args - Arguments to find a Ticket
+     * @example
+     * // Get one Ticket
+     * const ticket = await prisma.ticket.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TicketFindUniqueOrThrowArgs>(args: SelectSubset<T, TicketFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Ticket that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketFindFirstArgs} args - Arguments to find a Ticket
+     * @example
+     * // Get one Ticket
+     * const ticket = await prisma.ticket.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TicketFindFirstArgs>(args?: SelectSubset<T, TicketFindFirstArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Ticket that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketFindFirstOrThrowArgs} args - Arguments to find a Ticket
+     * @example
+     * // Get one Ticket
+     * const ticket = await prisma.ticket.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TicketFindFirstOrThrowArgs>(args?: SelectSubset<T, TicketFindFirstOrThrowArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Tickets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tickets
+     * const tickets = await prisma.ticket.findMany()
+     * 
+     * // Get first 10 Tickets
+     * const tickets = await prisma.ticket.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ticketWithIdOnly = await prisma.ticket.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TicketFindManyArgs>(args?: SelectSubset<T, TicketFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Ticket.
+     * @param {TicketCreateArgs} args - Arguments to create a Ticket.
+     * @example
+     * // Create one Ticket
+     * const Ticket = await prisma.ticket.create({
+     *   data: {
+     *     // ... data to create a Ticket
+     *   }
+     * })
+     * 
+     */
+    create<T extends TicketCreateArgs>(args: SelectSubset<T, TicketCreateArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Tickets.
+     * @param {TicketCreateManyArgs} args - Arguments to create many Tickets.
+     * @example
+     * // Create many Tickets
+     * const ticket = await prisma.ticket.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TicketCreateManyArgs>(args?: SelectSubset<T, TicketCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Tickets and returns the data saved in the database.
+     * @param {TicketCreateManyAndReturnArgs} args - Arguments to create many Tickets.
+     * @example
+     * // Create many Tickets
+     * const ticket = await prisma.ticket.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Tickets and only return the `id`
+     * const ticketWithIdOnly = await prisma.ticket.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TicketCreateManyAndReturnArgs>(args?: SelectSubset<T, TicketCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Ticket.
+     * @param {TicketDeleteArgs} args - Arguments to delete one Ticket.
+     * @example
+     * // Delete one Ticket
+     * const Ticket = await prisma.ticket.delete({
+     *   where: {
+     *     // ... filter to delete one Ticket
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TicketDeleteArgs>(args: SelectSubset<T, TicketDeleteArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Ticket.
+     * @param {TicketUpdateArgs} args - Arguments to update one Ticket.
+     * @example
+     * // Update one Ticket
+     * const ticket = await prisma.ticket.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TicketUpdateArgs>(args: SelectSubset<T, TicketUpdateArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Tickets.
+     * @param {TicketDeleteManyArgs} args - Arguments to filter Tickets to delete.
+     * @example
+     * // Delete a few Tickets
+     * const { count } = await prisma.ticket.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TicketDeleteManyArgs>(args?: SelectSubset<T, TicketDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tickets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tickets
+     * const ticket = await prisma.ticket.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TicketUpdateManyArgs>(args: SelectSubset<T, TicketUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tickets and returns the data updated in the database.
+     * @param {TicketUpdateManyAndReturnArgs} args - Arguments to update many Tickets.
+     * @example
+     * // Update many Tickets
+     * const ticket = await prisma.ticket.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Tickets and only return the `id`
+     * const ticketWithIdOnly = await prisma.ticket.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TicketUpdateManyAndReturnArgs>(args: SelectSubset<T, TicketUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Ticket.
+     * @param {TicketUpsertArgs} args - Arguments to update or create a Ticket.
+     * @example
+     * // Update or create a Ticket
+     * const ticket = await prisma.ticket.upsert({
+     *   create: {
+     *     // ... data to create a Ticket
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Ticket we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TicketUpsertArgs>(args: SelectSubset<T, TicketUpsertArgs<ExtArgs>>): Prisma__TicketClient<$Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Tickets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketCountArgs} args - Arguments to filter Tickets to count.
+     * @example
+     * // Count the number of Tickets
+     * const count = await prisma.ticket.count({
+     *   where: {
+     *     // ... the filter for the Tickets we want to count
+     *   }
+     * })
+    **/
+    count<T extends TicketCountArgs>(
+      args?: Subset<T, TicketCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TicketCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Ticket.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TicketAggregateArgs>(args: Subset<T, TicketAggregateArgs>): Prisma.PrismaPromise<GetTicketAggregateType<T>>
+
+    /**
+     * Group by Ticket.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TicketGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TicketGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TicketGroupByArgs['orderBy'] }
+        : { orderBy?: TicketGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TicketGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTicketGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Ticket model
+   */
+  readonly fields: TicketFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Ticket.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TicketClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    appointment<T extends Ticket$appointmentArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$appointmentArgs<ExtArgs>>): Prisma__AppointmentClient<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    assignedDoctor<T extends Ticket$assignedDoctorArgs<ExtArgs> = {}>(args?: Subset<T, Ticket$assignedDoctorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Ticket model
+   */
+  interface TicketFieldRefs {
+    readonly id: FieldRef<"Ticket", 'String'>
+    readonly patientId: FieldRef<"Ticket", 'String'>
+    readonly sourceType: FieldRef<"Ticket", 'TicketSourceType'>
+    readonly appointmentId: FieldRef<"Ticket", 'String'>
+    readonly status: FieldRef<"Ticket", 'TicketStatus'>
+    readonly priority: FieldRef<"Ticket", 'Boolean'>
+    readonly lateArrivalBucket: FieldRef<"Ticket", 'LateArrivalBucket'>
+    readonly scheduledSlotTime: FieldRef<"Ticket", 'DateTime'>
+    readonly joinedQueueAt: FieldRef<"Ticket", 'DateTime'>
+    readonly assignedDoctorId: FieldRef<"Ticket", 'String'>
+    readonly skipCount: FieldRef<"Ticket", 'Int'>
+    readonly calledAt: FieldRef<"Ticket", 'DateTime'>
+    readonly inProgressAt: FieldRef<"Ticket", 'DateTime'>
+    readonly doneAt: FieldRef<"Ticket", 'DateTime'>
+    readonly skippedAt: FieldRef<"Ticket", 'DateTime'>
+    readonly createdAt: FieldRef<"Ticket", 'DateTime'>
+    readonly updatedAt: FieldRef<"Ticket", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Ticket findUnique
+   */
+  export type TicketFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * Filter, which Ticket to fetch.
+     */
+    where: TicketWhereUniqueInput
+  }
+
+  /**
+   * Ticket findUniqueOrThrow
+   */
+  export type TicketFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * Filter, which Ticket to fetch.
+     */
+    where: TicketWhereUniqueInput
+  }
+
+  /**
+   * Ticket findFirst
+   */
+  export type TicketFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * Filter, which Ticket to fetch.
+     */
+    where?: TicketWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tickets to fetch.
+     */
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tickets.
+     */
+    cursor?: TicketWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tickets from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tickets.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tickets.
+     */
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Ticket findFirstOrThrow
+   */
+  export type TicketFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * Filter, which Ticket to fetch.
+     */
+    where?: TicketWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tickets to fetch.
+     */
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tickets.
+     */
+    cursor?: TicketWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tickets from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tickets.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tickets.
+     */
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Ticket findMany
+   */
+  export type TicketFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * Filter, which Tickets to fetch.
+     */
+    where?: TicketWhereInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tickets to fetch.
+     */
+    orderBy?: TicketOrderByWithRelationInput | TicketOrderByWithRelationInput[] | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Tickets.
+     */
+    cursor?: TicketWhereUniqueInput | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tickets from the position of the cursor.
+     */
+    take?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tickets.
+     */
+    skip?: number | $Types.Skip
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tickets.
+     */
+    distinct?: TicketScalarFieldEnum | TicketScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Ticket create
+   */
+  export type TicketCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Ticket.
+     */
+    data: XOR<TicketCreateInput, TicketUncheckedCreateInput>
+  }
+
+  /**
+   * Ticket createMany
+   */
+  export type TicketCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Tickets.
+     */
+    data: TicketCreateManyInput | TicketCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  /**
+   * Ticket createManyAndReturn
+   */
+  export type TicketCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * The data used to create many Tickets.
+     */
+    data: TicketCreateManyInput | TicketCreateManyInput[]
+    skipDuplicates?: boolean | $Types.Skip
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Ticket update
+   */
+  export type TicketUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Ticket.
+     */
+    data: XOR<TicketUpdateInput, TicketUncheckedUpdateInput>
+    /**
+     * Choose, which Ticket to update.
+     */
+    where: TicketWhereUniqueInput
+  }
+
+  /**
+   * Ticket updateMany
+   */
+  export type TicketUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Tickets.
+     */
+    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyInput>
+    /**
+     * Filter which Tickets to update
+     */
+    where?: TicketWhereInput | $Types.Skip
+    /**
+     * Limit how many Tickets to update.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * Ticket updateManyAndReturn
+   */
+  export type TicketUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * The data used to update Tickets.
+     */
+    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyInput>
+    /**
+     * Filter which Tickets to update
+     */
+    where?: TicketWhereInput | $Types.Skip
+    /**
+     * Limit how many Tickets to update.
+     */
+    limit?: number | $Types.Skip
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Ticket upsert
+   */
+  export type TicketUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Ticket to update in case it exists.
+     */
+    where: TicketWhereUniqueInput
+    /**
+     * In case the Ticket found by the `where` argument doesn't exist, create a new Ticket with this data.
+     */
+    create: XOR<TicketCreateInput, TicketUncheckedCreateInput>
+    /**
+     * In case the Ticket was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TicketUpdateInput, TicketUncheckedUpdateInput>
+  }
+
+  /**
+   * Ticket delete
+   */
+  export type TicketDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+    /**
+     * Filter which Ticket to delete.
+     */
+    where: TicketWhereUniqueInput
+  }
+
+  /**
+   * Ticket deleteMany
+   */
+  export type TicketDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Tickets to delete
+     */
+    where?: TicketWhereInput | $Types.Skip
+    /**
+     * Limit how many Tickets to delete.
+     */
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * Ticket.appointment
+   */
+  export type Ticket$appointmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Appointment
+     */
+    select?: AppointmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Appointment
+     */
+    omit?: AppointmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppointmentInclude<ExtArgs> | null
+    where?: AppointmentWhereInput | $Types.Skip
+  }
+
+  /**
+   * Ticket.assignedDoctor
+   */
+  export type Ticket$assignedDoctorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput | $Types.Skip
+  }
+
+  /**
+   * Ticket without action
+   */
+  export type TicketDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ticket
+     */
+    select?: TicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ticket
+     */
+    omit?: TicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TicketInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -14628,6 +16151,29 @@ export namespace Prisma {
   export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
 
 
+  export const TicketScalarFieldEnum: {
+    id: 'id',
+    patientId: 'patientId',
+    sourceType: 'sourceType',
+    appointmentId: 'appointmentId',
+    status: 'status',
+    priority: 'priority',
+    lateArrivalBucket: 'lateArrivalBucket',
+    scheduledSlotTime: 'scheduledSlotTime',
+    joinedQueueAt: 'joinedQueueAt',
+    assignedDoctorId: 'assignedDoctorId',
+    skipCount: 'skipCount',
+    calledAt: 'calledAt',
+    inProgressAt: 'inProgressAt',
+    doneAt: 'doneAt',
+    skippedAt: 'skippedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TicketScalarFieldEnum = (typeof TicketScalarFieldEnum)[keyof typeof TicketScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -14777,6 +16323,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TicketSourceType'
+   */
+  export type EnumTicketSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketSourceType'>
+    
+
+
+  /**
+   * Reference to a field of type 'TicketSourceType[]'
+   */
+  export type ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketSourceType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TicketStatus'
+   */
+  export type EnumTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TicketStatus[]'
+   */
+  export type ListEnumTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -14811,6 +16385,7 @@ export namespace Prisma {
     userRoles?: UserRoleListRelationFilter | $Types.Skip
     assignedRoles?: UserRoleListRelationFilter | $Types.Skip
     patient?: XOR<PatientNullableScalarRelationFilter, PatientWhereInput> | null | $Types.Skip
+    assignedTickets?: TicketListRelationFilter | $Types.Skip
   }
 
   export type UserOrderByWithRelationInput = {
@@ -14828,6 +16403,7 @@ export namespace Prisma {
     userRoles?: UserRoleOrderByRelationAggregateInput | $Types.Skip
     assignedRoles?: UserRoleOrderByRelationAggregateInput | $Types.Skip
     patient?: PatientOrderByWithRelationInput | $Types.Skip
+    assignedTickets?: TicketOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -14848,6 +16424,7 @@ export namespace Prisma {
     userRoles?: UserRoleListRelationFilter | $Types.Skip
     assignedRoles?: UserRoleListRelationFilter | $Types.Skip
     patient?: XOR<PatientNullableScalarRelationFilter, PatientWhereInput> | null | $Types.Skip
+    assignedTickets?: TicketListRelationFilter | $Types.Skip
   }, "id" | "email" | "phoneNumber">
 
   export type UserOrderByWithAggregationInput = {
@@ -14900,6 +16477,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Patient"> | Date | string | $Types.Skip
     user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
     appointments?: AppointmentListRelationFilter | $Types.Skip
+    tickets?: TicketListRelationFilter | $Types.Skip
   }
 
   export type PatientOrderByWithRelationInput = {
@@ -14919,6 +16497,7 @@ export namespace Prisma {
     updatedAt?: SortOrder | $Types.Skip
     user?: UserOrderByWithRelationInput | $Types.Skip
     appointments?: AppointmentOrderByRelationAggregateInput | $Types.Skip
+    tickets?: TicketOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type PatientWhereUniqueInput = Prisma.AtLeast<{
@@ -14941,6 +16520,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Patient"> | Date | string | $Types.Skip
     user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
     appointments?: AppointmentListRelationFilter | $Types.Skip
+    tickets?: TicketListRelationFilter | $Types.Skip
   }, "id" | "userId">
 
   export type PatientOrderByWithAggregationInput = {
@@ -15365,6 +16945,7 @@ export namespace Prisma {
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
     slot?: XOR<AvailableSlotScalarRelationFilter, AvailableSlotWhereInput> | $Types.Skip
     noShowMarkedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
+    ticket?: XOR<TicketNullableScalarRelationFilter, TicketWhereInput> | null | $Types.Skip
   }
 
   export type AppointmentOrderByWithRelationInput = {
@@ -15382,6 +16963,7 @@ export namespace Prisma {
     patient?: PatientOrderByWithRelationInput | $Types.Skip
     slot?: AvailableSlotOrderByWithRelationInput | $Types.Skip
     noShowMarkedBy?: UserOrderByWithRelationInput | $Types.Skip
+    ticket?: TicketOrderByWithRelationInput | $Types.Skip
   }
 
   export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
@@ -15402,6 +16984,7 @@ export namespace Prisma {
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
     slot?: XOR<AvailableSlotScalarRelationFilter, AvailableSlotWhereInput> | $Types.Skip
     noShowMarkedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
+    ticket?: XOR<TicketNullableScalarRelationFilter, TicketWhereInput> | null | $Types.Skip
   }, "id">
 
   export type AppointmentOrderByWithAggregationInput = {
@@ -15567,6 +17150,129 @@ export namespace Prisma {
     updatedById?: StringNullableWithAggregatesFilter<"Setting"> | string | null | $Types.Skip
   }
 
+  export type TicketWhereInput = {
+    AND?: TicketWhereInput | TicketWhereInput[] | $Types.Skip
+    OR?: TicketWhereInput[] | $Types.Skip
+    NOT?: TicketWhereInput | TicketWhereInput[] | $Types.Skip
+    id?: StringFilter<"Ticket"> | string | $Types.Skip
+    patientId?: StringFilter<"Ticket"> | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFilter<"Ticket"> | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: StringNullableFilter<"Ticket"> | string | null | $Types.Skip
+    status?: EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFilter<"Ticket"> | boolean | $Types.Skip
+    lateArrivalBucket?: EnumLateArrivalBucketNullableFilter<"Ticket"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    assignedDoctorId?: StringNullableFilter<"Ticket"> | string | null | $Types.Skip
+    skipCount?: IntFilter<"Ticket"> | number | $Types.Skip
+    calledAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    inProgressAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    doneAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    skippedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
+    appointment?: XOR<AppointmentNullableScalarRelationFilter, AppointmentWhereInput> | null | $Types.Skip
+    assignedDoctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
+  }
+
+  export type TicketOrderByWithRelationInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    sourceType?: SortOrder | $Types.Skip
+    appointmentId?: SortOrderInput | SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    priority?: SortOrder | $Types.Skip
+    lateArrivalBucket?: SortOrderInput | SortOrder | $Types.Skip
+    scheduledSlotTime?: SortOrderInput | SortOrder | $Types.Skip
+    joinedQueueAt?: SortOrder | $Types.Skip
+    assignedDoctorId?: SortOrderInput | SortOrder | $Types.Skip
+    skipCount?: SortOrder | $Types.Skip
+    calledAt?: SortOrderInput | SortOrder | $Types.Skip
+    inProgressAt?: SortOrderInput | SortOrder | $Types.Skip
+    doneAt?: SortOrderInput | SortOrder | $Types.Skip
+    skippedAt?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    patient?: PatientOrderByWithRelationInput | $Types.Skip
+    appointment?: AppointmentOrderByWithRelationInput | $Types.Skip
+    assignedDoctor?: UserOrderByWithRelationInput | $Types.Skip
+  }
+
+  export type TicketWhereUniqueInput = Prisma.AtLeast<{
+    id?: string | $Types.Skip
+    appointmentId?: string | $Types.Skip
+    AND?: TicketWhereInput | TicketWhereInput[] | $Types.Skip
+    OR?: TicketWhereInput[] | $Types.Skip
+    NOT?: TicketWhereInput | TicketWhereInput[] | $Types.Skip
+    patientId?: StringFilter<"Ticket"> | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFilter<"Ticket"> | $Enums.TicketSourceType | $Types.Skip
+    status?: EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFilter<"Ticket"> | boolean | $Types.Skip
+    lateArrivalBucket?: EnumLateArrivalBucketNullableFilter<"Ticket"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    assignedDoctorId?: StringNullableFilter<"Ticket"> | string | null | $Types.Skip
+    skipCount?: IntFilter<"Ticket"> | number | $Types.Skip
+    calledAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    inProgressAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    doneAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    skippedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    patient?: XOR<PatientScalarRelationFilter, PatientWhereInput> | $Types.Skip
+    appointment?: XOR<AppointmentNullableScalarRelationFilter, AppointmentWhereInput> | null | $Types.Skip
+    assignedDoctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null | $Types.Skip
+  }, "id" | "appointmentId">
+
+  export type TicketOrderByWithAggregationInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    sourceType?: SortOrder | $Types.Skip
+    appointmentId?: SortOrderInput | SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    priority?: SortOrder | $Types.Skip
+    lateArrivalBucket?: SortOrderInput | SortOrder | $Types.Skip
+    scheduledSlotTime?: SortOrderInput | SortOrder | $Types.Skip
+    joinedQueueAt?: SortOrder | $Types.Skip
+    assignedDoctorId?: SortOrderInput | SortOrder | $Types.Skip
+    skipCount?: SortOrder | $Types.Skip
+    calledAt?: SortOrderInput | SortOrder | $Types.Skip
+    inProgressAt?: SortOrderInput | SortOrder | $Types.Skip
+    doneAt?: SortOrderInput | SortOrder | $Types.Skip
+    skippedAt?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: TicketCountOrderByAggregateInput | $Types.Skip
+    _avg?: TicketAvgOrderByAggregateInput | $Types.Skip
+    _max?: TicketMaxOrderByAggregateInput | $Types.Skip
+    _min?: TicketMinOrderByAggregateInput | $Types.Skip
+    _sum?: TicketSumOrderByAggregateInput | $Types.Skip
+  }
+
+  export type TicketScalarWhereWithAggregatesInput = {
+    AND?: TicketScalarWhereWithAggregatesInput | TicketScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: TicketScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: TicketScalarWhereWithAggregatesInput | TicketScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Ticket"> | string | $Types.Skip
+    patientId?: StringWithAggregatesFilter<"Ticket"> | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeWithAggregatesFilter<"Ticket"> | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: StringNullableWithAggregatesFilter<"Ticket"> | string | null | $Types.Skip
+    status?: EnumTicketStatusWithAggregatesFilter<"Ticket"> | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolWithAggregatesFilter<"Ticket"> | boolean | $Types.Skip
+    lateArrivalBucket?: EnumLateArrivalBucketNullableWithAggregatesFilter<"Ticket"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: DateTimeNullableWithAggregatesFilter<"Ticket"> | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeWithAggregatesFilter<"Ticket"> | Date | string | $Types.Skip
+    assignedDoctorId?: StringNullableWithAggregatesFilter<"Ticket"> | string | null | $Types.Skip
+    skipCount?: IntWithAggregatesFilter<"Ticket"> | number | $Types.Skip
+    calledAt?: DateTimeNullableWithAggregatesFilter<"Ticket"> | Date | string | null | $Types.Skip
+    inProgressAt?: DateTimeNullableWithAggregatesFilter<"Ticket"> | Date | string | null | $Types.Skip
+    doneAt?: DateTimeNullableWithAggregatesFilter<"Ticket"> | Date | string | null | $Types.Skip
+    skippedAt?: DateTimeNullableWithAggregatesFilter<"Ticket"> | Date | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"Ticket"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Ticket"> | Date | string | $Types.Skip
+  }
+
   export type UserCreateInput = {
     id?: string | $Types.Skip
     email: string
@@ -15582,6 +17288,7 @@ export namespace Prisma {
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateInput = {
@@ -15599,6 +17306,7 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserUpdateInput = {
@@ -15616,6 +17324,7 @@ export namespace Prisma {
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateInput = {
@@ -15633,6 +17342,7 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type UserCreateManyInput = {
@@ -15687,6 +17397,7 @@ export namespace Prisma {
     updatedAt?: Date | string | $Types.Skip
     user: UserCreateNestedOneWithoutPatientInput
     appointments?: AppointmentCreateNestedManyWithoutPatientInput | $Types.Skip
+    tickets?: TicketCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientUncheckedCreateInput = {
@@ -15705,6 +17416,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
+    tickets?: TicketUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientUpdateInput = {
@@ -15723,6 +17435,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     user?: UserUpdateOneRequiredWithoutPatientNestedInput | $Types.Skip
     appointments?: AppointmentUpdateManyWithoutPatientNestedInput | $Types.Skip
+    tickets?: TicketUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type PatientUncheckedUpdateInput = {
@@ -15741,6 +17454,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
+    tickets?: TicketUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type PatientCreateManyInput = {
@@ -16171,6 +17885,7 @@ export namespace Prisma {
     patient: PatientCreateNestedOneWithoutAppointmentsInput
     slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
     noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
+    ticket?: TicketCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentUncheckedCreateInput = {
@@ -16185,6 +17900,7 @@ export namespace Prisma {
     lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: Date | string | null | $Types.Skip
     noShowMarkedById?: string | null | $Types.Skip
+    ticket?: TicketUncheckedCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentUpdateInput = {
@@ -16199,6 +17915,7 @@ export namespace Prisma {
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
     slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
     noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
+    ticket?: TicketUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateInput = {
@@ -16213,6 +17930,7 @@ export namespace Prisma {
     lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    ticket?: TicketUncheckedUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentCreateManyInput = {
@@ -16398,6 +18116,143 @@ export namespace Prisma {
     updatedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
   }
 
+  export type TicketCreateInput = {
+    id?: string | $Types.Skip
+    sourceType: $Enums.TicketSourceType
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    patient: PatientCreateNestedOneWithoutTicketsInput
+    appointment?: AppointmentCreateNestedOneWithoutTicketInput | $Types.Skip
+    assignedDoctor?: UserCreateNestedOneWithoutAssignedTicketsInput | $Types.Skip
+  }
+
+  export type TicketUncheckedCreateInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    sourceType: $Enums.TicketSourceType
+    appointmentId?: string | null | $Types.Skip
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    assignedDoctorId?: string | null | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type TicketUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutTicketsNestedInput | $Types.Skip
+    appointment?: AppointmentUpdateOneWithoutTicketNestedInput | $Types.Skip
+    assignedDoctor?: UserUpdateOneWithoutAssignedTicketsNestedInput | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    assignedDoctorId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type TicketCreateManyInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    sourceType: $Enums.TicketSourceType
+    appointmentId?: string | null | $Types.Skip
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    assignedDoctorId?: string | null | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type TicketUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    assignedDoctorId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
@@ -16467,6 +18322,12 @@ export namespace Prisma {
     isNot?: PatientWhereInput | null | $Types.Skip
   }
 
+  export type TicketListRelationFilter = {
+    every?: TicketWhereInput | $Types.Skip
+    some?: TicketWhereInput | $Types.Skip
+    none?: TicketWhereInput | $Types.Skip
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder | $Types.Skip
@@ -16481,6 +18342,10 @@ export namespace Prisma {
   }
 
   export type UserRoleOrderByRelationAggregateInput = {
+    _count?: SortOrder | $Types.Skip
+  }
+
+  export type TicketOrderByRelationAggregateInput = {
     _count?: SortOrder | $Types.Skip
   }
 
@@ -16965,6 +18830,11 @@ export namespace Prisma {
     isNot?: AvailableSlotWhereInput | $Types.Skip
   }
 
+  export type TicketNullableScalarRelationFilter = {
+    is?: TicketWhereInput | null | $Types.Skip
+    isNot?: TicketWhereInput | null | $Types.Skip
+  }
+
   export type AppointmentCountOrderByAggregateInput = {
     id?: SortOrder | $Types.Skip
     patientId?: SortOrder | $Types.Skip
@@ -17134,6 +19004,113 @@ export namespace Prisma {
     updatedById?: SortOrder | $Types.Skip
   }
 
+  export type EnumTicketSourceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketSourceType | EnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketSourceTypeFilter<$PrismaModel> | $Enums.TicketSourceType | $Types.Skip
+  }
+
+  export type EnumTicketStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketStatusFilter<$PrismaModel> | $Enums.TicketStatus | $Types.Skip
+  }
+
+  export type AppointmentNullableScalarRelationFilter = {
+    is?: AppointmentWhereInput | null | $Types.Skip
+    isNot?: AppointmentWhereInput | null | $Types.Skip
+  }
+
+  export type TicketCountOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    sourceType?: SortOrder | $Types.Skip
+    appointmentId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    priority?: SortOrder | $Types.Skip
+    lateArrivalBucket?: SortOrder | $Types.Skip
+    scheduledSlotTime?: SortOrder | $Types.Skip
+    joinedQueueAt?: SortOrder | $Types.Skip
+    assignedDoctorId?: SortOrder | $Types.Skip
+    skipCount?: SortOrder | $Types.Skip
+    calledAt?: SortOrder | $Types.Skip
+    inProgressAt?: SortOrder | $Types.Skip
+    doneAt?: SortOrder | $Types.Skip
+    skippedAt?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type TicketAvgOrderByAggregateInput = {
+    skipCount?: SortOrder | $Types.Skip
+  }
+
+  export type TicketMaxOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    sourceType?: SortOrder | $Types.Skip
+    appointmentId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    priority?: SortOrder | $Types.Skip
+    lateArrivalBucket?: SortOrder | $Types.Skip
+    scheduledSlotTime?: SortOrder | $Types.Skip
+    joinedQueueAt?: SortOrder | $Types.Skip
+    assignedDoctorId?: SortOrder | $Types.Skip
+    skipCount?: SortOrder | $Types.Skip
+    calledAt?: SortOrder | $Types.Skip
+    inProgressAt?: SortOrder | $Types.Skip
+    doneAt?: SortOrder | $Types.Skip
+    skippedAt?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type TicketMinOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    patientId?: SortOrder | $Types.Skip
+    sourceType?: SortOrder | $Types.Skip
+    appointmentId?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    priority?: SortOrder | $Types.Skip
+    lateArrivalBucket?: SortOrder | $Types.Skip
+    scheduledSlotTime?: SortOrder | $Types.Skip
+    joinedQueueAt?: SortOrder | $Types.Skip
+    assignedDoctorId?: SortOrder | $Types.Skip
+    skipCount?: SortOrder | $Types.Skip
+    calledAt?: SortOrder | $Types.Skip
+    inProgressAt?: SortOrder | $Types.Skip
+    doneAt?: SortOrder | $Types.Skip
+    skippedAt?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type TicketSumOrderByAggregateInput = {
+    skipCount?: SortOrder | $Types.Skip
+  }
+
+  export type EnumTicketSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketSourceType | EnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.TicketSourceType | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumTicketSourceTypeFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumTicketSourceTypeFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type EnumTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.TicketStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumTicketStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumTicketStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
   export type RefreshTokenCreateNestedManyWithoutUserInput = {
     create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[] | $Types.Skip
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[] | $Types.Skip
@@ -17168,6 +19145,13 @@ export namespace Prisma {
     connect?: PatientWhereUniqueInput | $Types.Skip
   }
 
+  export type TicketCreateNestedManyWithoutAssignedDoctorInput = {
+    create?: XOR<TicketCreateWithoutAssignedDoctorInput, TicketUncheckedCreateWithoutAssignedDoctorInput> | TicketCreateWithoutAssignedDoctorInput[] | TicketUncheckedCreateWithoutAssignedDoctorInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedDoctorInput | TicketCreateOrConnectWithoutAssignedDoctorInput[] | $Types.Skip
+    createMany?: TicketCreateManyAssignedDoctorInputEnvelope | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+  }
+
   export type RefreshTokenUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[] | $Types.Skip
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[] | $Types.Skip
@@ -17200,6 +19184,13 @@ export namespace Prisma {
     create?: XOR<PatientCreateWithoutUserInput, PatientUncheckedCreateWithoutUserInput> | $Types.Skip
     connectOrCreate?: PatientCreateOrConnectWithoutUserInput | $Types.Skip
     connect?: PatientWhereUniqueInput | $Types.Skip
+  }
+
+  export type TicketUncheckedCreateNestedManyWithoutAssignedDoctorInput = {
+    create?: XOR<TicketCreateWithoutAssignedDoctorInput, TicketUncheckedCreateWithoutAssignedDoctorInput> | TicketCreateWithoutAssignedDoctorInput[] | TicketUncheckedCreateWithoutAssignedDoctorInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedDoctorInput | TicketCreateOrConnectWithoutAssignedDoctorInput[] | $Types.Skip
+    createMany?: TicketCreateManyAssignedDoctorInputEnvelope | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -17284,6 +19275,20 @@ export namespace Prisma {
     update?: XOR<XOR<PatientUpdateToOneWithWhereWithoutUserInput, PatientUpdateWithoutUserInput>, PatientUncheckedUpdateWithoutUserInput> | $Types.Skip
   }
 
+  export type TicketUpdateManyWithoutAssignedDoctorNestedInput = {
+    create?: XOR<TicketCreateWithoutAssignedDoctorInput, TicketUncheckedCreateWithoutAssignedDoctorInput> | TicketCreateWithoutAssignedDoctorInput[] | TicketUncheckedCreateWithoutAssignedDoctorInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedDoctorInput | TicketCreateOrConnectWithoutAssignedDoctorInput[] | $Types.Skip
+    upsert?: TicketUpsertWithWhereUniqueWithoutAssignedDoctorInput | TicketUpsertWithWhereUniqueWithoutAssignedDoctorInput[] | $Types.Skip
+    createMany?: TicketCreateManyAssignedDoctorInputEnvelope | $Types.Skip
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    update?: TicketUpdateWithWhereUniqueWithoutAssignedDoctorInput | TicketUpdateWithWhereUniqueWithoutAssignedDoctorInput[] | $Types.Skip
+    updateMany?: TicketUpdateManyWithWhereWithoutAssignedDoctorInput | TicketUpdateManyWithWhereWithoutAssignedDoctorInput[] | $Types.Skip
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[] | $Types.Skip
+  }
+
   export type RefreshTokenUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[] | $Types.Skip
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[] | $Types.Skip
@@ -17350,6 +19355,20 @@ export namespace Prisma {
     update?: XOR<XOR<PatientUpdateToOneWithWhereWithoutUserInput, PatientUpdateWithoutUserInput>, PatientUncheckedUpdateWithoutUserInput> | $Types.Skip
   }
 
+  export type TicketUncheckedUpdateManyWithoutAssignedDoctorNestedInput = {
+    create?: XOR<TicketCreateWithoutAssignedDoctorInput, TicketUncheckedCreateWithoutAssignedDoctorInput> | TicketCreateWithoutAssignedDoctorInput[] | TicketUncheckedCreateWithoutAssignedDoctorInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAssignedDoctorInput | TicketCreateOrConnectWithoutAssignedDoctorInput[] | $Types.Skip
+    upsert?: TicketUpsertWithWhereUniqueWithoutAssignedDoctorInput | TicketUpsertWithWhereUniqueWithoutAssignedDoctorInput[] | $Types.Skip
+    createMany?: TicketCreateManyAssignedDoctorInputEnvelope | $Types.Skip
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    update?: TicketUpdateWithWhereUniqueWithoutAssignedDoctorInput | TicketUpdateWithWhereUniqueWithoutAssignedDoctorInput[] | $Types.Skip
+    updateMany?: TicketUpdateManyWithWhereWithoutAssignedDoctorInput | TicketUpdateManyWithWhereWithoutAssignedDoctorInput[] | $Types.Skip
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[] | $Types.Skip
+  }
+
   export type UserCreateNestedOneWithoutPatientInput = {
     create?: XOR<UserCreateWithoutPatientInput, UserUncheckedCreateWithoutPatientInput> | $Types.Skip
     connectOrCreate?: UserCreateOrConnectWithoutPatientInput | $Types.Skip
@@ -17363,11 +19382,25 @@ export namespace Prisma {
     connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
   }
 
+  export type TicketCreateNestedManyWithoutPatientInput = {
+    create?: XOR<TicketCreateWithoutPatientInput, TicketUncheckedCreateWithoutPatientInput> | TicketCreateWithoutPatientInput[] | TicketUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutPatientInput | TicketCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    createMany?: TicketCreateManyPatientInputEnvelope | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+  }
+
   export type AppointmentUncheckedCreateNestedManyWithoutPatientInput = {
     create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[] | $Types.Skip
     connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[] | $Types.Skip
     createMany?: AppointmentCreateManyPatientInputEnvelope | $Types.Skip
     connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type TicketUncheckedCreateNestedManyWithoutPatientInput = {
+    create?: XOR<TicketCreateWithoutPatientInput, TicketUncheckedCreateWithoutPatientInput> | TicketCreateWithoutPatientInput[] | TicketUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutPatientInput | TicketCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    createMany?: TicketCreateManyPatientInputEnvelope | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
   }
 
   export type EnumGenderFieldUpdateOperationsInput = {
@@ -17400,6 +19433,20 @@ export namespace Prisma {
     deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
   }
 
+  export type TicketUpdateManyWithoutPatientNestedInput = {
+    create?: XOR<TicketCreateWithoutPatientInput, TicketUncheckedCreateWithoutPatientInput> | TicketCreateWithoutPatientInput[] | TicketUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutPatientInput | TicketCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    upsert?: TicketUpsertWithWhereUniqueWithoutPatientInput | TicketUpsertWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    createMany?: TicketCreateManyPatientInputEnvelope | $Types.Skip
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    update?: TicketUpdateWithWhereUniqueWithoutPatientInput | TicketUpdateWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    updateMany?: TicketUpdateManyWithWhereWithoutPatientInput | TicketUpdateManyWithWhereWithoutPatientInput[] | $Types.Skip
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[] | $Types.Skip
+  }
+
   export type AppointmentUncheckedUpdateManyWithoutPatientNestedInput = {
     create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[] | $Types.Skip
     connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[] | $Types.Skip
@@ -17412,6 +19459,20 @@ export namespace Prisma {
     update?: AppointmentUpdateWithWhereUniqueWithoutPatientInput | AppointmentUpdateWithWhereUniqueWithoutPatientInput[] | $Types.Skip
     updateMany?: AppointmentUpdateManyWithWhereWithoutPatientInput | AppointmentUpdateManyWithWhereWithoutPatientInput[] | $Types.Skip
     deleteMany?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[] | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateManyWithoutPatientNestedInput = {
+    create?: XOR<TicketCreateWithoutPatientInput, TicketUncheckedCreateWithoutPatientInput> | TicketCreateWithoutPatientInput[] | TicketUncheckedCreateWithoutPatientInput[] | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutPatientInput | TicketCreateOrConnectWithoutPatientInput[] | $Types.Skip
+    upsert?: TicketUpsertWithWhereUniqueWithoutPatientInput | TicketUpsertWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    createMany?: TicketCreateManyPatientInputEnvelope | $Types.Skip
+    set?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    disconnect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    delete?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    connect?: TicketWhereUniqueInput | TicketWhereUniqueInput[] | $Types.Skip
+    update?: TicketUpdateWithWhereUniqueWithoutPatientInput | TicketUpdateWithWhereUniqueWithoutPatientInput[] | $Types.Skip
+    updateMany?: TicketUpdateManyWithWhereWithoutPatientInput | TicketUpdateManyWithWhereWithoutPatientInput[] | $Types.Skip
+    deleteMany?: TicketScalarWhereInput | TicketScalarWhereInput[] | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutRefreshTokensInput = {
@@ -17718,6 +19779,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | $Types.Skip
   }
 
+  export type TicketCreateNestedOneWithoutAppointmentInput = {
+    create?: XOR<TicketCreateWithoutAppointmentInput, TicketUncheckedCreateWithoutAppointmentInput> | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAppointmentInput | $Types.Skip
+    connect?: TicketWhereUniqueInput | $Types.Skip
+  }
+
+  export type TicketUncheckedCreateNestedOneWithoutAppointmentInput = {
+    create?: XOR<TicketCreateWithoutAppointmentInput, TicketUncheckedCreateWithoutAppointmentInput> | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAppointmentInput | $Types.Skip
+    connect?: TicketWhereUniqueInput | $Types.Skip
+  }
+
   export type EnumAppointmentStatusFieldUpdateOperationsInput = {
     set?: $Enums.AppointmentStatus | $Types.Skip
   }
@@ -17750,6 +19823,26 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean | $Types.Skip
     connect?: UserWhereUniqueInput | $Types.Skip
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNoShowMarkedByInput, UserUpdateWithoutNoShowMarkedByInput>, UserUncheckedUpdateWithoutNoShowMarkedByInput> | $Types.Skip
+  }
+
+  export type TicketUpdateOneWithoutAppointmentNestedInput = {
+    create?: XOR<TicketCreateWithoutAppointmentInput, TicketUncheckedCreateWithoutAppointmentInput> | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAppointmentInput | $Types.Skip
+    upsert?: TicketUpsertWithoutAppointmentInput | $Types.Skip
+    disconnect?: TicketWhereInput | boolean | $Types.Skip
+    delete?: TicketWhereInput | boolean | $Types.Skip
+    connect?: TicketWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<TicketUpdateToOneWithWhereWithoutAppointmentInput, TicketUpdateWithoutAppointmentInput>, TicketUncheckedUpdateWithoutAppointmentInput> | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateOneWithoutAppointmentNestedInput = {
+    create?: XOR<TicketCreateWithoutAppointmentInput, TicketUncheckedCreateWithoutAppointmentInput> | $Types.Skip
+    connectOrCreate?: TicketCreateOrConnectWithoutAppointmentInput | $Types.Skip
+    upsert?: TicketUpsertWithoutAppointmentInput | $Types.Skip
+    disconnect?: TicketWhereInput | boolean | $Types.Skip
+    delete?: TicketWhereInput | boolean | $Types.Skip
+    connect?: TicketWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<TicketUpdateToOneWithWhereWithoutAppointmentInput, TicketUpdateWithoutAppointmentInput>, TicketUncheckedUpdateWithoutAppointmentInput> | $Types.Skip
   }
 
   export type AvailableSlotCreateNestedManyWithoutTemplateInput = {
@@ -17800,6 +19893,60 @@ export namespace Prisma {
     update?: AvailableSlotUpdateWithWhereUniqueWithoutTemplateInput | AvailableSlotUpdateWithWhereUniqueWithoutTemplateInput[] | $Types.Skip
     updateMany?: AvailableSlotUpdateManyWithWhereWithoutTemplateInput | AvailableSlotUpdateManyWithWhereWithoutTemplateInput[] | $Types.Skip
     deleteMany?: AvailableSlotScalarWhereInput | AvailableSlotScalarWhereInput[] | $Types.Skip
+  }
+
+  export type PatientCreateNestedOneWithoutTicketsInput = {
+    create?: XOR<PatientCreateWithoutTicketsInput, PatientUncheckedCreateWithoutTicketsInput> | $Types.Skip
+    connectOrCreate?: PatientCreateOrConnectWithoutTicketsInput | $Types.Skip
+    connect?: PatientWhereUniqueInput | $Types.Skip
+  }
+
+  export type AppointmentCreateNestedOneWithoutTicketInput = {
+    create?: XOR<AppointmentCreateWithoutTicketInput, AppointmentUncheckedCreateWithoutTicketInput> | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutTicketInput | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | $Types.Skip
+  }
+
+  export type UserCreateNestedOneWithoutAssignedTicketsInput = {
+    create?: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedTicketsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+  }
+
+  export type EnumTicketSourceTypeFieldUpdateOperationsInput = {
+    set?: $Enums.TicketSourceType | $Types.Skip
+  }
+
+  export type EnumTicketStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TicketStatus | $Types.Skip
+  }
+
+  export type PatientUpdateOneRequiredWithoutTicketsNestedInput = {
+    create?: XOR<PatientCreateWithoutTicketsInput, PatientUncheckedCreateWithoutTicketsInput> | $Types.Skip
+    connectOrCreate?: PatientCreateOrConnectWithoutTicketsInput | $Types.Skip
+    upsert?: PatientUpsertWithoutTicketsInput | $Types.Skip
+    connect?: PatientWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<PatientUpdateToOneWithWhereWithoutTicketsInput, PatientUpdateWithoutTicketsInput>, PatientUncheckedUpdateWithoutTicketsInput> | $Types.Skip
+  }
+
+  export type AppointmentUpdateOneWithoutTicketNestedInput = {
+    create?: XOR<AppointmentCreateWithoutTicketInput, AppointmentUncheckedCreateWithoutTicketInput> | $Types.Skip
+    connectOrCreate?: AppointmentCreateOrConnectWithoutTicketInput | $Types.Skip
+    upsert?: AppointmentUpsertWithoutTicketInput | $Types.Skip
+    disconnect?: AppointmentWhereInput | boolean | $Types.Skip
+    delete?: AppointmentWhereInput | boolean | $Types.Skip
+    connect?: AppointmentWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<AppointmentUpdateToOneWithWhereWithoutTicketInput, AppointmentUpdateWithoutTicketInput>, AppointmentUncheckedUpdateWithoutTicketInput> | $Types.Skip
+  }
+
+  export type UserUpdateOneWithoutAssignedTicketsNestedInput = {
+    create?: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedTicketsInput | $Types.Skip
+    upsert?: UserUpsertWithoutAssignedTicketsInput | $Types.Skip
+    disconnect?: UserWhereInput | boolean | $Types.Skip
+    delete?: UserWhereInput | boolean | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAssignedTicketsInput, UserUpdateWithoutAssignedTicketsInput>, UserUncheckedUpdateWithoutAssignedTicketsInput> | $Types.Skip
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -18088,6 +20235,40 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null | $Types.Skip
   }
 
+  export type NestedEnumTicketSourceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketSourceType | EnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketSourceTypeFilter<$PrismaModel> | $Enums.TicketSourceType | $Types.Skip
+  }
+
+  export type NestedEnumTicketStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketStatusFilter<$PrismaModel> | $Enums.TicketStatus | $Types.Skip
+  }
+
+  export type NestedEnumTicketSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketSourceType | EnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketSourceType[] | ListEnumTicketSourceTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.TicketSourceType | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumTicketSourceTypeFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumTicketSourceTypeFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type NestedEnumTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.TicketStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumTicketStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumTicketStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
   export type RefreshTokenCreateWithoutUserInput = {
     id?: string | $Types.Skip
     tokenHash: string
@@ -18129,6 +20310,7 @@ export namespace Prisma {
     noShowAt?: Date | string | null | $Types.Skip
     patient: PatientCreateNestedOneWithoutAppointmentsInput
     slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+    ticket?: TicketCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentUncheckedCreateWithoutNoShowMarkedByInput = {
@@ -18142,6 +20324,7 @@ export namespace Prisma {
     arrivedAt?: Date | string | null | $Types.Skip
     lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: Date | string | null | $Types.Skip
+    ticket?: TicketUncheckedCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentCreateOrConnectWithoutNoShowMarkedByInput = {
@@ -18217,6 +20400,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     appointments?: AppointmentCreateNestedManyWithoutPatientInput | $Types.Skip
+    tickets?: TicketCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientUncheckedCreateWithoutUserInput = {
@@ -18234,11 +20418,60 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
+    tickets?: TicketUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientCreateOrConnectWithoutUserInput = {
     where: PatientWhereUniqueInput
     create: XOR<PatientCreateWithoutUserInput, PatientUncheckedCreateWithoutUserInput>
+  }
+
+  export type TicketCreateWithoutAssignedDoctorInput = {
+    id?: string | $Types.Skip
+    sourceType: $Enums.TicketSourceType
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    patient: PatientCreateNestedOneWithoutTicketsInput
+    appointment?: AppointmentCreateNestedOneWithoutTicketInput | $Types.Skip
+  }
+
+  export type TicketUncheckedCreateWithoutAssignedDoctorInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    sourceType: $Enums.TicketSourceType
+    appointmentId?: string | null | $Types.Skip
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type TicketCreateOrConnectWithoutAssignedDoctorInput = {
+    where: TicketWhereUniqueInput
+    create: XOR<TicketCreateWithoutAssignedDoctorInput, TicketUncheckedCreateWithoutAssignedDoctorInput>
+  }
+
+  export type TicketCreateManyAssignedDoctorInputEnvelope = {
+    data: TicketCreateManyAssignedDoctorInput | TicketCreateManyAssignedDoctorInput[]
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type RefreshTokenUpsertWithWhereUniqueWithoutUserInput = {
@@ -18373,6 +20606,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     appointments?: AppointmentUpdateManyWithoutPatientNestedInput | $Types.Skip
+    tickets?: TicketUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type PatientUncheckedUpdateWithoutUserInput = {
@@ -18390,6 +20624,46 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
+    tickets?: TicketUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
+  }
+
+  export type TicketUpsertWithWhereUniqueWithoutAssignedDoctorInput = {
+    where: TicketWhereUniqueInput
+    update: XOR<TicketUpdateWithoutAssignedDoctorInput, TicketUncheckedUpdateWithoutAssignedDoctorInput>
+    create: XOR<TicketCreateWithoutAssignedDoctorInput, TicketUncheckedCreateWithoutAssignedDoctorInput>
+  }
+
+  export type TicketUpdateWithWhereUniqueWithoutAssignedDoctorInput = {
+    where: TicketWhereUniqueInput
+    data: XOR<TicketUpdateWithoutAssignedDoctorInput, TicketUncheckedUpdateWithoutAssignedDoctorInput>
+  }
+
+  export type TicketUpdateManyWithWhereWithoutAssignedDoctorInput = {
+    where: TicketScalarWhereInput
+    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyWithoutAssignedDoctorInput>
+  }
+
+  export type TicketScalarWhereInput = {
+    AND?: TicketScalarWhereInput | TicketScalarWhereInput[] | $Types.Skip
+    OR?: TicketScalarWhereInput[] | $Types.Skip
+    NOT?: TicketScalarWhereInput | TicketScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Ticket"> | string | $Types.Skip
+    patientId?: StringFilter<"Ticket"> | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFilter<"Ticket"> | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: StringNullableFilter<"Ticket"> | string | null | $Types.Skip
+    status?: EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFilter<"Ticket"> | boolean | $Types.Skip
+    lateArrivalBucket?: EnumLateArrivalBucketNullableFilter<"Ticket"> | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    assignedDoctorId?: StringNullableFilter<"Ticket"> | string | null | $Types.Skip
+    skipCount?: IntFilter<"Ticket"> | number | $Types.Skip
+    calledAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    inProgressAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    doneAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    skippedAt?: DateTimeNullableFilter<"Ticket"> | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Ticket"> | Date | string | $Types.Skip
   }
 
   export type UserCreateWithoutPatientInput = {
@@ -18406,6 +20680,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutPatientInput = {
@@ -18422,6 +20697,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutPatientInput = {
@@ -18440,6 +20716,7 @@ export namespace Prisma {
     noShowAt?: Date | string | null | $Types.Skip
     slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
     noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
+    ticket?: TicketCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentUncheckedCreateWithoutPatientInput = {
@@ -18453,6 +20730,7 @@ export namespace Prisma {
     lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: Date | string | null | $Types.Skip
     noShowMarkedById?: string | null | $Types.Skip
+    ticket?: TicketUncheckedCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentCreateOrConnectWithoutPatientInput = {
@@ -18462,6 +20740,54 @@ export namespace Prisma {
 
   export type AppointmentCreateManyPatientInputEnvelope = {
     data: AppointmentCreateManyPatientInput | AppointmentCreateManyPatientInput[]
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  export type TicketCreateWithoutPatientInput = {
+    id?: string | $Types.Skip
+    sourceType: $Enums.TicketSourceType
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    appointment?: AppointmentCreateNestedOneWithoutTicketInput | $Types.Skip
+    assignedDoctor?: UserCreateNestedOneWithoutAssignedTicketsInput | $Types.Skip
+  }
+
+  export type TicketUncheckedCreateWithoutPatientInput = {
+    id?: string | $Types.Skip
+    sourceType: $Enums.TicketSourceType
+    appointmentId?: string | null | $Types.Skip
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    assignedDoctorId?: string | null | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type TicketCreateOrConnectWithoutPatientInput = {
+    where: TicketWhereUniqueInput
+    create: XOR<TicketCreateWithoutPatientInput, TicketUncheckedCreateWithoutPatientInput>
+  }
+
+  export type TicketCreateManyPatientInputEnvelope = {
+    data: TicketCreateManyPatientInput | TicketCreateManyPatientInput[]
     skipDuplicates?: boolean | $Types.Skip
   }
 
@@ -18490,6 +20816,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    assignedTickets?: TicketUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutPatientInput = {
@@ -18506,6 +20833,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type AppointmentUpsertWithWhereUniqueWithoutPatientInput = {
@@ -18524,6 +20852,22 @@ export namespace Prisma {
     data: XOR<AppointmentUpdateManyMutationInput, AppointmentUncheckedUpdateManyWithoutPatientInput>
   }
 
+  export type TicketUpsertWithWhereUniqueWithoutPatientInput = {
+    where: TicketWhereUniqueInput
+    update: XOR<TicketUpdateWithoutPatientInput, TicketUncheckedUpdateWithoutPatientInput>
+    create: XOR<TicketCreateWithoutPatientInput, TicketUncheckedCreateWithoutPatientInput>
+  }
+
+  export type TicketUpdateWithWhereUniqueWithoutPatientInput = {
+    where: TicketWhereUniqueInput
+    data: XOR<TicketUpdateWithoutPatientInput, TicketUncheckedUpdateWithoutPatientInput>
+  }
+
+  export type TicketUpdateManyWithWhereWithoutPatientInput = {
+    where: TicketScalarWhereInput
+    data: XOR<TicketUpdateManyMutationInput, TicketUncheckedUpdateManyWithoutPatientInput>
+  }
+
   export type UserCreateWithoutRefreshTokensInput = {
     id?: string | $Types.Skip
     email: string
@@ -18538,6 +20882,7 @@ export namespace Prisma {
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -18554,6 +20899,7 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -18586,6 +20932,7 @@ export namespace Prisma {
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -18602,6 +20949,7 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type RolePermissionCreateWithoutModuleInput = {
@@ -18844,6 +21192,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -18860,6 +21209,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -18906,6 +21256,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutAssignedRolesInput = {
@@ -18922,6 +21273,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutAssignedRolesInput = {
@@ -18954,6 +21306,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -18970,6 +21323,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type RoleUpsertWithoutUsersInput = {
@@ -19028,6 +21382,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutAssignedRolesInput = {
@@ -19044,6 +21399,7 @@ export namespace Prisma {
     noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type SlotTemplateCreateWithoutSlotsInput = {
@@ -19088,6 +21444,7 @@ export namespace Prisma {
     noShowAt?: Date | string | null | $Types.Skip
     patient: PatientCreateNestedOneWithoutAppointmentsInput
     noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
+    ticket?: TicketCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentUncheckedCreateWithoutSlotInput = {
@@ -19101,6 +21458,7 @@ export namespace Prisma {
     lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: Date | string | null | $Types.Skip
     noShowMarkedById?: string | null | $Types.Skip
+    ticket?: TicketUncheckedCreateNestedOneWithoutAppointmentInput | $Types.Skip
   }
 
   export type AppointmentCreateOrConnectWithoutSlotInput = {
@@ -19181,6 +21539,7 @@ export namespace Prisma {
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     user: UserCreateNestedOneWithoutPatientInput
+    tickets?: TicketCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientUncheckedCreateWithoutAppointmentsInput = {
@@ -19198,6 +21557,7 @@ export namespace Prisma {
     medicalNotes?: string | null | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
+    tickets?: TicketUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
   }
 
   export type PatientCreateOrConnectWithoutAppointmentsInput = {
@@ -19242,6 +21602,7 @@ export namespace Prisma {
     userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutNoShowMarkedByInput = {
@@ -19258,11 +21619,55 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
     patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+    assignedTickets?: TicketUncheckedCreateNestedManyWithoutAssignedDoctorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutNoShowMarkedByInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutNoShowMarkedByInput, UserUncheckedCreateWithoutNoShowMarkedByInput>
+  }
+
+  export type TicketCreateWithoutAppointmentInput = {
+    id?: string | $Types.Skip
+    sourceType: $Enums.TicketSourceType
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    patient: PatientCreateNestedOneWithoutTicketsInput
+    assignedDoctor?: UserCreateNestedOneWithoutAssignedTicketsInput | $Types.Skip
+  }
+
+  export type TicketUncheckedCreateWithoutAppointmentInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    sourceType: $Enums.TicketSourceType
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    assignedDoctorId?: string | null | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type TicketCreateOrConnectWithoutAppointmentInput = {
+    where: TicketWhereUniqueInput
+    create: XOR<TicketCreateWithoutAppointmentInput, TicketUncheckedCreateWithoutAppointmentInput>
   }
 
   export type PatientUpsertWithoutAppointmentsInput = {
@@ -19291,6 +21696,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     user?: UserUpdateOneRequiredWithoutPatientNestedInput | $Types.Skip
+    tickets?: TicketUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type PatientUncheckedUpdateWithoutAppointmentsInput = {
@@ -19308,6 +21714,7 @@ export namespace Prisma {
     medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    tickets?: TicketUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
   }
 
   export type AvailableSlotUpsertWithoutAppointmentsInput = {
@@ -19364,6 +21771,7 @@ export namespace Prisma {
     userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutNoShowMarkedByInput = {
@@ -19380,6 +21788,56 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
     assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
     patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+    assignedTickets?: TicketUncheckedUpdateManyWithoutAssignedDoctorNestedInput | $Types.Skip
+  }
+
+  export type TicketUpsertWithoutAppointmentInput = {
+    update: XOR<TicketUpdateWithoutAppointmentInput, TicketUncheckedUpdateWithoutAppointmentInput>
+    create: XOR<TicketCreateWithoutAppointmentInput, TicketUncheckedCreateWithoutAppointmentInput>
+    where?: TicketWhereInput | $Types.Skip
+  }
+
+  export type TicketUpdateToOneWithWhereWithoutAppointmentInput = {
+    where?: TicketWhereInput | $Types.Skip
+    data: XOR<TicketUpdateWithoutAppointmentInput, TicketUncheckedUpdateWithoutAppointmentInput>
+  }
+
+  export type TicketUpdateWithoutAppointmentInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutTicketsNestedInput | $Types.Skip
+    assignedDoctor?: UserUpdateOneWithoutAssignedTicketsNestedInput | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateWithoutAppointmentInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    assignedDoctorId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type AvailableSlotCreateWithoutTemplateInput = {
@@ -19438,6 +21896,250 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AvailableSlot"> | Date | string | $Types.Skip
   }
 
+  export type PatientCreateWithoutTicketsInput = {
+    id?: string | $Types.Skip
+    dateOfBirth: Date | string
+    gender: $Enums.Gender
+    address?: string | null | $Types.Skip
+    emergencyContactName?: string | null | $Types.Skip
+    emergencyContactPhone?: string | null | $Types.Skip
+    bloodType?: $Enums.BloodType | null | $Types.Skip
+    allergies?: string | null | $Types.Skip
+    chronicConditions?: string | null | $Types.Skip
+    currentMedications?: string | null | $Types.Skip
+    medicalNotes?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    user: UserCreateNestedOneWithoutPatientInput
+    appointments?: AppointmentCreateNestedManyWithoutPatientInput | $Types.Skip
+  }
+
+  export type PatientUncheckedCreateWithoutTicketsInput = {
+    id?: string | $Types.Skip
+    userId: string
+    dateOfBirth: Date | string
+    gender: $Enums.Gender
+    address?: string | null | $Types.Skip
+    emergencyContactName?: string | null | $Types.Skip
+    emergencyContactPhone?: string | null | $Types.Skip
+    bloodType?: $Enums.BloodType | null | $Types.Skip
+    allergies?: string | null | $Types.Skip
+    chronicConditions?: string | null | $Types.Skip
+    currentMedications?: string | null | $Types.Skip
+    medicalNotes?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput | $Types.Skip
+  }
+
+  export type PatientCreateOrConnectWithoutTicketsInput = {
+    where: PatientWhereUniqueInput
+    create: XOR<PatientCreateWithoutTicketsInput, PatientUncheckedCreateWithoutTicketsInput>
+  }
+
+  export type AppointmentCreateWithoutTicketInput = {
+    id?: string | $Types.Skip
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    patient: PatientCreateNestedOneWithoutAppointmentsInput
+    slot: AvailableSlotCreateNestedOneWithoutAppointmentsInput
+    noShowMarkedBy?: UserCreateNestedOneWithoutNoShowMarkedByInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedCreateWithoutTicketInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    slotId: string
+    status?: $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: Date | string | $Types.Skip
+    cancelledAt?: Date | string | null | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    arrivedAt?: Date | string | null | $Types.Skip
+    lateArrival?: $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: Date | string | null | $Types.Skip
+    noShowMarkedById?: string | null | $Types.Skip
+  }
+
+  export type AppointmentCreateOrConnectWithoutTicketInput = {
+    where: AppointmentWhereUniqueInput
+    create: XOR<AppointmentCreateWithoutTicketInput, AppointmentUncheckedCreateWithoutTicketInput>
+  }
+
+  export type UserCreateWithoutAssignedTicketsInput = {
+    id?: string | $Types.Skip
+    email: string
+    passwordHash: string
+    name: string
+    isActive?: boolean | $Types.Skip
+    phoneNumber?: string | null | $Types.Skip
+    isBootstrapAdmin?: boolean | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput | $Types.Skip
+    assignedRoles?: UserRoleCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    patient?: PatientCreateNestedOneWithoutUserInput | $Types.Skip
+  }
+
+  export type UserUncheckedCreateWithoutAssignedTicketsInput = {
+    id?: string | $Types.Skip
+    email: string
+    passwordHash: string
+    name: string
+    isActive?: boolean | $Types.Skip
+    phoneNumber?: string | null | $Types.Skip
+    isBootstrapAdmin?: boolean | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedCreateNestedManyWithoutNoShowMarkedByInput | $Types.Skip
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    assignedRoles?: UserRoleUncheckedCreateNestedManyWithoutAssignedByInput | $Types.Skip
+    patient?: PatientUncheckedCreateNestedOneWithoutUserInput | $Types.Skip
+  }
+
+  export type UserCreateOrConnectWithoutAssignedTicketsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
+  }
+
+  export type PatientUpsertWithoutTicketsInput = {
+    update: XOR<PatientUpdateWithoutTicketsInput, PatientUncheckedUpdateWithoutTicketsInput>
+    create: XOR<PatientCreateWithoutTicketsInput, PatientUncheckedCreateWithoutTicketsInput>
+    where?: PatientWhereInput | $Types.Skip
+  }
+
+  export type PatientUpdateToOneWithWhereWithoutTicketsInput = {
+    where?: PatientWhereInput | $Types.Skip
+    data: XOR<PatientUpdateWithoutTicketsInput, PatientUncheckedUpdateWithoutTicketsInput>
+  }
+
+  export type PatientUpdateWithoutTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender | $Types.Skip
+    address?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    bloodType?: NullableEnumBloodTypeFieldUpdateOperationsInput | $Enums.BloodType | null | $Types.Skip
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    chronicConditions?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    currentMedications?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutPatientNestedInput | $Types.Skip
+    appointments?: AppointmentUpdateManyWithoutPatientNestedInput | $Types.Skip
+  }
+
+  export type PatientUncheckedUpdateWithoutTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender | $Types.Skip
+    address?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    bloodType?: NullableEnumBloodTypeFieldUpdateOperationsInput | $Enums.BloodType | null | $Types.Skip
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    chronicConditions?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    currentMedications?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUpsertWithoutTicketInput = {
+    update: XOR<AppointmentUpdateWithoutTicketInput, AppointmentUncheckedUpdateWithoutTicketInput>
+    create: XOR<AppointmentCreateWithoutTicketInput, AppointmentUncheckedCreateWithoutTicketInput>
+    where?: AppointmentWhereInput | $Types.Skip
+  }
+
+  export type AppointmentUpdateToOneWithWhereWithoutTicketInput = {
+    where?: AppointmentWhereInput | $Types.Skip
+    data: XOR<AppointmentUpdateWithoutTicketInput, AppointmentUncheckedUpdateWithoutTicketInput>
+  }
+
+  export type AppointmentUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
+  }
+
+  export type AppointmentUncheckedUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    slotId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
+    bookedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type UserUpsertWithoutAssignedTicketsInput = {
+    update: XOR<UserUpdateWithoutAssignedTicketsInput, UserUncheckedUpdateWithoutAssignedTicketsInput>
+    create: XOR<UserCreateWithoutAssignedTicketsInput, UserUncheckedCreateWithoutAssignedTicketsInput>
+    where?: UserWhereInput | $Types.Skip
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAssignedTicketsInput = {
+    where?: UserWhereInput | $Types.Skip
+    data: XOR<UserUpdateWithoutAssignedTicketsInput, UserUncheckedUpdateWithoutAssignedTicketsInput>
+  }
+
+  export type UserUpdateWithoutAssignedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    passwordHash?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput | $Types.Skip
+    assignedRoles?: UserRoleUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    patient?: PatientUpdateOneWithoutUserNestedInput | $Types.Skip
+  }
+
+  export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    passwordHash?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    isActive?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    isBootstrapAdmin?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    noShowMarkedBy?: AppointmentUncheckedUpdateManyWithoutNoShowMarkedByNestedInput | $Types.Skip
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    assignedRoles?: UserRoleUncheckedUpdateManyWithoutAssignedByNestedInput | $Types.Skip
+    patient?: PatientUncheckedUpdateOneWithoutUserNestedInput | $Types.Skip
+  }
+
   export type RefreshTokenCreateManyUserInput = {
     id?: string | $Types.Skip
     tokenHash: string
@@ -19473,6 +22175,25 @@ export namespace Prisma {
     userId: string
     roleId: string
     assignedAt?: Date | string | $Types.Skip
+  }
+
+  export type TicketCreateManyAssignedDoctorInput = {
+    id?: string | $Types.Skip
+    patientId: string
+    sourceType: $Enums.TicketSourceType
+    appointmentId?: string | null | $Types.Skip
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type RefreshTokenUpdateWithoutUserInput = {
@@ -19516,6 +22237,7 @@ export namespace Prisma {
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
     slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
+    ticket?: TicketUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateWithoutNoShowMarkedByInput = {
@@ -19529,6 +22251,7 @@ export namespace Prisma {
     arrivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    ticket?: TicketUncheckedUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateManyWithoutNoShowMarkedByInput = {
@@ -19586,6 +22309,63 @@ export namespace Prisma {
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
+  export type TicketUpdateWithoutAssignedDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    patient?: PatientUpdateOneRequiredWithoutTicketsNestedInput | $Types.Skip
+    appointment?: AppointmentUpdateOneWithoutTicketNestedInput | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateWithoutAssignedDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateManyWithoutAssignedDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    patientId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
   export type AppointmentCreateManyPatientInput = {
     id?: string | $Types.Skip
     slotId: string
@@ -19599,6 +22379,25 @@ export namespace Prisma {
     noShowMarkedById?: string | null | $Types.Skip
   }
 
+  export type TicketCreateManyPatientInput = {
+    id?: string | $Types.Skip
+    sourceType: $Enums.TicketSourceType
+    appointmentId?: string | null | $Types.Skip
+    status?: $Enums.TicketStatus | $Types.Skip
+    priority?: boolean | $Types.Skip
+    lateArrivalBucket?: $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: Date | string | null | $Types.Skip
+    joinedQueueAt?: Date | string | $Types.Skip
+    assignedDoctorId?: string | null | $Types.Skip
+    skipCount?: number | $Types.Skip
+    calledAt?: Date | string | null | $Types.Skip
+    inProgressAt?: Date | string | null | $Types.Skip
+    doneAt?: Date | string | null | $Types.Skip
+    skippedAt?: Date | string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
   export type AppointmentUpdateWithoutPatientInput = {
     id?: StringFieldUpdateOperationsInput | string | $Types.Skip
     status?: EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus | $Types.Skip
@@ -19610,6 +22409,7 @@ export namespace Prisma {
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     slot?: AvailableSlotUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
     noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
+    ticket?: TicketUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateWithoutPatientInput = {
@@ -19623,6 +22423,7 @@ export namespace Prisma {
     lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    ticket?: TicketUncheckedUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
@@ -19636,6 +22437,63 @@ export namespace Prisma {
     lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+  }
+
+  export type TicketUpdateWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    appointment?: AppointmentUpdateOneWithoutTicketNestedInput | $Types.Skip
+    assignedDoctor?: UserUpdateOneWithoutAssignedTicketsNestedInput | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    assignedDoctorId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type TicketUncheckedUpdateManyWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sourceType?: EnumTicketSourceTypeFieldUpdateOperationsInput | $Enums.TicketSourceType | $Types.Skip
+    appointmentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus | $Types.Skip
+    priority?: BoolFieldUpdateOperationsInput | boolean | $Types.Skip
+    lateArrivalBucket?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
+    scheduledSlotTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    joinedQueueAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    assignedDoctorId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    skipCount?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    inProgressAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    doneAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    skippedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type RolePermissionCreateManyModuleInput = {
@@ -19738,6 +22596,7 @@ export namespace Prisma {
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput | $Types.Skip
     noShowMarkedBy?: UserUpdateOneWithoutNoShowMarkedByNestedInput | $Types.Skip
+    ticket?: TicketUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateWithoutSlotInput = {
@@ -19751,6 +22610,7 @@ export namespace Prisma {
     lateArrival?: NullableEnumLateArrivalBucketFieldUpdateOperationsInput | $Enums.LateArrivalBucket | null | $Types.Skip
     noShowAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null | $Types.Skip
     noShowMarkedById?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    ticket?: TicketUncheckedUpdateOneWithoutAppointmentNestedInput | $Types.Skip
   }
 
   export type AppointmentUncheckedUpdateManyWithoutSlotInput = {

@@ -22,6 +22,7 @@ const NOW = new Date('2026-06-18T12:00:00Z');
 describe('ArrivalService', () => {
     let db: ReturnType<typeof makeDb>;
     let rbac: { hasPermission: jest.Mock };
+    let ticketService: { createFromAppointment: jest.Mock };
     let service: ArrivalService;
 
     beforeEach(() => {
@@ -29,7 +30,8 @@ describe('ArrivalService', () => {
         jest.setSystemTime(NOW);
         db = makeDb();
         rbac = { hasPermission: jest.fn() };
-        service = new ArrivalService(db as any, rbac as any);
+        ticketService = { createFromAppointment: jest.fn() };
+        service = new ArrivalService(db as any, rbac as any, ticketService as any);
     });
 
     afterEach(() => {
@@ -83,6 +85,8 @@ describe('ArrivalService', () => {
                     data: { status: 'ARRIVED', arrivedAt: NOW, lateArrival: 'ON_TIME' },
                 }),
             );
+            // Arrival materializes a queue ticket in the same transaction.
+            expect(ticketService.createFromAppointment).toHaveBeenCalledWith(tx, { id: 'appt-1' });
         });
 
         it.each([

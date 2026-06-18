@@ -13,7 +13,9 @@ export class SettingsService {
         const payload: Settings = {
             appointmentDurationMinutes: "",
             slotCapacity: "",
-            clinicHours: ""
+            clinicHours: "",
+            walkInEnabled: "",
+            walkInMaxQueueLength: ""
         };
 
         for (let setting of currentSettings) {

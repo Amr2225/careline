@@ -2,6 +2,8 @@ export interface DefaultSettings {
     appointmentDurationMinutes: string;
     slotCapacity: string;
     clinicHours: string;
+    walkInEnabled: string;
+    walkInMaxQueueLength: string;
 }
 
 export type Settings = DefaultSettings & Record<string, unknown>
