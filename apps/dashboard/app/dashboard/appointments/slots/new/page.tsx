@@ -150,16 +150,6 @@ export default function NewSlotsPage() {
         lunchEndTime: lunchEnabled ? lunchEnd : undefined,
       })
 
-      console.log("create slots", {
-        startDate,
-        endDate,
-        days,
-        startTime,
-        endTime,
-        lunchEnabled,
-        lunchStart,
-        lunchEnd,
-      })
       toast.success("Slots created successfully")
       router.push("/dashboard/appointments")
     } catch (error) {

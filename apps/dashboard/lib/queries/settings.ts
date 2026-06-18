@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "./keys";
-import { settingsApi } from "../api/settings";
+import { settingsApi, type UpdateSettingsInput } from "../api/settings";
 
 export const useSettings = () => {
     return useQuery({
@@ -8,6 +8,16 @@ export const useSettings = () => {
         queryFn: () => settingsApi.getSettings(),
         staleTime: 60_000,
         placeholderData: (prev) => prev
-        
+
+    })
+}
+
+export const useUpdateSettings = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (input: UpdateSettingsInput) => settingsApi.updateSettings(input),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.settings.get() })
+        }
     })
 }

@@ -52,6 +52,7 @@ import { addDays, format } from "date-fns"
 import { DateFilter } from "../_components/dateFilter"
 import { ErrorState } from "../_components/states"
 import { SlotsListSkeleton } from "./_components/SlotsListSkeleton"
+import { useDeleteSlot } from "@/lib/queries/slots"
 import { useSlots } from "@/lib/queries/slots"
 import { SlotWithTemplateName } from "@careline/shared/types/slots.type"
 import { parseAsIsoDate, useQueryState } from "nuqs"
@@ -446,6 +447,7 @@ function DeleteSlotDialog({
   slotId: string
   slotTime: string
 }) {
+  const { mutate: deleteSlot, isPending } = useDeleteSlot(slotId)
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -466,12 +468,12 @@ function DeleteSlotDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          {/* DELETE /api/v1/slots/:id */}
           <AlertDialogAction
-            onClick={() => console.log("delete slot", slotId)}
+            onClick={() => deleteSlot()}
+            disabled={isPending}
             className="bg-rose-600 hover:bg-rose-700"
           >
-            Delete
+            {isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

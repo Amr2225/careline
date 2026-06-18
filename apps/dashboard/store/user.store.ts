@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { UserWithoutPassword } from '@careline/shared/types/user.type';
+import { UserEntity } from '@careline/shared/types/user.type';
 import { api } from '@/lib/api';
 import { isAxiosError } from 'axios';
 
@@ -9,7 +9,7 @@ type ErrorResponse = {
 }
 
 interface AuthStore {
-    user: UserWithoutPassword | null;
+    user: UserEntity | null;
     isAuthenticated: "checking" | "authenticated" | "unauthenticated";
     isLoading: boolean;
     error: string | null;
@@ -19,7 +19,7 @@ interface AuthStore {
     logout: () => Promise<void>;
 }
 
-const setLocalStorageUser = (user: UserWithoutPassword) => {
+const setLocalStorageUser = (user: UserEntity) => {
     if (typeof window !== "undefined") {
         window.localStorage.setItem("Careline-user", JSON.stringify(user))
     }
@@ -32,7 +32,7 @@ const checkLocalStorageUser = () => {
             return null
         }
 
-        return JSON.parse(user) as UserWithoutPassword | null
+        return JSON.parse(user) as UserEntity | null
     }
     return null
 }
@@ -55,8 +55,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
         set({ isLoading: true })
         try {
-            const { data } = await api.get<UserWithoutPassword>("/auth/me")
-            console.log("DATA: ", data);
+            const { data } = await api.get<UserEntity>("/auth/me")
             setLocalStorageUser(data)
             set({ user: data, isAuthenticated: "authenticated" })
 
@@ -69,7 +68,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     login: async (email: string, password: string) => {
         set({ isLoading: true })
         try {
-            const { data } = await api.post<UserWithoutPassword>("/auth/login", {
+            const { data } = await api.post<UserEntity>("/auth/login", {
                 email,
                 password,
             })

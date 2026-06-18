@@ -7,6 +7,7 @@ import { Input } from "@careline/ui/components/input"
 import { Label } from "@careline/ui/components/label"
 import { Switch } from "@careline/ui/components/switch"
 import { cn } from "@careline/ui/lib/utils"
+import { useUpdateSettings } from "@/lib/queries/settings"
 
 type Hours = { open: string; close: string } | null
 
@@ -39,8 +40,9 @@ export default function AppointmentSettingsPage() {
   const [duration, setDuration] = useState(initial.appointmentDurationMinutes)
   const [capacity, setCapacity] = useState(initial.slotCapacity)
   const [hours, setHours] = useState<Record<string, Hours>>(initial.clinicHours)
-  const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const updateSettings = useUpdateSettings()
+  const saving = updateSettings.isPending
 
   const setDay = (day: string, value: Hours) => {
     setHours((prev) => ({ ...prev, [day]: value }))
@@ -48,16 +50,16 @@ export default function AppointmentSettingsPage() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
-    setSaving(true)
     setSaved(false)
-    // PATCH /api/v1/settings
-    // body: { appointmentDurationMinutes: duration, slotCapacity: capacity, clinicHours: JSON.stringify(hours) }
-    console.log("save settings", { duration, capacity, hours })
-    setTimeout(() => {
-      setSaving(false)
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2400)
-    }, 600)
+    updateSettings.mutate(
+      { appointmentDurationMinutes: duration, slotCapacity: capacity, clinicHours: hours },
+      {
+        onSuccess: () => {
+          setSaved(true)
+          setTimeout(() => setSaved(false), 2400)
+        },
+      }
+    )
   }
 
   return (
@@ -185,6 +187,9 @@ export default function AppointmentSettingsPage() {
         <div className="flex items-center justify-end gap-3 pt-2">
           {saved ? (
             <span className="text-sm text-emerald-600">Saved.</span>
+          ) : null}
+          {updateSettings.isError ? (
+            <span className="text-sm text-destructive">Couldn&apos;t save. Try again.</span>
           ) : null}
           <Button type="submit" disabled={saving}>
             <Save className="size-4" />

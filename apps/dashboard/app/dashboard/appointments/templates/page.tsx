@@ -44,14 +44,12 @@ export default function TemplatesPage() {
     refetch,
   } = useSlotTemplates()
   const { mutateAsync: updateSlotTemplate, isPending } = useUpdateSlotTemplate()
-  console.log("Slot Templates: ", slotTemplates)
 
   const [currentTemplateId, setCurrentTemplateId] = useState("")
 
   const toggle = async (id: string) => {
     const currentActiveState = slotTemplates?.find((t) => t.id === id)?.isActive
     setCurrentTemplateId(id)
-    console.log(currentActiveState)
     try {
       await updateSlotTemplate({
         template: { isActive: !currentActiveState },
