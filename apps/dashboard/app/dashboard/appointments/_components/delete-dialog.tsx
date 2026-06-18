@@ -52,9 +52,7 @@ export function DeleteSlotDialog({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             disabled={deleteSlot.isPending}
-            onClick={(e) => {
-              void deleteSlot.mutate()
-            }}
+            onClick={() => void deleteSlot.mutate()}
             className="bg-rose-600 hover:bg-rose-700"
           >
             Delete

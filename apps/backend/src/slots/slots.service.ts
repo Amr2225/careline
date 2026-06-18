@@ -1,6 +1,6 @@
 import { DbService } from '@/db/db.service';
 import { SettingsService } from '@/settings/settings.service';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateBulkSlotsDto, CreateSlotDto } from './dto/create-slot.dto';
 import { combineDateAndTime, eachDayInRange } from '@/common/date.util';
@@ -91,12 +91,20 @@ export class SlotsService {
         const workingDay = hours[String(toZonedTime(data.startDateTime, timezone).getDay())];
         if (!workingDay) throw new BadRequestException('Cannot assign slot to a non-working day');
 
-        return await this.dbService.availableSlot.create({
-            data: {
-                startTime: data.startDateTime,
-                capacity
+        try {
+
+            return await this.dbService.availableSlot.create({
+                data: {
+                    startTime: data.startDateTime,
+                    capacity
+                }
+            });
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+                throw new ConflictException('Slot with the same time already exists');
             }
-        });
+            throw error;
+        }
     }
 
     async deleteSlot(id: string): Promise<void> {

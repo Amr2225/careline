@@ -31,6 +31,7 @@ import { useSettings } from "@/lib/queries/settings"
 import { useCreateSlot } from "@/lib/queries/slots"
 import { toast } from "sonner"
 import { ErrorState, FormPageSkeleton } from "../../_components/states"
+import { extractErrorMessage } from "@/lib/errors"
 
 const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const MONTH_SHORT = [
@@ -85,8 +86,9 @@ export default function NewSingleSlotPage() {
       toast.success("Slot created successfully")
       router.push("/dashboard/appointments")
     } catch (error) {
-      console.error(error)
-      toast.error("Failed to create slot")
+      toast.error("Failed to create slot", {
+        description: extractErrorMessage(error),
+      })
     }
   }
 

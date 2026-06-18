@@ -1,5 +1,6 @@
 import { motion } from "motion/react"
 import {
+  AlertTriangle,
   ArrowLeft,
   CalendarDays,
   CheckCircle2,
@@ -43,6 +44,11 @@ type Props = {
   onCancelled?: () => void
 }
 
+// Grace window (minutes past the slot start time) within which a late patient
+// keeps their place; after this they are sent to the end of the queue. Mirrors
+// the backend FRONT_INSERT vs VERY_LATE threshold in arrival.service.ts.
+const LATE_GRACE_MINUTES = 15
+
 export default function AppointmentDetailPanel({
   appointmentId,
   onBack,
@@ -75,8 +81,22 @@ export default function AppointmentDetailPanel({
   if (isLoading && !appointment) return <AppointmentDetailSkeleton />
   if (isError && !appointment) return <ApiError />
 
-  const isActive = ["BOOKED", "ARRIVED", "IN_PROGRESS"].includes(
+  const isActive = ["BOOKED", "LATE_ARRIVING", "ARRIVED", "IN_PROGRESS"].includes(
     appointment.status
+  )
+
+  const isLate = appointment.status === AppointmentStatus.LATE_ARRIVING
+  // Minutes left until the patient loses their spot, measured against the last
+  // poll time (`lastUpdated`) so the value is pure during render and advances
+  // each time the query refetches.
+  const minutesLeftToKeepSpot = Math.max(
+    0,
+    Math.ceil(
+      (new Date(appointment.slot.startTime).getTime() +
+        LATE_GRACE_MINUTES * 60_000 -
+        lastUpdated) /
+        60_000
+    )
   )
 
   return (
@@ -120,6 +140,27 @@ export default function AppointmentDetailPanel({
           </p>
         </div>
       )}
+
+      {isLate ? (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 26 }}
+          role="status"
+          className="mt-4 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900"
+        >
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/30 text-amber-700">
+            <AlertTriangle className="size-4" />
+          </span>
+          <div className="space-y-1">
+            <p className="text-sm font-semibold">You're running late</p>
+            <p className="text-xs leading-5 text-amber-900/80">
+              Arrive within {minutesLeftToKeepSpot} min to keep your spot. After{" "}
+              {minutesLeftToKeepSpot} min, you'll go to the end of the queue.
+            </p>
+          </div>
+        </motion.div>
+      ) : null}
 
       <div className="mt-5 grid gap-2.5">
         <DetailRow

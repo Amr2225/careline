@@ -29,7 +29,12 @@ export const useCreateSlot = () => {
         mutationFn: (slot: CreateSlotPayload) => slotsApi.createSlot(slot),
         onSuccess: () => {
             void queryClient.invalidateQueries({ queryKey: queryKeys.slots.all })
-        }
+        },
+        // onError: (error) => {
+        //     toast.error("Failed to create slot", {
+        //         description: extractErrorMessage(error),
+        //     })
+        // }
     })
 }
 

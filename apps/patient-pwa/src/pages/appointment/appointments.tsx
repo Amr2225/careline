@@ -22,7 +22,7 @@ const STATUS_TONE: Record<Status, string> = {
   DONE: "bg-emerald-50 text-emerald-700",
   NO_SHOW: "bg-rose-50 text-rose-700",
   CANCELLED: "bg-slate-100 text-slate-500",
-  LATE_ARRIVING: "bg-sky-50 text-sky-700",
+  LATE_ARRIVING: "bg-amber-50 text-amber-700",
 }
 
 const customLocale = {
@@ -42,7 +42,7 @@ export default function AppointmentsPage() {
   const upcoming = useMemo(() => {
     return (
       appointments?.filter((a) =>
-        ["BOOKED", "ARRIVED", "IN_PROGRESS"].includes(a.status)
+        ["BOOKED", "LATE_ARRIVING", "ARRIVED", "IN_PROGRESS"].includes(a.status)
       ) || []
     )
   }, [appointments])

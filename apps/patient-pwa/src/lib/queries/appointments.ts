@@ -33,7 +33,9 @@ export const useGetAppointmentById = (id: string) => {
     return useQuery({
         queryKey: queryKeys.appointments.detail(id),
         queryFn: () => appointmentsApi.getById(id),
-        refetchInterval: 30_000
+        // Poll frequently so a server-side status flip (e.g. BOOKED -> LATE_ARRIVING)
+        // is reflected on the detail page within 15s.
+        refetchInterval: 15_000
     })
 }
 
