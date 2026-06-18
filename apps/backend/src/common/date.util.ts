@@ -3,13 +3,6 @@ import { BadRequestException } from "@nestjs/common";
 import { getDay, addDays, isValid } from "date-fns"
 import { formatInTimeZone } from "date-fns-tz"
 
-export function run() {
-    console.log("--------------------------------")
-    const date = "2025-05-25"
-    const r = combineDateAndTime(formatInTimeZone(new Date(date), "Africa/Cairo", "yyyy-MM-dd"), "10:00", "Africa/Cairo")
-    console.log("result: ", r)
-}
-
 export function combineDateAndTime(date: string, time: string, timezone: string) {
     // Date Check for format YYYY-MM-DD
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new BadRequestException('Invalid date, expected YYYY-MM-DD');
@@ -60,4 +53,22 @@ export function nextWeekday(date: Date, weekday: Weekday, weekOffset: number = 0
     daysUntilNext += (weekOffset * 7);
 
     return addDays(zoned, daysUntilNext);
+}
+
+// Day-of-week 0-6 (Sun-Sat) computed in the clinic timezone, matching getDay() semantics.
+// date-fns 'i' is the ISO day of week (1=Mon..7=Sun); % 7 maps Sun(7)->0.
+export function weekdayInTimeZone(date: Date, timezone: string): number {
+    return Number(formatInTimeZone(date, timezone, 'i')) % 7;
+}
+
+// Returns the next Sunday's clinic-midnight instant strictly after the given date.
+export function startOfNextWeekSunday(date: Date, timezone: string): Date {
+    const currentDay = weekdayInTimeZone(date, timezone);
+    const daysUntilNextSunday = (Weekday.SUNDAY - currentDay + 7) % 7 || 7;
+
+    const baseDate = new Date(`${formatInTimeZone(date, timezone, "yyyy-MM-dd")}T00:00:00Z`);
+    baseDate.setUTCDate(baseDate.getUTCDate() + daysUntilNextSunday);
+    const dayDate = baseDate.toISOString().slice(0, 10);
+
+    return fromZonedTime(`${dayDate}T00:00:00`, timezone);
 }

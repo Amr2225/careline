@@ -3,11 +3,11 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
+import { JwtRefreshStrategy, JwtPatientRefreshStrategy } from './strategy/jwt-refresh.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UserModule } from '@/user/user.module';
 import { DbModule } from '@/db/db.module';
-import { JwtStrategy } from './strategy/jwt.strategy';
+import { JwtStaffStrategy, JwtPatientStrategy } from './strategy/jwt.strategy';
 import { RbacModule } from '@/rbac/rbac.module';
 
 @Module({
@@ -22,8 +22,10 @@ import { RbacModule } from '@/rbac/rbac.module';
   providers: [
     AuthService,
     JwtRefreshStrategy,
+    JwtPatientRefreshStrategy,
     JwtAuthGuard,
-    JwtStrategy
+    JwtStaffStrategy,
+    JwtPatientStrategy
   ]
 })
 export class AuthModule { }

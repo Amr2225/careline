@@ -14,11 +14,11 @@ export class CreateTemplateDto {
     weekday: number;
 
     @IsString({ message: "Start time is required" })
-    @Matches(timeRegex, { message: "Invalid start time fromat, expected HH:mm" })
+    @Matches(timeRegex, { message: "Invalid start time format, expected HH:mm" })
     startTime: string;
 
     @IsString({ message: "End time is required" })
-    @Matches(timeRegex, { message: "Invalid end time fromat, expected HH:mm" })
+    @Matches(timeRegex, { message: "Invalid end time format, expected HH:mm" })
     endTime: string;
 
     @IsOptional()

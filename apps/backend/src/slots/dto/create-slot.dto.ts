@@ -20,11 +20,11 @@ export class CreateBulkSlotsDto {
     endDate: string;
 
     @IsString({ message: "Invalid start time" })
-    @Matches(timeRegex, { message: "Invalid start time fromat, expected HH:mm" })
+    @Matches(timeRegex, { message: "Invalid start time format, expected HH:mm" })
     startTime: string
 
-    @IsString({ message: "Invalid start time" })
-    @Matches(timeRegex, { message: "Invalid start time fromat, expected HH:mm" })
+    @IsString({ message: "Invalid end time" })
+    @Matches(timeRegex, { message: "Invalid end time format, expected HH:mm" })
     endTime: string
 
     @IsArray({ message: "Invalid days of week" })
@@ -33,13 +33,13 @@ export class CreateBulkSlotsDto {
     daysOfWeek: number[];
 
     @IsOptional()
-    @IsString({ message: "Invalid start time" })
-    @Matches(timeRegex, { message: "Invalid lunch start time fromat, expected HH:mm" })
+    @IsString({ message: "Invalid lunch start time" })
+    @Matches(timeRegex, { message: "Invalid lunch start time format, expected HH:mm" })
     lunchStartTime?: string;
 
     @IsOptional()
-    @IsString({ message: "Invalid start time" })
-    @Matches(timeRegex, { message: "Invalid lunch end time fromat, expected HH:mm" })
+    @IsString({ message: "Invalid lunch end time" })
+    @Matches(timeRegex, { message: "Invalid lunch end time format, expected HH:mm" })
     lunchEndTime?: string;
 
     @IsOptional()

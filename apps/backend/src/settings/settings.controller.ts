@@ -1,4 +1,4 @@
-import { Settings } from '@careline/shared/types/serttings.types';
+import { Settings } from '@careline/shared/types/settings.types';
 import { Setting as PrismaSettingType } from '@careline/shared/prisma/client';
 import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { SettingsService } from './settings.service';
@@ -7,8 +7,6 @@ import { UpdateSettingDto } from './dto/update-settings.dto';
 import { User } from '@/auth/decorators/user.decorator';
 import type { UserWithoutPassword } from '@careline/shared/types/user.type';
 
-import { run } from '@/common/date.util';
-
 @Controller('settings')
 export class SettingsController {
     constructor(private readonly settingsService: SettingsService) { }
@@ -16,7 +14,6 @@ export class SettingsController {
     @Get()
     @Requires(["Settings:READ"])
     async getAll(): Promise<Settings> {
-        run()
         return this.settingsService.getAll();
     }
 

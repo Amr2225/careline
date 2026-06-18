@@ -4,6 +4,7 @@ import { LateArrivalBucket } from '@careline/shared/prisma/index';
 import { AppointmentWithSlot } from '@careline/shared/types/appointment.type';
 import { Action } from '@careline/shared/types/rbac.type';
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { FRONT_INSERT_GRACE_MINUTES } from './arrival.constants';
 
 @Injectable()
 export class ArrivalService {
@@ -39,7 +40,7 @@ export class ArrivalService {
             bucket = "ON_TIME"
         }
         else if (appt.status === "LATE_ARRIVING") {
-            if (minutesPastSlot < 15) bucket = "FRONT_INSERT"
+            if (minutesPastSlot <= FRONT_INSERT_GRACE_MINUTES) bucket = "FRONT_INSERT"
             else bucket = "VERY_LATE"
         } else {
             throw new BadRequestException(`Unexpected status: ${appt.status}`);
@@ -77,16 +78,26 @@ export class ArrivalService {
         if (appt.status === "ARRIVED" || appt.status === "IN_PROGRESS" || appt.status === "DONE") throw new BadRequestException("Appointment already arrived or in progress");
         if (appt.status === "NO_SHOW") throw new BadRequestException("Appointment marked as no-showed");
         if (appt.status === "CANCELLED") throw new BadRequestException("Appointment was cancelled");
-        if (appt.status === "LATE_ARRIVING") throw new BadRequestException("Appointment was marked as late arriving");
 
-        return await this.dbService.appointment.update({
-            where: { id: appointmentId },
-            data: {
-                status: "NO_SHOW",
-                noShowAt: new Date(),
-                noShowMarkedById: markedById,
-            },
-            include: { slot: true }
+        // At this point the appointment is guaranteed to be BOOKED or LATE_ARRIVING,
+        // both of which count against the slot's capacity, so free one seat.
+        return await this.dbService.$transaction(async (tx) => {
+            const updated = await tx.appointment.update({
+                where: { id: appointmentId },
+                data: {
+                    status: "NO_SHOW",
+                    noShowAt: new Date(),
+                    noShowMarkedById: markedById,
+                },
+                include: { slot: true }
+            });
+
+            await tx.availableSlot.update({
+                where: { id: appt.slotId },
+                data: { bookedCount: { decrement: 1 } }
+            });
+
+            return updated;
         }) as AppointmentWithSlot
     }
 }

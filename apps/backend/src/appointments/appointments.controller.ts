@@ -10,16 +10,16 @@ import { ArrivalService } from '@/arrival/arrival.service';
 
 @Controller('appointments')
 export class AppointmentsController {
-    constructor(private readonly appointmentsService: AppointmentsService, private readonly arrivaleService: ArrivalService) { }
+    constructor(private readonly appointmentsService: AppointmentsService, private readonly arrivalService: ArrivalService) { }
 
     @Get("/by-date")
-    @Requires(["Appointments:READ"])
+    @Requires(["Patients:READ"])
     async getAppointmentsByDate(@Query() query: QueryAppointmentsByDateDto): Promise<SlotAndAppointments[]> {
         return await this.appointmentsService.getByDate(query.from);
     }
 
     @Get("/by-date-range")
-    @Requires(["Appointments:READ"])
+    @Requires(["Patients:READ"])
     async getAppointmentsByDateRange(@Query() query: QueryAppointmentsByDateDto): Promise<WeeklyAppointmentsView[]> {
         return await this.appointmentsService.getByDateRange(query.from, query.to!);
     }
@@ -52,18 +52,18 @@ export class AppointmentsController {
     @Post(":id/arrive")
     @Requires(["Appointments:READ"])
     async arrive(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword) {
-        return await this.arrivaleService.recordArrival(apptId, callerUser.id);
+        return await this.arrivalService.recordArrival(apptId, callerUser.id);
     }
 
     @Post(":id/mark-arrived")
     @Requires(["Appointments:UPDATE"])
     async markArrive(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword): Promise<AppointmentWithSlot> {
-        return await this.arrivaleService.recordArrival(apptId, callerUser.id);
+        return await this.arrivalService.recordArrival(apptId, callerUser.id);
     }
 
     @Post(":id/no-show")
     @Requires(["Appointments:UPDATE"])
     async markNoShow(@Param('id') apptId: string, @User() callerUser: UserWithoutPassword): Promise<AppointmentWithSlot> {
-        return await this.arrivaleService.markNoShow(apptId, callerUser.id);
+        return await this.arrivalService.markNoShow(apptId, callerUser.id);
     }
 }

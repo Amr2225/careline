@@ -1,5 +1,5 @@
 import { DbService } from '@/db/db.service';
-import { Settings } from '@careline/shared/types/serttings.types';
+import { Settings } from '@careline/shared/types/settings.types';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateSettingDto } from './dto/update-settings.dto';
 import { Setting as PrismaSettingType } from '@careline/shared/prisma/client';

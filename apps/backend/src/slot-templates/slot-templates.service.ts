@@ -1,8 +1,8 @@
 import { DbService } from '@/db/db.service';
 import { SettingsService } from '@/settings/settings.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, SlotTemplate } from '@careline/shared/prisma/client';
-import { combineDateAndTime, nextWeekday } from '@/common/date.util';
+import { combineDateAndTime, nextWeekday, weekdayInTimeZone } from '@/common/date.util';
 import { ConfigService } from '@nestjs/config';
 import { formatInTimeZone } from 'date-fns-tz';
 import { addMinutes } from 'date-fns';
@@ -96,12 +96,16 @@ export class SlotTemplatesService {
         }
     }
 
-    async materialize(templateId: string, fromDate: Date, weeks: number): Promise<any> {
+    async materialize(templateId: string, fromDate: Date, weeks: number): Promise<Prisma.BatchPayload> {
         const template = await this.dbService.slotTemplate.findUnique({ where: { id: templateId, isActive: true } })
         if (!template) throw new NotFoundException('Slot template not found');
 
         const timezone = this.configService.getOrThrow<string>('TIMEZONE');
         const settings = await this.settingsService.getAll();
+
+        if (!settings.clinicHours) throw new BadRequestException('Clinic hours not configured');
+        if (!settings.appointmentDurationMinutes) throw new BadRequestException('Appointment duration not configured');
+
         const duration = parseInt(settings.appointmentDurationMinutes);
         const defaultCapacity = parseInt(settings.slotCapacity);
         const workingDays = JSON.parse(settings.clinicHours); // TODO: Setting the slots needs to check the working hours and days?
@@ -111,7 +115,7 @@ export class SlotTemplatesService {
 
         for (let w = 0; w < weeks; w++) {
             const targetDay = nextWeekday(fromDate, template.weekday, w, timezone);
-            const workingday = workingDays[String(targetDay.getDay())];
+            const workingday = workingDays[String(weekdayInTimeZone(targetDay, timezone))];
             if (!workingday) continue;
 
             const dayDate = formatInTimeZone(targetDay, timezone, "yyyy-MM-dd");

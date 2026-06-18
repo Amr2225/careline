@@ -30,8 +30,8 @@ export class AppointmentsService {
         const timezone = this.configService.getOrThrow<string>('TIMEZONE');
         const baseDate = formatInTimeZone(date, timezone, "yyyy-MM-dd"); // Fromat the date Becasue it will shift the day backward
 
-        const startOfDay = `${baseDate}T00:00:00Z`;
-        const endOfDay = `${baseDate}T23:59:59Z`;
+        const startOfDay = fromZonedTime(`${baseDate}T00:00:00`, timezone);
+        const endOfDay = fromZonedTime(`${baseDate}T23:59:59.999`, timezone);
 
         const slots = await this.dbService.availableSlot.findMany({
             where: { startTime: { gte: startOfDay, lte: endOfDay } },
@@ -63,8 +63,8 @@ export class AppointmentsService {
         const baseStartDate = formatInTimeZone(from, timezone, "yyyy-MM-dd");
         const baseEndDate = formatInTimeZone(to, timezone, "yyyy-MM-dd");
 
-        const startOfDay = `${baseStartDate}T00:00:00Z`;
-        const endOfDay = `${baseEndDate}T23:59:59Z`;
+        const startOfDay = fromZonedTime(`${baseStartDate}T00:00:00`, timezone);
+        const endOfDay = fromZonedTime(`${baseEndDate}T23:59:59.999`, timezone);
 
         const slots = await this.dbService.availableSlot.findMany({
             where: { startTime: { gte: startOfDay, lte: endOfDay } },
@@ -73,26 +73,26 @@ export class AppointmentsService {
         })
 
         const weekDaysList = eachDayInRange(new Date(baseStartDate), new Date(baseEndDate), timezone); // The function itself turns the UTC date to zoned DateTime
-        const daysSet = new Map<string, SlotAndAppointments[]>();
+        const slotsByDay = new Map<string, SlotAndAppointments[]>();
 
         for (const slot of slots) {
             const day = formatInTimeZone(slot.startTime, timezone, "yyyy-MM-dd");
-            if (!daysSet.has(day)) {
-                daysSet.set(day, [this.mapSlotToSlotAndAppointments(slot)])
+            if (!slotsByDay.has(day)) {
+                slotsByDay.set(day, [this.mapSlotToSlotAndAppointments(slot)])
                 continue;
             }
 
-            const currentSavedSlots = daysSet.get(day)!;
-            daysSet.set(day, [...currentSavedSlots, this.mapSlotToSlotAndAppointments(slot)]);
+            const currentSavedSlots = slotsByDay.get(day)!;
+            slotsByDay.set(day, [...currentSavedSlots, this.mapSlotToSlotAndAppointments(slot)]);
         }
 
         for (const weekDay of weekDaysList) {
             const day = formatInTimeZone(weekDay, timezone, "yyyy-MM-dd");
-            if (!daysSet.has(day)) daysSet.set(day, []);
+            if (!slotsByDay.has(day)) slotsByDay.set(day, []);
         }
 
         // This returns the entire week with the slots for each day if available
-        return Array.from(daysSet.entries()).map(([date, slots]) => ({
+        return Array.from(slotsByDay.entries()).map(([date, slots]) => ({
             date,
             slots
         })).sort((a, b) => a.date.localeCompare(b.date));
@@ -131,32 +131,29 @@ export class AppointmentsService {
             }
         })
 
-        const aheadByWalkin = 0;
-        return aheadByAppointments + aheadByWalkin + 1;
+        return aheadByAppointments + 1;
     }
 
     // with Serializable transaction + FOR UPDATE
     async book(slotId: string, userId: string): Promise<Appointment> {
-        console.log("USER ID: ", userId);
-        const patinet = await this.dbService.patient.findUnique({ where: { userId } });
-        if (!patinet) throw new NotFoundException('Patient not found');
+        const patient = await this.dbService.patient.findUnique({ where: { userId } });
+        if (!patient) throw new NotFoundException('Patient not found');
 
         return await this.dbService.$transaction(async (tx) => {
             const slot = await tx.$queryRaw`
             SELECT id, capacity FROM available_slots WHERE id = ${slotId} FOR UPDATE
             ` as AvailableSlot[];
 
-            console.log("SLOT: ", slot[0])
             if (!slot[0]) throw new NotFoundException('Slot not found');
 
             const currentAppointments = await tx.appointment.count({ where: { slotId, status: { in: [AppointmentStatus.BOOKED, AppointmentStatus.ARRIVED, AppointmentStatus.IN_PROGRESS] } } });
             if (currentAppointments >= slot[0].capacity) throw new ConflictException('Slot is full');
 
-            const existing = await tx.appointment.findFirst({ where: { slotId, patientId: patinet.id, status: { not: AppointmentStatus.CANCELLED } } })
+            const existing = await tx.appointment.findFirst({ where: { slotId, patientId: patient.id, status: { not: AppointmentStatus.CANCELLED } } })
             if (existing) throw new ConflictException('Already booked this slot');
 
             await tx.availableSlot.update({ where: { id: slotId }, data: { bookedCount: currentAppointments + 1 } });
-            return tx.appointment.create({ data: { slotId, patientId: patinet.id, status: AppointmentStatus.BOOKED } });
+            return tx.appointment.create({ data: { slotId, patientId: patient.id, status: AppointmentStatus.BOOKED } });
         }, { isolationLevel: "Serializable" })
 
     }
@@ -176,7 +173,7 @@ export class AppointmentsService {
         }
 
         return await this.dbService.$transaction(async (tx) => {
-            await tx.availableSlot.update({ where: { id: appt.slotId }, data: { bookedCount: appt.slot.bookedCount - 1 } });
+            await tx.availableSlot.update({ where: { id: appt.slotId }, data: { bookedCount: { decrement: 1 } } });
             return await tx.appointment.update({ where: { id: appointmentId }, data: { status: AppointmentStatus.CANCELLED, cancelledAt: new Date() } });
         }, { isolationLevel: "Serializable" })
     }
@@ -204,7 +201,7 @@ export class AppointmentsService {
         // the user.id will match the callerUserId only if the patient is the one making the request
         if (appt.patient.user.id !== callerUserId) {
             const hasPermission = await this.rbacService.hasPermission(callerUserId, 'Appointments', Action.UPDATE);
-            if (!hasPermission) throw new ForbiddenException('You are not allowed to cancel this appointment');
+            if (!hasPermission) throw new ForbiddenException('You are not allowed to view this appointment');
         }
 
         const patientPosition = await this.getPositionForAppointment(appointmentId);
